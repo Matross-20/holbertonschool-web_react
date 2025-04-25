@@ -24,4 +24,3 @@ interface MajorCredits {
       brand: 'MinorCredits',
     };
   }
-  
