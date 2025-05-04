@@ -1,43 +1,23 @@
-import React from 'react';
-import { expect } from 'chai';
-import { configure, shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-import NotificationItem from './NotificationItem';
+import React from "react";
+import NotificationItem from "./NotificationItem";
+import { shallow } from "enzyme";
 
-configure({adapter: new Adapter()});
 
-describe("Testing <NotificationItem /> Component", () => {
+describe("<Notifications />", () => {
+  it("NotificationsItem renders without errors", () => {
+    const wrapper = shallow(<NotificationItem />);
+    expect(wrapper.exists()).toEqual(true);
+  });
 
-	let wrapper;
+  it("Verify that by passing dummy type and value props", () => {
+    const wrapper = shallow(<NotificationItem type="default" value="test" />);
+    expect(wrapper.find("li")).toHaveLength(1);
+    expect(wrapper.find("li").text()).toEqual("test");
+    expect(wrapper.find("li").prop("data-notification-type")).toEqual("default");
+  });
 
-	it("<NotificationItem /> is rendered without crashing", () => {
-		wrapper = shallow(<NotificationItem shouldRender />);
-
-		console.log(wrapper);
-		expect(wrapper).to.not.be.an("undefined");
-	});
-
-	it("<NotificationItem /> render the correct HTML, by passing type and value props", () => {
-
-		let props = {
-			type: "default",
-			value: "New resume",
-			html: undefined
-		}
-		
-		let component = shallow(<NotificationItem {...props} />);
-
-		console.log(component);
-		expect(component.contains(<li data-priority-type={props.type} dangerouslySetInnerHTML={undefined}>New resume</li>)).to.equal(true);
-	});
-
-	it("<NotificationItem /> render the correct HTML, by passing dummy html props", () => {
-		let props = {
-			type: "urgent",
-			html: { __html: "<p>test</p>"},
-		}
-		let component = shallow(<NotificationItem {...props} />);
-		expect(component.contains(<li data-priority-type={props.type} dangerouslySetInnerHTML={props.html} />)).to.equal(true);
-	});
-
+  it("Verify that by passing a dummy html prop", () => {
+    const wrapper = shallow(<NotificationItem html={{ __html: "<u>test</u>" }} />);
+    expect(wrapper.find("li").html()).toEqual("<li><u>test</u></li>");
+  });
 });

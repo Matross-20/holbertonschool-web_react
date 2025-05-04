@@ -1,14 +1,16 @@
 .Notifications {
-	border: 2px dotted var(--holberton-red);
-	padding: 6px 12px;
-	position: relative;
-	margin-top: 12px;
+    border: 3px dashed #e14852;;
+    padding: 1em;
 }
 
-li[data-priority="default"] {
-	color: blue;
+.Notifications button img {
+    width: 20px;
 }
 
-li[data-priority="urgent"] {
-	color: red;
+[data-priority='default'] {
+    color: blue;
+}
+
+[data-priority='urgent'] {
+    color: red;
 }
