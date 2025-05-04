@@ -1,10 +1,10 @@
-import React from "react";
 import { shallow } from "enzyme";
+import React from "react";
 import Footer from "./Footer";
 
 describe("<Footer />", () => {
-    it("Footer renders without any errors", () => {
-      const wrapper = shallow(<Footer />);
-      expect(wrapper.exists()).toEqual(true);
-    });
-})
+  it("Footer renders without crashing", () => {
+    const wrapper = shallow(<Footer />);
+    expect(wrapper.exists()).toEqual(true);
+  });
+});

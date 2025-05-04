@@ -1,23 +1,24 @@
+import { shallow } from "enzyme";
 import React from "react";
 import NotificationItem from "./NotificationItem";
-import { shallow } from "enzyme";
 
-
-describe("<Notifications />", () => {
-  it("NotificationsItem renders without errors", () => {
+describe("<NotificationsItem />", () => {
+  it("rendering of the component works without crashing", () =>{
     const wrapper = shallow(<NotificationItem />);
     expect(wrapper.exists()).toEqual(true);
   });
-
-  it("Verify that by passing dummy type and value props", () => {
+  it("Verify that by passing dummy type and value props, it renders the correct html", () => {
     const wrapper = shallow(<NotificationItem type="default" value="test" />);
-    expect(wrapper.find("li")).toHaveLength(1);
-    expect(wrapper.find("li").text()).toEqual("test");
-    expect(wrapper.find("li").prop("data-notification-type")).toEqual("default");
-  });
+    wrapper.update();
+    const Item = wrapper.find("li");
 
-  it("Verify that by passing a dummy html prop", () => {
-    const wrapper = shallow(<NotificationItem html={{ __html: "<u>test</u>" }} />);
-    expect(wrapper.find("li").html()).toEqual("<li><u>test</u></li>");
+    expect(Item).toHaveLength(1);
+    expect(Item.text()).toEqual("test");
+    expect(wrapper.html()).toContain('<li data-notification-type="default"');
+    expect(wrapper.html()).toContain('test</li>');
   });
+    it("Passing a dummy html prop, it renders the correct html", () => {
+    const wrapper = shallow(<NotificationItem html={{ __html: '<u>test</u>' }}/>);
+    expect(wrapper.html()).toContain('<u>test</u>');
+    });
 });

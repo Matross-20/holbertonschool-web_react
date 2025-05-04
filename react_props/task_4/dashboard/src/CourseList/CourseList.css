@@ -1,17 +1,17 @@
 :root {
-  --table-color: rgba(131, 129, 129, 0.89);
+  --border-table-color: rgb(170, 170, 170);
 }
 
 #CourseList {
-  margin: 40px 0 350px 0;
-  border: 1px solid var(--table-color);
+  margin-top: 40px;
+  border: 1px solid var(--border-table-color);
   border-collapse: collapse;
-  width: 85%;
+  width: 95%;
 }
 
 #CourseList th {
-  border-top: 1px solid var(--table-color);
-  border-bottom: 1px solid var(--table-color);
+  border-top: 1px solid var(--border-table-color);
+  border-bottom: 1px solid var(--border-table-color);
   text-align: left;
   font-size: 18px;
 }

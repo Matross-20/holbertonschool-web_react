@@ -1,9 +1,11 @@
 import React from "react";
-import Notifications from "../Notifications/Notifications";
-import Footer from "../Footer/Footer";
-import Header from "../Header/Header";
-import Login from "../Login/Login";
-
+import "./App.css";
+import holberton_logo from "../assets/holberton_logo.jpg";
+import { getFullYear, getFooterCopy } from "../utils/utils";
+import Header from "../Header/Header.js"
+import Login from "../Login/Login.js"
+import Footer from "../Footer/Footer.js"
+import Notifications from "../Notifications/Notifications.js"
 
 function App() {
   return (

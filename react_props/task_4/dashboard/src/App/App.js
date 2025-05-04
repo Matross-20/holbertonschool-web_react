@@ -1,31 +1,38 @@
 import React from "react";
-import PropTypes from "prop-types";
-import Notifications from "../Notifications/Notifications";
-import Footer from "../Footer/Footer";
-import Header from "../Header/Header";
-import Login from "../Login/Login";
 import "./App.css";
-import CourseList from "../CourseList/CourseList";
+import holberton_logo from "../assets/holberton_logo.jpg";
+import { getFullYear, getFooterCopy } from "../utils/utils";
+import Header from "../Header/Header.js";
+import Login from "../Login/Login.js";
+import Footer from "../Footer/Footer.js";
+import Notifications from "../Notifications/Notifications.js";
+import propTypes from "prop-types";
+import CourseList from "../CourseList/CourseList"
 
-export default function App({ isLoggedIn }) {
+function App({ isLoggedIn }) {
   return (
     <>
       <Notifications />
       <div className="App">
         <Header />
       </div>
-      <div className="App-body">{!isLoggedIn ? <Login /> : <CourseList />}</div>
+      <div className="App-body">
+        {!isLoggedIn ? <Login /> : <CourseList />}
+      </div>
       <div className="App-footer">
         <Footer />
       </div>
     </>
   );
+
 }
 
 App.defaultProps = {
-  isLoggedIn: false,
+    isLoggedIn: false,
 };
 
 App.propTypes = {
-  isLoggedIn: PropTypes.bool,
+  isLoggedIn: propTypes.bool,
 };
+
+export default App;
