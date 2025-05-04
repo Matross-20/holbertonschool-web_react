@@ -1,12 +1,12 @@
 import React from "react";
-import "./App.css";
 import holberton_logo from "./holberton_logo.jpg";
+import './App.css';
 
 function App() {
   return (
     <>
       <div className="App-header">
-        <img src={holberton_logo} />
+        <img src={holberton_logo} alt="Holberton Logo"/>
         <h1>School dashboard</h1>
       </div>
       <div className="App-body">
