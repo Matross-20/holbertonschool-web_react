@@ -1,28 +1,29 @@
-import { getFooterCopy, getFullYear, getLatestNotification } from './utils';
+import { getFullYear, getFooterCopy, getLatestNotification } from "./utils";
 
-describe('getFullYear function', () => {
-    it('should return the correct year', () => {
-        const currentYear = new Date().getFullYear();
-        expect(getFullYear()).to.equal(currentYear);
+describe("utils_tests", function () {
+  describe("getFullYear", function () {
+    it("should return current year", function () {
+      const year = getFullYear();
+      expect(year).toEqual(new Date().getFullYear());
     });
-});
+  });
+  describe("getFooterCopy", function () {
+    const trueMsg = "Holberton School";
+    const falseMsg = "Holberton School main dashboard";
 
-describe('getFooterCopy function', () => {
-    it('should return the correct string when the argument is true', () => {
-        const result = getFooterCopy(true);
-        expect(result).to.equal("Holberton School");
+    it("Should return true message", function () {
+      const msg = getFooterCopy(true);
+      expect(msg).toEqual(trueMsg);
     });
-
-    it('should return the correct string when the argument is false', () => {
-        const result = getFooterCopy(false);
-        expect(result).to.equal("Holberton School is the best school in the world");
+    it("Should return false message", function () {
+      const msg = getFooterCopy(false);
+      expect(msg).toEqual(falseMsg);
     });
-});
-
-describe('getLatestNotification function', () => {
-    it('should return the correct string', () => {
-        const notification = "<strong>Urgent requirement</strong> - complete by EOD";
-        const result = getLatestNotification(notification);
-        expect(result).to.equal(notification);
+  });
+  describe("getLatestNotification", function () {
+    it("shold return correct string element", function () {
+      const element = "<strong>Urgent requirement</strong> - complete by EOD";
+      expect(getLatestNotification()).toEqual(element);
     });
+  });
 });
