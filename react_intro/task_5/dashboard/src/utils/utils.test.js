@@ -2,26 +2,28 @@ import { getFullYear, getFooterCopy, getLatestNotification } from "./utils";
 
 describe("utils_tests", function () {
   describe("getFullYear", function () {
-    it("Return a current year", function () {
+    it("should return current year", function () {
       const year = getFullYear();
       expect(year).toEqual(new Date().getFullYear());
     });
   });
-
   describe("getFooterCopy", function () {
+    const trueMsg = "Holberton School";
+    const falseMsg = "Holberton School main dashboard";
 
-    it("Return a true message", function () {
-      expect(getFooterCopy(true)).toEqual("Holberton School");
+    it("Should return true message", function () {
+      const msg = getFooterCopy(true);
+      expect(msg).toEqual(trueMsg);
     });
-
-    it("Return a false message", function () {
-      expect(getFooterCopy(false)).toEqual("Holberton School main dashboard");
+    it("Should return false message", function () {
+      const msg = getFooterCopy(false);
+      expect(msg).toEqual(falseMsg);
     });
   });
-
   describe("getLatestNotification", function () {
-    it("Return correct element", function () {
-      expect(getLatestNotification()).toEqual("<strong>Urgent requirement</strong> - complete by EOD");
+    it("shold return correct string element", function () {
+      const element = "<strong>Urgent requirement</strong> - complete by EOD";
+      expect(getLatestNotification()).toEqual(element);
     });
   });
 });

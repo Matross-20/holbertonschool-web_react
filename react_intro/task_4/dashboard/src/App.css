@@ -1,27 +1,37 @@
 :root {
-  --principal-color: #e14852;
+  --main-color: #e01d3f;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
 .App-header {
   display: flex;
-  color: var(--principal-color);
   align-items: center;
-  border-bottom: 4px solid var(--principal-color);
-
+  color: var(--main-color);
+  font-size: 20px;
+  border-bottom: 3px solid var(--main-color);
 }
 
 .App-header img {
   width: 200px;
-  height: 200px;
 }
 
 .App-body {
-  margin: 50px 0 350px 60px;
+  margin: 50px;
+  font-weight: 600;
+  font-size: 20px;
 }
 
 .App-footer {
+  border-top: 3px solid var(--main-color);
+  width: 100%;
   display: flex;
   justify-content: center;
-  border-top: 4px solid var(--principal-color);
+  position: fixed;
+  bottom: 0;
   font-style: italic;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.login-container > * {
+  margin-right: 10px;
 }
