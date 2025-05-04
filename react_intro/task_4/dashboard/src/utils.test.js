@@ -1,21 +1,28 @@
 import { getFooterCopy, getFullYear, getLatestNotification } from './utils';
 
-describe("Utils functions", () => {
-	
-	test("getFullYear returns the correct year", () => {
-		expect(getFullYear()).toEqual(2021);
-	});
+describe('getFullYear function', () => {
+    it('should return the correct year', () => {
+        const currentYear = new Date().getFullYear();
+        expect(getFullYear()).to.equal(currentYear);
+    });
+});
 
-	test("getFooterCopy returns the correct string when the argument is true", () => {
-		expect(getFooterCopy(true)).toEqual("Holberton School");
-	});
+describe('getFooterCopy function', () => {
+    it('should return the correct string when the argument is true', () => {
+        const result = getFooterCopy(true);
+        expect(result).to.equal("Holberton School");
+    });
 
-	test("getFooterCopy returns the correct string when the argument is false", () => {
-		expect(getFooterCopy(false)).toEqual("Holberton School main dashboard");
-	});
+    it('should return the correct string when the argument is false', () => {
+        const result = getFooterCopy(false);
+        expect(result).to.equal("Holberton School is the best school in the world");
+    });
+});
 
-	test("getLatestNotification returns the expected string", () => {
-		expect(getLatestNotification()).toEqual("<strong>Urgent requirement</strong> - complete by EOD");
-	});
-
+describe('getLatestNotification function', () => {
+    it('should return the correct string', () => {
+        const notification = "<strong>Urgent requirement</strong> - complete by EOD";
+        const result = getLatestNotification(notification);
+        expect(result).to.equal(notification);
+    });
 });
