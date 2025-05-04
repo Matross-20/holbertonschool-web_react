@@ -1,12 +1,16 @@
-import './App.css';
 import logo from './holberton_logo.jpg';
+import './App.css';
+import React from 'react';
+
 
 function App() {
   return (
     <div className="App">
       <div className="App-header">
-        <img src={logo} alt="logo" />
-        <h1>School dashboard</h1>
+        <img src={logo} className="App-logo" alt="logo" />
+        <h1>
+          School dashboard
+        </h1>
       </div>
       <div className="App-body">
         <p>
@@ -14,7 +18,9 @@ function App() {
         </p>
       </div>
       <div className="App-footer">
-        <p>Copyright 2020 - holberton School</p>
+        <p>
+          Copyright 2020 - holberton School
+        </p>
       </div>
     </div>
   );
