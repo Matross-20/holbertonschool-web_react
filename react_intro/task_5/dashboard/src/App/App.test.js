@@ -1,25 +1,27 @@
-import { shallow } from "enzyme";
-import React from "react";
-import App from "./App";
+import React from 'react';
+import { shallow } from 'enzyme';
+import App from './App';
 
-describe("<App />", () => {
-  it("App renders without crashing", () => {
-    const wrapper = shallow(<App />);
-    expect(wrapper.exists()).toEqual(true);
+describe('App Component', () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = shallow(<App />);
   });
-  it("App renders a 'div' with the class App-header", () => {
-    const wrapper = shallow(<App />);
-    wrapper.update();
-    expect(wrapper.find("div.App-header")).toHaveLength(1);
+
+  it('Renderizar son romperse.', () => {
+    expect(wrapper.exists()).toBe(true);
   });
-  it("App renders a div with the class App-body", () => {
-    const wrapper = shallow(<App />);
-    wrapper.update();
-    expect(wrapper.find("div.App-body")).toHaveLength(1);
+
+  it('Renderiza con un elemento con clase App-header', () => {
+    expect(wrapper.find('.App-header').length).toBe(1);
   });
-  it("App renders a div with the class App-footer", () => {
-    const wrapper = shallow(<App />);
-    wrapper.update();
-    expect(wrapper.find("div.App-footer")).toHaveLength(1);
+
+  it('Renderiza con un elemento con clase App-body', () => {
+    expect(wrapper.find('.App-body').length).toBe(1);
+  });
+
+  it('Renderiza con un elemento con clase App-footer', () => {
+    expect(wrapper.find('.App-footer').length).toBe(1);
   });
 });

@@ -3,15 +3,7 @@ export function getFullYear() {
 }
 
 export function getFooterCopy(isIndex) {
-  let msg;
-
-  if (isIndex) {
-    msg = 'Holberton School';
-  } else {
-    msg = 'Holberton School main dashboard';
-  }
-
-  return msg;
+  return isIndex ? 'Holberton School' : 'Holberton School main dashboard';
 }
 
 export function getLatestNotification() {

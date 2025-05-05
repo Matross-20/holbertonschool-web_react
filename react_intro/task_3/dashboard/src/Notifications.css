@@ -1,16 +1,16 @@
-:root {
-  --primary-color: #e01d3f;
-}
-
 .Notifications {
-  border: 3px dashed var(--primary-color);
-  padding: 50px;
+  border: 2px dashed salmon;
+  background: white;
 }
 
-[data-priority='default'] {
+.Notifications li[data-priority='default'] {
   color: blue;
 }
 
-[data-priority='urgent'] {
+.Notifications li[data-priority='urgent'] {
   color: red;
+}
+
+.Notifications li strong{
+  font-weight: 900;
 }

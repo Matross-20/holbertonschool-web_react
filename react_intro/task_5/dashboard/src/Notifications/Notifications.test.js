@@ -1,21 +1,23 @@
-import { shallow } from "enzyme";
-import React from "react";
-import Notifications from "./Notifications";
+import React from 'react';
+import { shallow } from 'enzyme';
+import Notifications from './Notifications';
 
-describe("<Notifications />", () => {
-  it("Notifications renders without crashing", () => {
-    const wrapper = shallow(<Notifications />);
-    expect(wrapper.exists()).toEqual(true);
+describe('Notifications Component', () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = shallow(<Notifications />);
   });
-  it("Notifications renders three list items", () => {
-    const wrapper = shallow(<Notifications />);
-    wrapper.update();
-    expect(wrapper.find("li")).toHaveLength(3);
+
+  it('Renderiza sin romperse.', () => {
+    expect(wrapper.exists()).toBe(true);
   });
-  it("Notifications renders the text Here is the list of notifications", () => {
-    const text = "Here is the list of notifications";
-    const wrapper = shallow(<Notifications />);
-    wrapper.update();
-    expect(wrapper.find(".Notifications p").text()).toEqual(text);
+
+  it('Renderiza 3 li.', () => {
+    expect(wrapper.find('li').length).toBe(3);
+  });
+
+  it('Renderiza con el texo "Here is the list of notifications"', () => {
+    expect(wrapper.find('p').text()).toBe('Here is the list of notifications');
   });
 });
