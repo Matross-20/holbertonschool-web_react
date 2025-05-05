@@ -1,49 +1,28 @@
-:root {
-  --holberton-red: #e1484c;
-}
-
-body {
-  max-width: 90%;
-  margin: 0 auto;
-}
-
-div {
-  padding: 2px 8px;
-}
-
-.App {
-  position: relative;
-  min-height: 100vh;
-}
-
 .App-header {
   display: flex;
-  flex-direction: row;
-  justify-content: left;
-  border-bottom: 3px solid var(--holberton-red);
+  align-items: center;
+  color: #e1003c;
+  padding: 10px;
+  border-bottom: 3px solid #e1003c;
 }
 
-.App-header h1 {
-  margin: auto auto auto 0;
-  color: var(--holberton-red);
+.App-header img {
+  height: 200px;
+  margin-right: 20px;
 }
 
 .App-body {
-  padding: 36px 24px;
-}
-
-.App-body input {
-  margin: 0 16px 0 8px;
+  padding: 40px;
 }
 
 .App-footer {
-  position: absolute;
-  bottom: 0;
+  border-top: 3px solid #e1003c;
+  text-align: center;
+  font-style: italic;
+  padding: 10px;
+  position: fixed;
   width: 100%;
+  bottom: 0;
+  background-color: white;
 }
 
-.App-footer p {
-  text-align: center;
-  border-top: 3px solid var(--holberton-red);
-  padding: 16px 0;
-}
