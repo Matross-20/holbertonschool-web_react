@@ -1,9 +1,6 @@
-:root {
-  --main-color: #e01d3f;
-}
-
 .Notifications {
-  border: 3px dashed var(--main-color);
+  border: 3px dashed var(--primary-color);
+  padding: 20px;
   padding: 10px;
   margin-bottom: 20px;
 }
@@ -17,10 +14,10 @@
   margin-top: 15px;
 }
 
-[data-notification-type="default"] {
+[data-notification-type='default'] {
   color: blue;
 }
 
-[data-notification-type="urgent"] {
+[data-notification-type='urgent'] {
   color: red;
 }

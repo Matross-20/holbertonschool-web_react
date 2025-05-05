@@ -1,38 +1,37 @@
 import React from "react";
+import Notifications from "../Notifications/Notifications";
+import Header from "../Header/Header";
+import Login from "../Login/Login";
+import CourseList from "../CourseList/CourseList";
+import Footer from "../Footer/Footer";
+import PropTypes from "prop-types";
 import "./App.css";
-import holberton_logo from "../assets/holberton_logo.jpg";
-import { getFullYear, getFooterCopy } from "../utils/utils";
-import Header from "../Header/Header.js";
-import Login from "../Login/Login.js";
-import Footer from "../Footer/Footer.js";
-import Notifications from "../Notifications/Notifications.js";
-import propTypes from "prop-types";
-import CourseList from "../CourseList/CourseList"
 
 function App({ isLoggedIn }) {
   return (
     <>
       <Notifications />
-      <div className="App">
-        <Header />
-      </div>
-      <div className="App-body">
-        {!isLoggedIn ? <Login /> : <CourseList />}
-      </div>
-      <div className="App-footer">
-        <Footer />
+      <div className='App-container'>
+        <div className='App'>
+          <Header />
+        </div>
+        <div className='App-body'>
+          {!isLoggedIn ? <Login /> : <CourseList />}
+        </div>
+        <div className='App-footer'>
+          <Footer />
+        </div>
       </div>
     </>
   );
-
 }
 
 App.defaultProps = {
-    isLoggedIn: false,
+  isLoggedIn: true,
 };
 
 App.propTypes = {
-  isLoggedIn: propTypes.bool,
+  isLoggedIn: PropTypes.bool,
 };
 
 export default App;

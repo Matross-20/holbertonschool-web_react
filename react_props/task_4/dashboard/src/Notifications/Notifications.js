@@ -1,40 +1,42 @@
 import React from "react";
-import "./Notifications.css";
-import { getLatestNotification } from "../utils/utils";
-import closeIcon from "../assets/close-icon.png";
 import NotificationItem from "./NotificationItem";
-import propTypes from "prop-types"
+import { getLatestNotification } from "../utils/utils";
+import PropTypes from "prop-types";
+import closeIcon from '../assets/close-icon.png';
+import './Notifications.css';
 
 const Notifications = ({ displayDrawer }) => {
   return (
     <>
       <div className="menuItem">
-        <p>Your notifications</p>
+        <p>Your Notifications</p>
       </div>
-      {displayDrawer && (
-        <div className="Notifications">
-          <button
-            style={{
-              background: "transparent",
-              border: "none",
-              position: "absolute",
-              right: 20,
-            }}
-            aria-label="close"
-          >
-            <img src={closeIcon} alt="close-icon" />
-          </button>
-          <p>Here is the list of notifications</p>
-          <ul>
-            <NotificationItem type="default" value="New course available" />
-            <NotificationItem type="urgent" value="New resume available" />
-            <NotificationItem
-              type="urgent"
-              html={{ __html: getLatestNotification() }}
-            />
-          </ul>
-        </div>
-      )}
+      {
+        displayDrawer && (
+          <div className='Notifications'>
+            <button
+              style={{
+                background: 'transparent',
+                border: 'none',
+                position: 'absolute',
+                right: 20,
+              }}
+              aria-label="close"
+            >
+              <img src={closeIcon} alt='close-icon' />
+            </button>
+            <p>Here is the list of notifications</p>
+            <ul>
+              <NotificationItem type="default" value="New course available" />
+              <NotificationItem type="urgent" value="New resume available" />
+              <NotificationItem
+                type="urgent"
+                html={{ __html: getLatestNotification() }}
+              />
+            </ul>
+          </div>
+        )
+      }
     </>
   );
 };
@@ -44,7 +46,7 @@ Notifications.defaultProps = {
 };
 
 Notifications.propTypes = {
-  displayDrawer: propTypes.bool,
+  displayDrawer: PropTypes.bool,
 };
 
 export default Notifications;

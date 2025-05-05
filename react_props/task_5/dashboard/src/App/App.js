@@ -1,12 +1,14 @@
 import React from "react";
+import PropTypes from "prop-types";
+
+import Notifications from "../Notifications/Notifications";
+import Header from "../Header/Header";
+import Login from "../Login/Login";
+import CourseList from "../CourseList/CourseList";
+import Footer from "../Footer/Footer";
+
 import "./App.css";
 import { getLatestNotification } from "../utils/utils";
-import Header from "../Header/Header.js";
-import Login from "../Login/Login.js";
-import Footer from "../Footer/Footer.js";
-import Notifications from "../Notifications/Notifications.js";
-import propTypes from "prop-types";
-import CourseList from "../CourseList/CourseList"
 
 const listCourses = [
   { id: 1, name: "ES6", credit: 60 },
@@ -20,30 +22,32 @@ const listNotifications = [
   { id: 3, type: "urgent", html: { __html: getLatestNotification() } },
 ];
 
+
 function App({ isLoggedIn }) {
   return (
     <>
       <Notifications listNotifications={listNotifications} />
-      <div className="App">
-        <Header />
-      </div>
-      <div className="App-body">
-        {!isLoggedIn ? <Login /> : <CourseList listCourses={listCourses} />}
-      </div>
-      <div className="App-footer">
-        <Footer />
+      <div className='App-container'>
+        <div className='App'>
+          <Header />
+        </div>
+        <div className='App-body'>
+          {!isLoggedIn ? <Login /> : <CourseList listCourses={listCourses} />}
+        </div>
+        <div className='App-footer'>
+          <Footer />
+        </div>
       </div>
     </>
   );
-
 }
 
 App.defaultProps = {
-    isLoggedIn: false,
+  isLoggedIn: false,
 };
 
 App.propTypes = {
-  isLoggedIn: propTypes.bool,
+  isLoggedIn: PropTypes.bool,
 };
 
 export default App;

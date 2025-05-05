@@ -1,42 +1,17 @@
 :root {
-  --main-color: #e01d3f;
+  --primary-color: #e01d3f;
+  --primary-border-color: rgb(170, 170, 170);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .App {
-  border-bottom: 3px solid var(--main-color);
+  border-bottom: 3px solid var(--primary-color);
 }
-
 .App-body {
-  display: flex;
-  justify-content: center;
+  margin: 50px 40px;
 }
 
-.App-header {
-  display: flex;
-  align-items: center;
-  color: var(--main-color);
-  font-size: 20px;
-  border-bottom: 3px solid var(--main-color);
-}
-
-.App-header img {
-  width: 200px;
-}
-
-.App-body {
-  margin: 50px;
-}
-.App-body input {
-  margin-left: 20px;
-  margin-right: 20px;
-}
-
-.App-footer {
-  border-top: 3px solid var(--main-color);
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  position: fixed;
-  bottom: 0;
-  font-style: italic;
+.App-container {
+  position: relative;
+  min-height: 100vh;
 }
