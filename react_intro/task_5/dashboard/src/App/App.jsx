@@ -1,36 +1,36 @@
-import React from 'react';
-import './App.css';
-import Notifications from '../Notifications/Notifications';
-import Header from '../Header/Header';
-import Footer from '../Footer/Footer';
-import Login from '../Login/Login';
-import CourseList from '../CourseList/CourseList';
-import { getLatestNotification } from '../utils/utils';
+import "./App.css";
+import logo from "../assets/holberton-logo.jpg";
+import { getCurrentYear, getFooterCopy } from "../utils/utils";
+import Notifications from "../Notifications/Notifications";
 
 function App() {
-  const isLoggedIn = false; // change to true for testing CourseList display
-
-  const notificationsList = [
-    { id: 1, type: 'urgent', value: 'New course available' },
-    { id: 2, type: 'urgent', value: 'New resume available' },
-    { id: 3, type: 'urgent', html: { __html: getLatestNotification() } },
-  ];
-
-  const coursesList = [
-    { id: 1, name: 'ES6', credit: 60 },
-    { id: 2, name: 'Webpack', credit: 20 },
-    { id: 3, name: 'React', credit: 40 },
-  ];
-
   return (
-    <React.Fragment>
-      <div className='root-notifications'>
-        <Notifications notifications={notificationsList} />
+    <>
+      <div className="root-notifications">
+        <Notifications />
       </div>
-      <Header />
-      {isLoggedIn ? <CourseList courses={coursesList} /> : <Login />}
-      <Footer />
-    </React.Fragment>
+      <div className="App-header">
+        <img src={logo} alt="holberton logo" />
+        <h1>School dashboard</h1>
+      </div>
+      <div className="App-body">
+        <p>Login to access the full dashboard</p>
+
+        <div className="App-login">
+          <label htmlFor="email">Email:</label>
+          <input type="email" id="email" name="email" />
+
+          <label htmlFor="password">Password:</label>
+          <input type="password" id="password" name="password" />
+
+          <button>OK</button>
+        </div>
+
+      </div>
+      <div className="App-footer">
+        <p>Copyright {getCurrentYear()} - {getFooterCopy(false)}</p>
+      </div>
+    </>
   );
 }
 
