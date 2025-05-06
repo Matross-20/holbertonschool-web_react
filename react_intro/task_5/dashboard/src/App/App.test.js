@@ -1,27 +1,32 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { expect } from 'chai';
+import Adapter from 'enzyme-adapter-react-16';
+import { shallow, configure } from 'enzyme';
 import App from './App';
 
-describe('App Component', () => {
-  let wrapper;
+configure({adapter: new Adapter()});
+describe("Testing the <App /> Component", () => {
+	
+	let wrapper;
 
-  beforeEach(() => {
-    wrapper = shallow(<App />);
-  });
+	beforeEach(() => {
+		wrapper = shallow(<App />);
+	});
 
-  it('Renderizar son romperse.', () => {
-    expect(wrapper.exists()).toBe(true);
-  });
+	it("<App /> is rendered without crashing", () => {
+		expect(wrapper).to.not.be.an('undefined');
+	});
 
-  it('Renderiza con un elemento con clase App-header', () => {
-    expect(wrapper.find('.App-header').length).toBe(1);
-  });
+	it("<App /> renders a div with the class App-header", () => {
+		expect(wrapper.find('.App-header')).to.have.lengthOf(1);
+	});
 
-  it('Renderiza con un elemento con clase App-body', () => {
-    expect(wrapper.find('.App-body').length).toBe(1);
-  });
+	it("<App /> renders a div with the class App-body", () => {
+		expect(wrapper.find('.App-body')).to.have.lengthOf(1);
+	});
 
-  it('Renderiza con un elemento con clase App-footer', () => {
-    expect(wrapper.find('.App-footer').length).toBe(1);
-  });
+	it("<App /> renders a div with the class App-footer", () => {
+		expect(wrapper.find('.App-footer')).to.have.lengthOf(1);
+	});
+
 });
