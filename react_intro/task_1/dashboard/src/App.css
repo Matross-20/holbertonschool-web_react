@@ -1,25 +1,36 @@
-.App-logo {
-  height: 30vmin;
+:root {
+  --holberton-red: #e0354b;
 }
 
 .App-header {
-  display: inline-flex;
-  align-items: center;
-  font-size: 20px;
-  font-family: sans-serif;
-  color: #e0454b;
+  display: flex;
+  color: var(--holberton-red);
+  border-bottom: 3px solid var(--holberton-red);
 }
 
-.App-body {
-  border-top: solid;
-  border-bottom: solid;
-  border-color: #e0454b;
-  min-height: 50vmax;
-  padding: 30px;
+.App-header > img {
+  object-fit: contain;
+  height: 100px;
 }
+
 .App-footer {
   display: flex;
   justify-content: center;
+  flex: 0;
   font-style: italic;
-  font-family: sans-serif;
+  border-top: 3px solid var(--holberton-red);
 }
+
+.App-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  align-items: stretch;
+}
+
+.App {
+  height: 95vh;
+  display:flex;
+  flex-direction: column;
+}
+

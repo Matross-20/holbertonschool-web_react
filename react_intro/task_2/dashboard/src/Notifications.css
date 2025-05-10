@@ -1,14 +1,14 @@
 .Notifications {
-    border: dotted;
-    border-color: crimson;
-    padding-left: 1rem;
-    margin-bottom: 1rem;
+	padding: 1px 12px;
+	display: flex;
+	flex-direction: column;
+	border: 2px dashed var(--holberton-red);
 }
 
-[data-priority="default"] {
+li[dataPriority='default'] {
     color: blue;
-}
-  
-[data-priority="urgent"] {
-color: red;
-}
+
+  }
+li[dataPriority='urgent'] {
+    color: red;
+  }

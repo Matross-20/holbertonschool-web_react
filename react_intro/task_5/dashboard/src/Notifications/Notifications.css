@@ -1,26 +1,14 @@
-:root {
-  --main-color: #e01d3f;
-}
-
 .Notifications {
-  border: 3px dashed var(--main-color);
-  padding: 10px;
-  margin-bottom: 20px;
+	padding: 1px 12px;
+	display: flex;
+	flex-direction: column;
+	border: 2px dashed var(--holberton-red);
 }
 
-.Notifications button img {
-  width: 10px;
-}
+li[dataPriority='default'] {
+    color: blue;
 
-.Notifications p {
-  margin: 0;
-  margin-top: 15px;
-}
-
-[data-priority="default"] {
-  color: blue;
-}
-
-[data-priority="urgent"] {
-  color: red;
-}
+  }
+li[dataPriority='urgent'] {
+    color: red;
+  }
