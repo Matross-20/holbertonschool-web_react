@@ -1,20 +1,26 @@
-import { shallow } from "enzyme";
-import Notifications from "./Notifications";
+import React from 'react';
+import { shallow } from 'enzyme';
+import { expect } from 'chai';
+import Notifications from './Notifications';
 
-describe("Test Suite - <Notifications />", () => {
-  it("Test nº1 Renders without crashing", () => {
-    const wrapper = shallow(<Notifications />);
-    expect(wrapper.exists());
+// to run all tests, please type "npm run test a" in the command line
+
+const wrapper = shallow(<Notifications/>);
+
+describe('my Notifications component', () => {
+  it('renders without crashing', () => {
+    expect(wrapper).to.have.length(1);
   });
-  it("Test nº2 renders three list items", () => {
-    const wrapper = shallow(<Notifications />);
-    wrapper.update();
-    expect(wrapper.find("li")).toHaveLength(3);
+
+  it('renders 3 list items', () => {
+    const listItems = wrapper.find('li');
+    expect(listItems).to.have.length(3);
   });
-  it("Test nº3 renders the text Here is the list of notifications", () => {
-    const text = "Here is the list of notifications";
-    const wrapper = shallow(<Notifications />);
-    wrapper.update();
-    expect(wrapper.find(".Notifications p").text()).toEqual(text);
+
+  const p = wrapper.find('p');
+
+  it('renders a paragraph with a certain content', () => {
+    expect(p.text()).to.equal('Here is the list of notifications');
   });
+
 });
