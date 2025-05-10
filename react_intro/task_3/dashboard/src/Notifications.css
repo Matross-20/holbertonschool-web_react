@@ -1,12 +1,12 @@
 .Notifications {
-    padding: 10px;
-    border: 2px dashed #DE284C;
+	border: 2px grey solid;
+	padding: 1rem;
 }
 
-li[data-priority="default"] {
-    color: blue;
+[data-priority="default"] {
+	color: blue;
 }
 
-li[data-priority="urgent"] {
-    color: red;
+[data-priority="urgent"] {
+	color: red;
 }

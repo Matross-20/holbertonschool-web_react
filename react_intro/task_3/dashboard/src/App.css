@@ -1,35 +1,48 @@
-.App {
-  text-align: left;
+body {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+  height: 100%;
 }
 
 .App-header {
-  background-color: #fff;
-  min-height: 30vh;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  font-size: calc(7px + 2vmin);
-  font-family: Arial, Helvetica, sans-serif;
-  color: #DE284C;
+  height: 25vh;
+  color: #E0354B;
 }
 
-.App-footer {
-  text-align: center;
-  font-family: Arial, Helvetica, sans-serif;
-  font-style: italic;
-}
-
-hr {
-  border-color: #DE284C;
+.App-header h1 {
+  font-size: 2.3rem;
 }
 
 .App-body {
-  min-height: 70vh;
-  font-family: Arial, Helvetica, sans-serif;
-  margin-left: 7vh;
-  margin-top: 10vh;
+  height: 60vh;
+}
+
+.App-body p {
+  margin: 3rem 0rem 1rem 2rem;
+}
+
+.App-footer {
+  font-style: italic;
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+}
+
+hr {
+  background-color: #E0354B;
+  height: .2rem;
+  border-width: 0;
+}
+
+input {
+  margin: 0 1rem 0 1rem;
+}
+
+form {
+  margin-left: 2rem;
 }
