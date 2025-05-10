@@ -1,24 +1,21 @@
+// task_5/dashboard/src/Notifications/Notifications.test.js
+
 import React from 'react';
 import { shallow } from 'enzyme';
 import Notifications from './Notifications';
 
-
 describe('<Notifications />', () => {
-
-    it('Notifications renders without crashing', () => {
-        const wrapper = shallow(<Notifications />);
-        expect(wrapper).toHaveLength(1);
+    it('renders without crashing', () => {
+        shallow(<Notifications />);
     });
 
-    it('Notifications renders three list items', () => {
+    it('renders three list items', () => {
         const wrapper = shallow(<Notifications />);
-        expect(wrapper.find('.Notifications li')).toHaveLength(3);
+        expect(wrapper.find('li').length).toBe(3);
     });
 
-    it('Notifications renders the text Here is the list of notifications', () => {
+    it('renders the text "Here is the list of notifications"', () => {
         const wrapper = shallow(<Notifications />);
-        expect(wrapper.find('.Notifications p')).toHaveLength(1);
         expect(wrapper.find('.Notifications p').text()).toEqual('Here is the list of notifications');
     });
-
 });

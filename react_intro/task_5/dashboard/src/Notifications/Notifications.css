@@ -1,12 +1,16 @@
+/* task_5/dashboard/src/Notifications/Notifications.css */
+
 .Notifications {
-	border: 2px grey solid;
-	padding: 1rem;
+  border: 1px dotted red;
+  padding: 10px;
+  margin: 10px 0;
+  position: relative;
 }
 
-[data-priority="default"] {
-	color: blue;
+li[data-priority="default"] {
+  color: blue;
 }
 
-[data-priority="urgent"] {
-	color: red;
+li[data-priority="urgent"] {
+  color: red;
 }

@@ -1,40 +1,47 @@
-body {
-  font-family: Arial, Helvetica, sans-serif;
+.App {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
-.App-logo {
-  height: 100%;
+body, .App {
+  background-color: #FFFFFF;
+  font-family: Arial, sans-serif;
 }
+
 
 .App-header {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  height: 25vh;
-  color: #E0354B;
+  justify-content: flex-start;
+  padding: 20px;
+  color: white;
+  border-bottom: 3px solid red;
 }
 
 .App-header h1 {
-  font-size: 2.3rem;
+  color: red;
+}
+
+
+.App-header img {
+  height: 250px;
+  margin-right: 20px;
 }
 
 .App-body {
-  height: 60vh;
-}
-
-.App-body p {
-  margin: 3rem 0rem 2rem 2rem;
+  flex: 1;
+  padding: 20px;
+  border-bottom: 3px solid red;
 }
 
 .App-footer {
-  font-style: italic;
-  height: 10vh;
-  display: flex;
-  justify-content: center;
+  padding: 10px 20px;
+  color: rgb(0, 0, 0);
+  text-align: center;
 }
 
-hr {
-  background-color: #E0354B;
-  height: .2rem;
-  border-width: 0;
+.App-footer p {
+  font-style: italic;
 }
