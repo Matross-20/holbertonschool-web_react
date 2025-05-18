@@ -1,4 +1,6 @@
-.login {
-  margin: 0px;
-  flex-grow: 1;
+.App-body {
+  display: flex;
+  height: 65vh;
+  padding: 0.5rem;
+  flex-direction: column;
 }
