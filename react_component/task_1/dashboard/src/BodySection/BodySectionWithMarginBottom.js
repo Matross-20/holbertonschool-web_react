@@ -4,21 +4,21 @@ import './BodySectionWithMarginBottom.css';
 import PropTypes from 'prop-types';
 
 class BodySectionWithMarginBottom extends Component {
-	constructor(props) {
-		super(props);
-	}
+  constructor(props) {
+    super(props);
+  }
 
-	render() {
-		return (
-			<div className="BodySectionWithMargin">
-				<BodySection {...this.props} />
-			</div>
-		);
-	};
-};
+  render() {
+    return (
+      <div className="BodySectionWithMargin">
+        <BodySection {...this.props} />
+      </div>
+    );
+  }
+}
 
 BodySectionWithMarginBottom.propTypes = {
-	title: PropTypes.string,
-	children: PropTypes.node
-}
+  title: PropTypes.string,
+  children: PropTypes.node
+};
 export default BodySectionWithMarginBottom;
