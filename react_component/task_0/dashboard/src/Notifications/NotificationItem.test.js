@@ -1,43 +1,27 @@
 import React from 'react';
+import { shallow } from 'enzyme';
 import { expect } from 'chai';
-import { configure, shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 import NotificationItem from './NotificationItem';
 
-configure({adapter: new Adapter()});
+describe('Test NotificationItem.js', () => {
+  it('Notificacionitem without crashing', (done) => {
+    expect(shallow(<NotificationItem />).exists());
+    done();
+  });
 
-describe("Testing <NotificationItem /> Component", () => {
+  it('renders three list items', (done) => {
+    const wrapper = shallow(<NotificationItem type='default' value='test' />);
+    
+    expect(wrapper.find('li')).to.have.lengthOf(1);
+    expect(wrapper.find('li').props()).to.have.property('data-notification-type', 'default');
+    expect(wrapper.find('li').text()).to.equal('test');
+    done();
+  });
 
-	let wrapper;
-
-	it("<NotificationItem /> is rendered without crashing", () => {
-		wrapper = shallow(<NotificationItem shouldRender />);
-
-		console.log(wrapper);
-		expect(wrapper).to.not.be.an("undefined");
-	});
-
-    it("<NotificationItem /> passing dummy html props", () => {
-		let props = {
-			type: "urgent",
-			html: { __html: "<p>test</p>"},
-		}
-		let component = shallow(<NotificationItem {...props} />);
-		expect(component.contains(<li data-priority-type={props.type} dangerouslySetInnerHTML={props.html} />)).to.equal(true);
-	});
-
-	it("<NotificationItem />  passing value props", () => {
-
-		let props = {
-			type: "default",
-			value: "New resume",
-			html: undefined
-		}
-		
-		let component = shallow(<NotificationItem {...props} />);
-
-		console.log(component);
-		expect(component.contains(< li data-priority-type={props.type} dangerouslySetInnerHTML={undefined}>New resume </li>)).to.equal(false);
-	});
-
+  it(' renders inner HTML', (done) => {
+    const wrapper = shallow(<NotificationItem html={{ __html: '<u>test</u>' }} />);
+    expect(wrapper.html()).to.equal('<li><u>test</u></li>');
+    done();
+  });
 });
+

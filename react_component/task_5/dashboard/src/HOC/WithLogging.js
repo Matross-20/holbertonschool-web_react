@@ -1,18 +1,24 @@
-import React, { Component, Children } from 'react';
+import React from 'react';
 
-export default class WithLogging extends Component {
-	constructor(props) {super(props);};
+function WithLogging(WrapComponent) {
+  return class extends React.Component {
+    constructor(props) {
+      super(props);
+      this.displayName = WrapComponent.name ? `WithLogging(${WrapComponent.name})` : `WithLogging(Component)`;
+    }
+  
+    componentDidMount() {
+      console.log(`Component ${WrapComponent.name ? WrapComponent.name : 'Component'} is mounted`);
+    }
+  
+    componentWillUnmount() {
+      console.log(`Component ${WrapComponent.name ? WrapComponent.name : 'Component'} is going to unmount`);
+    }
 
-	componentDidMount() { let comps = this.props.children.type.name || 'Component';
-		console.log(`Component ${comps} is mounted`);
-	};
+    render() {
+      return <WrapComponent {...this.props} />
+    }
+  }
+}
 
-	componentWillUnmount() { let comps = this.props.children.type.name || 'Component';
-		console.log(`Component ${comps} is going to unmount`);
-	};
-
-	render() {
-		return (this.props.children);
-	};
-};
-
+export default WithLogging;

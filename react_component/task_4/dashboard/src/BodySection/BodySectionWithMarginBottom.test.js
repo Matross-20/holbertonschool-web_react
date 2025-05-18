@@ -1,13 +1,8 @@
 import React from 'react';
-import { shallow, configure } from 'enzyme';
+import { shallow } from 'enzyme';
 import { expect as expectChai } from 'chai';
 import BodySectionWithMarginBottom from './BodySectionWithMarginBottom'
 import BodySection from './BodySection'
-import Adapter from 'enzyme-adapter-react-16';
-configure({
-	adapter: new Adapter()
-});
-
 
 describe('Test BodySectionWithMarginBottom.js', () => {
   it('Render without crashing', (done) => {

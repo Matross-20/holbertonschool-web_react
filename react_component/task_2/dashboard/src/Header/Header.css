@@ -1,13 +1,22 @@
+:root {
+  --color-white: #fff;
+  --color-hb: #e1354b;
+}
+
+.App-logo {
+  width: 200px;
+  height: 200px;
+}
+
 .App-header {
-display: flex;
-flex-direction: row;
-justify-content: left;
-height: 200px;
-border-bottom: 3px solid var(--hred);
+  background-color: var(--color-white);
+  border-bottom: 3px solid var(--color-hb);
+  height: 200px;
 }
 
 .App-header h1 {
-margin: auto auto auto 0;
-font-weight: bold;
-color: var(--hred);
+  display: inline;
+  position: relative;
+  top: -6rem;
+  color: var(--color-hb);
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types'; // ES6
 
-export default function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
+function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
   let trContent = '';
 
   if (isHeader) {
@@ -14,6 +14,7 @@ export default function CourseListRow({ isHeader, textFirstCell, textSecondCell 
   } else {
     trContent = (<React.Fragment><td>{textFirstCell}</td><td>{textSecondCell}</td></React.Fragment>);
   }
+
   return (<tr>{trContent}</tr>);
 }
 
@@ -28,3 +29,4 @@ CourseListRow.defaultProps = {
   textSecondCell: null
 };
 
+export default CourseListRow;

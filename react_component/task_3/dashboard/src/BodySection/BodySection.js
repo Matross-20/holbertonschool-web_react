@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types'; // ES6
 
-export default class BodySection extends Component {
+class BodySection extends React.Component {
   render() {
     return (
       <div className="bodySection">
@@ -20,3 +20,4 @@ BodySection.defaultProps = {
   title: ''
 }
 
+export default BodySection;

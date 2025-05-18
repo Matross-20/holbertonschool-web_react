@@ -1,10 +1,7 @@
 import React from 'react';
-import { shallow, configure } from 'enzyme';
+import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import CourseListRow from './CourseListRow'
-import Adapter from 'enzyme-adapter-react-16';
-
-configure({adapter: new Adapter()});
 
 describe('Test CourseListRow.js', () => {
   it('CourseListRow without crashing', (done) => {
@@ -27,4 +24,10 @@ describe('Test CourseListRow.js', () => {
     done();
   });
 
+  it('renders isHeader is False and with two td', (done) => {
+    const wrapper = shallow(<CourseListRow isHeader={false} textFirstCell='test' textSecondCell='test' />);
+    
+    expect(wrapper.find('td')).to.have.lengthOf(2);
+    done();
+  });
 });

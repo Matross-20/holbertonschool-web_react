@@ -1,22 +1,20 @@
-import { getFullYear, getFooterCopy, getLatestNotification } from './utils';
+import React from 'react';
+import { getLatestNotification, getFullYear, getFooterCopy } from './utils';
 
-describe('utils', () => {
-
-  test('getFullYear returns correct year', () => {
+describe('Test Utils.js', () => {
+  it('Function getFullYear', (done) => {
     expect(getFullYear()).toBe(new Date().getFullYear());
+    done();
   });
 
-  test('getFooterCopy returns correct string if isIndex is true', () => {
-    expect(getFooterCopy(true)).toEqual('Holberton School');
+  it('Function getFooterCopy', (done) => {
+    expect(getFooterCopy(true)).toBe('Holberton School');
+    expect(getFooterCopy(false)).toBe('Holberton School main dashboard');
+    done();
   });
 
-  test('getFooterCopy returns correct string id isIndex is false', () => {
-    expect(getFooterCopy(false)).toEqual('Holberton School main dashboard');
-  });
-
-  test('getLatestNotification returns correct string', () => {
-    expect(getLatestNotification()).toEqual(
-      '<strong>Urgent requirement</strong> - complete by EOD'
-    );
+  it('Function getLatestNotification', (done) => {
+    expect(getLatestNotification()).toBe('<strong>Urgent requirement</strong> - complete by EOD');
+    done();
   });
 });
