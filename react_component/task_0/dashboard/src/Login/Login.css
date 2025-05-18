@@ -1,12 +1,8 @@
-:root {
-  --main-color: #e01d3f;
-}
-
-.login {
-  margin: 50px;
-  flex-grow: 1;
-}
-.login input {
-  margin-left: 10px;
-  margin-right: 20px;
-}
+.Login-body {
+    padding: 29px 21px;
+  }
+  
+  .Login-body input {
+    margin: 0 20px 0 7px;
+  }
+  

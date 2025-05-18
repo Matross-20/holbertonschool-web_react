@@ -1,12 +1,26 @@
 :root {
-  --main-color: #e01d3f;
-}
+	--hred: #e1484c;
+  }
 
-.App {
-  border-bottom: 3px solid var(--main-color);
-}
+  body {
+	max-width: 90%;
+	margin: 0 auto;
+  }
 
-.App-body {
-  display: flex;
-  justify-content: center;
-}
+  div {
+	padding: 2px 8px;
+  }
+
+  .App {
+	position: relative;
+	min-height: 100vh;
+  }
+
+  .upperside {
+	display: flex;
+	flex-direction: row-reverse;
+	width: 100%;
+	border-bottom: 3px solid var(--hred);
+	justify-content: space-between;
+  }
+  
