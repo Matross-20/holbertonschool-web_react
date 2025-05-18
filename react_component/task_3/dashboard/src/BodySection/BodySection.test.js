@@ -1,32 +1,38 @@
-import React from 'react';
-import assert from 'assert';
-import { shallow } from 'enzyme';
-import BodySection from './BodySection';
+import { shallow, mount } from "enzyme";
+import React from "react";
+import BodySection from "./BodySection";
 
-describe('BodySection test', () => {
-
-  let BodySectionWithChildren = null;
-
-  beforeEach(() => {
-    BodySectionWithChildren = shallow(<BodySection title={'test title'}>
-                                        <p>test children node</p>
-                                      </ BodySection>);
+describe("<BodySection />", () => {
+  it("BodySection renders without crashing", () => {
+    const wrapper = shallow(<BodySection />);
+    expect(wrapper.exists()).toEqual(true);
   });
 
-  afterEach(() => {
-    BodySectionWithChildren = null;
-  });
+  it("BodySection renders without crashing", () => {
+    const wrapper = shallow(
+      <BodySection title="test title">
+        <p>test children node</p>
+      </BodySection>
+    );
 
-  it('BodySection component actually renders without crashing', () => {
-    assert.equal(BodySectionWithChildren.length, 1);
+    const h2 = wrapper.find("h2");
+    const p = wrapper.find("p");
+
+    expect(h2).toHaveLength(1);
+    expect(h2.text()).toEqual("test title");
+
+    expect(p).toHaveLength(1);
+    expect(p.text()).toEqual("test children node");
   });
-  
-  it('Whether two one h2 element and one p element exists in the render', () => {
-    assert.equal(BodySectionWithChildren.find('.bodySection').exists(), true);
-    
-    assert.equal(BodySectionWithChildren.find('h2').length, 1);
-    assert.equal(BodySectionWithChildren.find('h2').text(), 'test title');
-    assert.equal(BodySectionWithChildren.find('p').length, 1);
-    assert.equal(BodySectionWithChildren.find('p').text(), 'test children node')
+  it("BodySection has correct class for style", () => {
+    const wrapper = shallow(
+      <BodySection title="test title">
+        <p>test children node</p>
+      </BodySection>
+    );
+
+    const div = wrapper.find(".bodySection").first();
+
+    expect(div.exists()).toEqual(true);
   });
-})
+});

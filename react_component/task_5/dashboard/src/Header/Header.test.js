@@ -1,5 +1,5 @@
-import React from "react";
 import { shallow } from "enzyme";
+import React from "react";
 import Header from "./Header";
 
 describe("<Header />", () => {
@@ -7,14 +7,14 @@ describe("<Header />", () => {
     const wrapper = shallow(<Header />);
     expect(wrapper.exists()).toEqual(true);
   });
-
-  it("img tag component renders", () => {
+  it("Verify that the components render img", () => {
     const wrapper = shallow(<Header />);
-    expect(wrapper.find("div.App-header img")).toHaveLength(1);
+    wrapper.update();
+    expect(wrapper.find("div.header img")).toHaveLength(1);
   });
-  
-  it("h1 tag component renders", () => {
+  it("Verify that the components render h1", () => {
     const wrapper = shallow(<Header />);
-    expect(wrapper.find("div.App-header h1")).toHaveLength(1);
+    wrapper.update();
+    expect(wrapper.find("div.header h1")).toHaveLength(1);
   });
 });

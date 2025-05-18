@@ -1,5 +1,5 @@
-import React from "react";
 import { shallow } from "enzyme";
+import React from "react";
 import Login from "./Login";
 
 describe("<Login />", () => {
@@ -7,14 +7,14 @@ describe("<Login />", () => {
     const wrapper = shallow(<Login />);
     expect(wrapper.exists()).toEqual(true);
   });
-
-  it("input tag component renders", () => {
+  it("Verify that the components render 2 input", () => {
     const wrapper = shallow(<Login />);
-    expect(wrapper.find("div.Login-body input")).toHaveLength(2);
+    wrapper.update();
+    expect(wrapper.find("div.login input")).toHaveLength(2);
   });
-  
-  it("label tag component renders", () => {
+  it("Verify that the components render 2 label", () => {
     const wrapper = shallow(<Login />);
-    expect(wrapper.find("div.Login-body label")).toHaveLength(2);
+    wrapper.update();
+    expect(wrapper.find("div.login label")).toHaveLength(2);
   });
 });

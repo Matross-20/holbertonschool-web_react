@@ -1,14 +1,14 @@
 :root {
-  --redHolberton: #DE284C;
+  --main-color: #e01d3f;
 }
 
-.App-header {
+.header {
   display: flex;
-  color: var(--redHolberton-color);
   align-items: center;
+  color: var(--main-color);
+  font-size: 20px;
 }
 
-.App-header img {
+.header img {
   width: 200px;
-  height: 200px;
 }

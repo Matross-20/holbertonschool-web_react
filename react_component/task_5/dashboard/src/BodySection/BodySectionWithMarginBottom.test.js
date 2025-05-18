@@ -1,26 +1,45 @@
-import React from 'react';
-import assert from 'assert';
-import { shallow } from 'enzyme';
-import BodySectionWithMarginBottom from './BodySectionWithMarginBottom';
+import { shallow, mount } from "enzyme";
+import React from "react";
+import BodySectionWithMarginBottom from "./BodySectionWithMarginBottom";
 
-describe('BodySectionWithMarginBottom test', () => {
-  let BodySectionWithMarginBottomWithChildren = null;
-
-  beforeEach(() => {
-    BodySectionWithMarginBottomWithChildren = shallow(<BodySectionWithMarginBottom title={'test title'}>
-                                                        <p>test children node</p>
-                                                      </ BodySectionWithMarginBottom>);
-  });
-  afterEach(() => {
-    BodySectionWithMarginBottomWithChildren = null;
+describe("<BodySectionWithMarginBottom />", () => {
+  it("BodySectionWithMarginBottom renders without crashing", () => {
+    const wrapper = shallow(<BodySectionWithMarginBottom />);
+    expect(wrapper.exists()).toEqual(true);
   });
 
-  it('Component render correctly', () => {
-    assert.equal(BodySectionWithMarginBottom.length, 1);
-  });
-  it('Component contains the correct elements', () => {
-    assert.equal(BodySectionWithMarginBottomWithChildren.find('.bodySectionWithMargin').exists(), true);
-    assert.equal(BodySectionWithMarginBottomWithChildren.find('BodySection').exists(), true);
-  });
+  it("Shallowing the component should render correctly a BodySection component and that the props are passed correctly to the child component", () => {
+    const wrapper = shallow(
+      <BodySectionWithMarginBottom title="test title">
+        <p>test children node</p>
+      </BodySectionWithMarginBottom>
+    );
 
-})
+    const BodySection = wrapper.find("BodySection");
+
+    expect(BodySection).toHaveLength(1);
+    expect(BodySection.props().title).toEqual("test title");
+
+    const internalBody = BodySection.dive();
+
+    const h2 = internalBody.find("h2");
+    const p = internalBody.find("p");
+
+    expect(h2).toHaveLength(1);
+    expect(h2.text()).toEqual("test title");
+
+    expect(p).toHaveLength(1);
+    expect(p.text()).toEqual("test children node");
+  });
+  it("BodySectionWithMarginBottom has correct class for style", () => {
+    const wrapper = shallow(
+      <BodySectionWithMarginBottom title="test title">
+        <p>test children node</p>
+      </BodySectionWithMarginBottom>
+    );
+
+    const div = wrapper.find(".bodySectionWithMargin").first();
+
+    expect(div.exists()).toEqual(true);
+  });
+});

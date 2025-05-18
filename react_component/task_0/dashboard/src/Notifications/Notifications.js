@@ -1,59 +1,58 @@
 import React from "react";
-import "./Notifications.css";
-import { getLatestNotification } from "../utils/utils";
-import close from "../assets/close-icon.png";
-import NotificationItem from './NotificationItem';
+import NotificationItem from "./NotificationItem";
 import PropTypes from "prop-types";
-import { NotificationItemShape } from './NotificationItemShape';
+import NotificationItemShape from "./NotificationItemShape";
+import "./Notifications.css";
+import closeIcon from "../assets/close-icon.png";
 
-
-function Notifications({ displayDrawer, isLoggedIn, listNotifications }) {
-    function handleOnClick() {
-        console.log("Close button has been clicked");
-    }
-	return (
-		<>
-      <div className="menuItem">Your notifications</div>
-      { displayDrawer && isLoggedIn && 
+const Notifications = ({ displayDrawer, listNotifications }) => {
+  return (
+    <>
+      <div className="menuItem">
+        <p>Your notifications</p>
+      </div>
+      {displayDrawer && (
         <div className="Notifications">
-          <p>Here is the list of notifications</p>
-          <ul>
-            {listNotifications.length === 0 && (<NotificationItem value='No new notification for now' type='no-new' />)}
-            {listNotifications.map((item) => (<NotificationItem key={item.id} type={item.type} value={item.value} html={item.html} />))}
-          </ul>
           <button
             style={{
-              border: 'none',
-              float: 'right',
-              position: 'relative',
-              right: 0,
-              top: -120,
-              backgroundColor: 'white',
-              textAlign: 'right'
+              background: "transparent",
+              border: "none",
+              position: "absolute",
+              right: 20,
             }}
-            aria-label={'Close'}
-            onClick={handleOnClick}
+            aria-label="close"
           >
-            <img src={close} alt="close"
-              style={{width: '10px',
-              height: '10px'}}/>
+            <img src={closeIcon} alt="close-icon" />
           </button>
+          <p>Here is the list of notifications</p>
+          <ul>
+            {listNotifications.length === 0 && (
+              <NotificationItem value="No new notification for now" />
+            )}
+
+            {listNotifications.map((notification) => (
+              <NotificationItem
+                key={notification.id}
+                type={notification.type}
+                value={notification.value}
+                html={notification.html}
+              />
+            ))}
+          </ul>
         </div>
-      }
+      )}
     </>
-	);
-}
+  );
+};
 
 Notifications.defaultProps = {
   displayDrawer: false,
-  isLoggedIn: false,
   listNotifications: [],
 };
 
 Notifications.propTypes = {
   displayDrawer: PropTypes.bool,
-  isLoggedIn: PropTypes.bool,
-  listNotifications: PropTypes.arrayOf(PropTypes.shape({ NotificationItemShape }))
+  listNotifications: PropTypes.arrayOf(NotificationItemShape),
 };
 
 export default Notifications;

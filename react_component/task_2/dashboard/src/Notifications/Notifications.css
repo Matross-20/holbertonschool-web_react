@@ -1,21 +1,31 @@
+:root {
+  --main-color: #e01d3f;
+}
+
 .menuItem {
-    text-align: right;
-    margin-right: 1rem;
-    margin-bottom: 0.5rem;
+  text-align: right;
 }
 
 .Notifications {
-    border: 2px dashed #DE284C;
-    padding: 1em;
-    width: 400px;
-    float: right;
-    margin-right: 1rem;
+  float: right;
+  border: 3px dashed var(--main-color);
+  padding: 10px;
+  margin-bottom: 20px;
 }
 
-li[data-notification-type="default"] {
-    color: blue;
+.Notifications button img {
+  width: 10px;
 }
 
-li[data-notification-type="urgent"] {
-    color: red;
+.Notifications p {
+  margin: 0;
+  margin-top: 15px;
+}
+
+[data-notification-type="default"] {
+  color: blue;
+}
+
+[data-notification-type="urgent"] {
+  color: red;
 }

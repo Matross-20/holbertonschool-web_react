@@ -1,34 +1,47 @@
-/**
- * @jest-environment jsdom
-*/
+import { shallow, mount } from "enzyme";
+import React from "react";
+import WithLogging from "./WithLogging";
+import Login from "../Login/Login";
 
-import React from 'react';
-import assert from 'assert';
-import { shallow, mount } from 'enzyme';
-import withLogging from './WithLogging';
+describe("<WithLogging />", () => {
+  it("calls console.log on mount and on unmount with Component when the wrapped element is pure html", () => {
+    console.log = jest.fn();
 
+    const HOC = WithLogging(() => <p />);
 
-describe('Test WithLogging HOC function', () => {
-  let wrapperShallow = null;
-  let wrapperMount = null;
-  let mockedConsoleLog = null;
-  let LoggingComponent = withLogging(() => <p />);
+    const wrapper = mount(<HOC />);
+    expect(wrapper.exists()).toEqual(true);
 
-  beforeEach(() => {
-    LoggingComponent = withLogging(() => <p />);
-    wrapperShallow = shallow(<LoggingComponent />);
-    wrapperMount = mount(<LoggingComponent />);
-    mockedConsoleLog = console.log = jest.fn();
-  })
-  afterEach(() => {
-    wrapperShallow = wrapperMount = null;
-  })
+    expect(console.log).toHaveBeenNthCalledWith(
+      1,
+      `Component Component is mounted`
+    );
+    wrapper.unmount();
+    expect(console.log).toHaveBeenNthCalledWith(
+      2,
+      `Component Component is going to unmount`
+    );
 
-  it('Component when the wrapped element is pure html', () => {
-    assert.equal(wrapperShallow.length, 1);
+    jest.restoreAllMocks();
   });
+  it("calls console.log mount and on unmount with the name of the component when the wrapped element is the Login component. ", () => {
+    console.log = jest.fn();
 
-  it('mount and unmount works perfectly', () => {
-    expect(mockedConsoleLog).toHaveBeenCalledTimes(2);
+    const HOC = WithLogging(Login);
+
+    const wrapper = mount(<HOC />);
+    expect(wrapper.exists()).toEqual(true);
+
+    expect(console.log).toHaveBeenNthCalledWith(
+      1,
+      `Component Login is mounted`
+    );
+    wrapper.unmount();
+    expect(console.log).toHaveBeenNthCalledWith(
+      2,
+      `Component Login is going to unmount`
+    );
+
+    jest.restoreAllMocks();
   });
-})
+});
