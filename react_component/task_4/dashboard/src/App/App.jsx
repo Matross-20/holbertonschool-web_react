@@ -1,85 +1,130 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Notifications from "../Notifications/Notifications";
-import Footer from "../Footer/Footer";
-import Header from "../Header/Header";
-import Login from "../Login/Login";
-import "./App.css";
-import CourseList from "../CourseList/CourseList";
-import { getLatestNotification } from "../utils/utils";
-import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
-import BodySection from "../BodySection/BodySection";
+import { Component } from 'react'
+import BodySection from '../BodySection/BodySection'
+import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom"
+import CourseList from '../CourseList/CourseList'
+import '../CourseList/CourseList.css'
+import Footer from '../Footer/Footer'
+import Header from '../Header/Header'
+import withLogging from '../HOC/WithLogging'
+import Login from '../Login/Login'
+import Notifications from '../Notifications/Notifications'
+import './App.css'
 
-const listCourses = [
-  {id: 1, name: 'ES6', credit: 60},
-  {id: 2, name: 'Webpack', credit: 20},
-  {id: 3, name: 'React', credit: 40}
-]
+// function App({ isLoggedIn = false }) {
+//   const notificationsList = [
+//     { id: 1, type: "default", value: "New course available" },
+//     { id: 2, type: "urgent", value: "New resume available" },
+//     {
+//       id: 3,
+//       type: "urgent",
+//       html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" },
+//     },
+//   ];
 
-const listNotifications = [
-  {id: 1, type: 'default', value: 'New course available'},
-  {id: 2, type: 'urgent', value: 'New resume available'},
-  {id: 3, type: 'urgent', html: { __html: getLatestNotification() }}
-]
+//   const coursesList = [
+//     { id: 1, name: "ES6", credit: "60" },
+//     { id: 2, name: "Webpack", credit: "20" },
+//     { id: 3, name: "React", credit: "40" },
+//   ];
 
-class App extends React.Component {
+//   return (
+//     <>
+//       <div className='notifications-header'>
+//         <Header />
+//         <div className='root-notifications'>
+//           <Notifications notifications={notificationsList} />
+//         </div>
+//       </div>
+//       {isLoggedIn ? (<div className='courses-body'><CourseList courses={coursesList} /></div>) : (<Login />)}
+//       <Footer />
+//     </>
+//   )
+// }
+
+// export default App
+
+class App extends Component {
   constructor(props) {
     super(props);
-    this.handlePress = this.handlePress.bind(this)
+
+    this.notificationsList = [
+      { id: 1, type: "default", value: "New course available" },
+      { id: 2, type: "urgent", value: "New resume available" },
+      {
+        id: 3,
+        type: "urgent",
+        html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" },
+      },
+    ];
+    this.coursesList = [
+      { id: 1, name: "ES6", credit: "60" },
+      { id: 2, name: "Webpack", credit: "20" },
+      { id: 3, name: "React", credit: "40" },
+    ];
+
+    // Key combo property
+    this.handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === 'h') {
+        e.preventDefault();
+        alert("Logging you out");
+
+        this.props.logOut();
+      }
+    }
+
+    // Login HOC
+    this.WithLogin = withLogging(Login);
+
+    // CourseList HOC
+    this.WithCourseLit = withLogging(CourseList)
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.handlePress)
+    // listen for keyboard clicks
+    window.addEventListener("keydown", this.handleKeyDown);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handlePress)
+    window.removeEventListener('keydown', this.handleKeyDown);
   }
 
-  handlePress(event) {
-    if (event.ctrlKey && event.key === 'h') {
-      event.preventDefault();
-      alert('Logging you out');
-      this.props.logOut()
-    }
-  }
+  render() {
+    const { isLoggedIn } = this.props;
 
-  render () {
-    return(  
-    <>
-      <Notifications listNotifications={listNotifications}/>
-      <div className="App">
-        <Header />
-      </div>
-      <div className="App-body">
-        {!this.props.isLoggedIn ? 
-          <BodySectionWithMarginBottom title="Log in to continue">
-            <Login /> 
-          </BodySectionWithMarginBottom> : 
-          <BodySectionWithMarginBottom title="Course list">
-            <CourseList listCourses={listCourses}/>
+    return (
+      <>
+        <div className="notifications-header">
+          <Header />
+          <div className="root-notifications">
+            <Notifications notifications={this.notificationsList} />
+          </div>
+        </div>
+        {isLoggedIn ? (
+          <div className="courses-body">
+            <BodySectionWithMarginBottom title={"Course List"}>
+              <this.WithCourseLit courses={this.coursesList} />
+            </BodySectionWithMarginBottom>
+          </div>
+        ) : (
+          <BodySectionWithMarginBottom title={"Log in to continue"}>
+            <this.WithLogin />
           </BodySectionWithMarginBottom>
-        }
-        <BodySection title="News from the School">
-          <p>Holberton School News goes here</p>
-        </BodySection>
-      </div>
-      <div className="App-footer">
+        )}
+        <div>
+          <BodySection title={"News from the School"}>
+            <p>Holberton School News goes here</p>
+          </BodySection>
+        </div>
         <Footer />
-      </div>
-    </>
+      </>
     );
   }
+
 }
 
 App.defaultProps = {
   isLoggedIn: false,
-  logOut: () => undefined
-};
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
+  logOut: () => { }
 };
 
 export default App;

@@ -1,24 +1,66 @@
-import React from "react";
-import { shallow } from "enzyme";
+import "@testing-library/jest-dom";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import NotificationItem from "./NotificationItem";
 
+describe("NotificationItem Component", () => {
+  // Check whether the li element has the color blue if type is default
+  it("Color is blue when type is default", () => {
+    // Props
+    const type = "default";
+    const value = "New course available";
 
-describe("<Notifications />", () => {
-    it("NotificationItem renders without crashing", () => {
-        const wrapper = shallow(<NotificationItem />);
-        expect(wrapper.exists()).toEqual(true);
-    });
+    render(<NotificationItem type={type} value={value} />);
 
-    it("Verify that by passing dummy type and value props, it renders the correct html", () => {
-        const wrapper = shallow(<NotificationItem type="default" value="test" />);
-        expect(wrapper.find("li")).toHaveLength(1);
-        expect(wrapper.find("li").text()).toEqual("test");
-        expect(wrapper.find("li").prop("data-notification-type")).toEqual("default");
-    });
+    // Get list element
+    const listElement = screen.getByRole("listitem");
 
-    it("Passing a dummy html prop, it renders the correct html (for example", () => {
-        const text = "Here is the list of notifications";
-        const wrapper = shallow(<NotificationItem html={{ __html: "<u>test</u>" }} />);
-        expect(wrapper.find("li").html()).toEqual('<li data-notification-type="default"><u>test</u></li>');
-    });
+    // Assert that list text is blue
+    expect(listElement).toHaveStyle({ color: "blue" });
+
+    // Assert if type value is equal to default
+    expect(listElement).toHaveAttribute("data-notification-type", "default");
+  });
+
+  // Check whether the li element has the color red if type is urgent
+  it("Color is red when type is urgent", () => {
+    // Props
+    const type = "urgent";
+    const value = "New resume available";
+
+    render(<NotificationItem type={type} value={value} />);
+
+    // Get list element
+    const listElement = screen.getByRole("listitem");
+
+    // Assert that list text is red
+    expect(listElement).toHaveStyle({ color: "red" });
+
+    // Assert if type value is equal to default
+    expect(listElement).toHaveAttribute("data-notification-type", "urgent");
+  });
+
+  // Test whether markAsRead prop gets called when onclickEvent is triggered
+  it("markAsRead is called when onclick is triggered", async () => {
+    
+    // Props
+    const type = "urgent";
+    const value = "New resume available";
+    
+    // Mock
+    markAsReadMock = jest.fn();
+    
+    render(<NotificationItem type={type} value={value} markAsRead={markAsReadMock} id={2}/>)
+
+    // Get list element
+    const listElement = screen.getByTestId("item2")
+
+    // Simulate click on listElemnt
+    await userEvent.click(listElement);
+    
+    // Asswert that markAsRead is called once
+    expect(markAsReadMock).toHaveBeenCalledTimes(1);
+
+
+  });
 });

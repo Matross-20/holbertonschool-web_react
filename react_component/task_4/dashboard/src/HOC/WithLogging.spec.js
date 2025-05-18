@@ -1,34 +1,38 @@
-import React from 'react';
-import { mount } from 'enzyme';
-import WithLogging from './WithLogging';
-import Login from '../Login/Login';
+import { cleanup, render, screen } from "@testing-library/react";
+import React from "react";
+import WithLogging from "./WithLogging";
 
+afterEach(cleanup);
 
-describe('WithLogging', () => {
+class MockApp extends React.Component {
+  render() {
+    return <h1>Hello from Mock App Component</h1>;
+  }
+}
 
-    it('console.log called on mount', () => {
+describe("WithLogging HOC", () => {
+    it("renders wrapped component content", () => {
+    const WrappedComponent = WithLogging(MockApp);
+    render(<WrappedComponent />);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Hello from Mock App Component"
+    );
+  });
 
-        console.log = jest.fn();
-        const TestWithLogging = WithLogging(() => <p />);
-        const wrapper = mount(<TestWithLogging />);
-        expect(console.log).toHaveBeenCalledWith(`Component Component is mounted`);
-        wrapper.unmount();
-        expect(console.log).toHaveBeenCalledWith(
-            `Component Component is going to unmount`
-        );
-        expect(console.log).toHaveBeenCalledTimes(2);
-    });
+  it("logs when mounted and unmounted", () => {
+    const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
-    it('correctly logs component name', () => {
+    const WrappedComponent = WithLogging(MockApp);
+    const { unmount } = render(<WrappedComponent />);
 
-        console.log = jest.fn();
-        const LoginWithLogging = WithLogging(Login);
-        const wrapper = mount(<LoginWithLogging />);
-        expect(console.log).toHaveBeenCalledWith(`Component Login is mounted`);
-        wrapper.unmount();
-        expect(console.log).toHaveBeenCalledWith(
-            `Component Login is going to unmount`
-        );
-        expect(console.log).toHaveBeenCalledTimes(2);
-    });
+    expect(logSpy).toHaveBeenCalledWith("Component MockApp is mounted");
+
+    unmount();
+
+    expect(logSpy).toHaveBeenCalledWith(
+      "Component MockApp is going to unmount"
+    );
+
+    logSpy.mockRestore();
+  });
 });

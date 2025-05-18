@@ -1,7 +1,6 @@
-.Login-body {
-  padding: 36px 24px;
-}
-
-.Login-body input {
-  margin: 0 16px 0 8px;
+.App-body {
+  display: flex;
+  height: 65vh;
+  padding: 0.5rem;
+  flex-direction: column;
 }
