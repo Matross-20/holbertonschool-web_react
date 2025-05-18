@@ -1,49 +1,25 @@
-.App {
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-body, .App {
-  background-color: #FFFFFF;
-  font-family: Arial, sans-serif;
-}
-
-
 .App-header {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
-  padding: 20px;
-  color: white;
-  border-bottom: 3px solid red;
+  color: #e1003c;
+  font-weight: bolder;
+  font-size: 20px;
+  font-family: sans-serif;
 }
-
-.App-header h1 {
-  color: red;
-}
-
 
 .App-header img {
-  height: 250px;
-  margin-right: 20px;
+  width: 140px;
+  height: 140px;
 }
 
 .App-body {
-  flex: 1;
-  padding: 20px;
-  border-bottom: 3px solid red;
+  border-bottom: 2px solid #e1003c;
+  border-top: 2px solid #e1003c;
+  height: 730px;
 }
 
 .App-footer {
-  padding: 10px 20px;
-  color: rgb(0, 0, 0);
-  text-align: center;
+  display: flex;
+  justify-content: center;
 }
-
-.App-footer p {
-  font-style: italic;
-}
-
-

@@ -1,16 +1,26 @@
-/* task_5/dashboard/src/Notifications/Notifications.css */
-
-.Notifications {
-  border: 1px dotted red;
-  padding: 10px;
-  margin: 10px 0;
-  position: relative;
+.notifications {
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: flex-start;
+  border-style: dotted;
+  border-color: #e1003c;
+  padding: 2px;
+  font-size: 12px;
 }
 
-li[data-priority="default"] {
+.notifications P {
+  padding: 0 0 0 1rem;
+}
+
+.notifications img {
+  width: 20px;
+  height: 20px;
+}
+
+li {
+  color: #e1003c;
+}
+
+li:first-child {
   color: blue;
-}
-
-li[data-priority="urgent"] {
-  color: red;
 }
