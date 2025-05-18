@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import Notifications from "../Notifications/Notifications";
-import Header from "../Header/Header";
-import Login from "../Login/Login";
-import CourseList from "../CourseList/CourseList";
-import Footer from "../Footer/Footer";
-import PropTypes from "prop-types";
-import { getLatestNotification } from "../utils/utils";
 import "./App.css";
+import { getLatestNotification } from "../utils/utils";
+import Header from "../Header/Header.js";
+import Login from "../Login/Login.js";
+import Footer from "../Footer/Footer.js";
+import Notifications from "../Notifications/Notifications.js";
+import propTypes from "prop-types";
+import CourseList from "../CourseList/CourseList"
 
 const listCourses = [
   { id: 1, name: "ES6", credit: 60 },
@@ -24,7 +24,6 @@ class App extends Component {
   constructor(props) {
     super(props);
   }
-
   render() {
     const { isLoggedIn } = this.props;
     return (
@@ -45,11 +44,11 @@ class App extends Component {
 }
 
 App.defaultProps = {
-  isLoggedIn: false,
+    isLoggedIn: false,
 };
 
 App.propTypes = {
-  isLoggedIn: PropTypes.bool,
+  isLoggedIn: propTypes.bool,
 };
 
 export default App;

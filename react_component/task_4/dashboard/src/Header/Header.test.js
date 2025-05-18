@@ -7,14 +7,12 @@ describe("<Header />", () => {
     const wrapper = shallow(<Header />);
     expect(wrapper.exists()).toEqual(true);
   });
-  it("Verify that the components render img", () => {
+  it("Verify that the components render img tag", () => {
     const wrapper = shallow(<Header />);
-    wrapper.update();
-    expect(wrapper.find("div.header img")).toHaveLength(1);
+    expect(wrapper.find("div.header img").exists()).toEqual(true);
   });
-  it("Verify that the components render h1", () => {
+  it("Verify that the components render h1 tag", () => {
     const wrapper = shallow(<Header />);
-    wrapper.update();
-    expect(wrapper.find("div.header h1")).toHaveLength(1);
+    expect(wrapper.find("div.header h1").exists()).toEqual(true);
   });
 });

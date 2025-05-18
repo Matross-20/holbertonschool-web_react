@@ -19,6 +19,7 @@ function NotificationItem({ type, value, html, markAsRead, id }) {
       ></li>
     );
   }
+
   return listItem;
 }
 

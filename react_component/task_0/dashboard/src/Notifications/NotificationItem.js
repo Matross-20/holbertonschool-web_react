@@ -1,18 +1,18 @@
 import React from "react";
-import PropTypes from "prop-types";
+import propTypes from "prop-types"
 
 function NotificationItem({ type, value, html }) {
-  let listItem;
+  let Item;
 
   if (value) {
-    listItem = <li data-notification-type={type}>{value}</li>;
+    Item = <li data-notification-type={type}>{value}</li>;
   } else {
-    listItem = (
+    Item = (
       <li data-notification-type={type} dangerouslySetInnerHTML={html}></li>
     );
   }
 
-  return listItem;
+  return Item;
 }
 
 NotificationItem.defaultProps = {
@@ -22,11 +22,11 @@ NotificationItem.defaultProps = {
 };
 
 NotificationItem.propTypes = {
-  type: PropTypes.string,
-  value: PropTypes.string,
-  html: PropTypes.shape({
-    __html: PropTypes.string,
-  }),
+  type: propTypes.string,
+  value: propTypes.string,
+  html: propTypes.shape({
+    __html: propTypes.string
+    }), 
 };
 
 export default NotificationItem;

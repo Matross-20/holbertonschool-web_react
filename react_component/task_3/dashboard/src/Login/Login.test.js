@@ -7,14 +7,12 @@ describe("<Login />", () => {
     const wrapper = shallow(<Login />);
     expect(wrapper.exists()).toEqual(true);
   });
-  it("Verify that the components render 2 input", () => {
+  it("Verify that the components renders 2 input tags", () => {
     const wrapper = shallow(<Login />);
-    wrapper.update();
-    expect(wrapper.find("div.login input")).toHaveLength(2);
+    expect(wrapper.find("div.login input").length).toEqual(2);
   });
-  it("Verify that the components render 2 label", () => {
+  it("Verify that the components renders 2 label tags", () => {
     const wrapper = shallow(<Login />);
-    wrapper.update();
-    expect(wrapper.find("div.login label")).toHaveLength(2);
+    expect(wrapper.find("div.login label").length).toEqual(2);
   });
 });

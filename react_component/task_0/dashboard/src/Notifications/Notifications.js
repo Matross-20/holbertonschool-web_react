@@ -1,9 +1,10 @@
 import React from "react";
-import NotificationItem from "./NotificationItem";
-import PropTypes from "prop-types";
-import NotificationItemShape from "./NotificationItemShape";
 import "./Notifications.css";
+import { getLatestNotification } from "../utils/utils";
 import closeIcon from "../assets/close-icon.png";
+import NotificationItem from "./NotificationItem";
+import propTypes from "prop-types";
+import NotificationItemShape from "./NotificationItemShape";
 
 const Notifications = ({ displayDrawer, listNotifications }) => {
   return (
@@ -26,7 +27,7 @@ const Notifications = ({ displayDrawer, listNotifications }) => {
           </button>
           <p>Here is the list of notifications</p>
           <ul>
-            {listNotifications.length === 0 && (
+          {listNotifications.length === 0 && (
               <NotificationItem value="No new notification for now" />
             )}
 
@@ -51,8 +52,8 @@ Notifications.defaultProps = {
 };
 
 Notifications.propTypes = {
-  displayDrawer: PropTypes.bool,
-  listNotifications: PropTypes.arrayOf(NotificationItemShape),
+  displayDrawer: propTypes.bool,
+  listNotifications: propTypes.arrayOf(NotificationItemShape),
 };
 
 export default Notifications;

@@ -9,7 +9,6 @@ import Footer from "../Footer/Footer";
 import PropTypes from "prop-types";
 import { getLatestNotification } from "../utils/utils";
 import "./App.css";
-import WithLogging from "../HOC/WithLogging";
 
 const listCourses = [
   { id: 1, name: "ES6", credit: 60 },
