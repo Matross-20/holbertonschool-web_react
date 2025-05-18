@@ -3,16 +3,20 @@ import PropTypes from 'prop-types';
 
 class NotificationItem extends Component {
 	render() {
-		const {
+		let {
+			id,
 			type,
 			value,
-			html
+			html,
+			markAsRead
 		} = this.props;
+
 		return (
 			<Fragment>
 				{
 					html !== undefined &&
 					<li
+						onClick={() => markAsRead(id)}
 						data-priority-type={type}
 						dangerouslySetInnerHTML={html}
 					/>
@@ -20,6 +24,7 @@ class NotificationItem extends Component {
 				{
 					html === undefined &&
 					<li
+						onClick={() => markAsRead(id)}
 						data-priority-type={type}
 					>
 						{value}
@@ -36,10 +41,11 @@ NotificationItem.propTypes = {
 	}),
 	type: PropTypes.string.isRequired,
 	value: PropTypes.string,
+	markAsRead: PropTypes.func,
 };
 
 NotificationItem.defaultProps = {
 	type: "default",
-}
+};
 
 export default NotificationItem;

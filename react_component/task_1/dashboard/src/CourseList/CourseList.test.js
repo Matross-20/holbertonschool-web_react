@@ -16,11 +16,47 @@ describe("Testing the <CourseList /> Component", () => {
 		expect(component.render()).to.not.be.an("undefined");
 	});
 
-	it("Test if <CourseList /> is rendered without crashing", () => {
+	it("Test that CourseList renders correctly if you pass an empty array or if you don’t pass the listCourses property", () => {
 
-		let component = shallow(<CourseList shouldRender />);
+		let props = {
+			listCourses: []
+		};
 
-		expect(component.find(CourseListRow)).to.have.lengthOf(5);
+		let component = shallow(<CourseList shouldRender {...props} />);
+		expect(component.render()).to.not.be.an("undefined");
+
+		props = {
+			listCourses: null
+		};
+
+		component = shallow(<CourseList shouldRender {...props} />);
+		expect(component.render()).to.not.be.an("undefined");
+	});
+
+	it("Test tthat when you pass a list of courses, the component renders it correctly", () => {
+
+		let props = {
+			listCourses: [
+				{
+					id: 1,
+					name: "ES6",
+					credit: 60,
+				},
+				{
+					id: 2,
+					name: "Webpack",
+					credit: 20,
+				},
+				{
+					id: 3,
+					name: "React",
+					credit: 40,
+				},
+			],
+		};
+
+		let component = shallow(<CourseList shouldRender {...props} />);
+		expect(component.render()).to.not.be.an("undefined");
 	});
 
 });
