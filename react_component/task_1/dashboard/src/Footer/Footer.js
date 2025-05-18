@@ -3,11 +3,16 @@ import './Footer.css';
 import { getFullYear, getFooterCopy } from '../utils/utils';
 
 function Footer() {
-  return (
-    <footer className='App-footer'>
-      <p>{`Copyright ${getFullYear()} - ${getFooterCopy(true)}`}</p>
-    </footer>
-  )
+	return (
+    <div className="App-footer">
+      <p>
+        Copyright&nbsp;
+        {getFullYear()}
+        &nbsp;-&nbsp;
+        {getFooterCopy(true)}
+      </p>
+    </div>
+    );
 }
 
 export default Footer;

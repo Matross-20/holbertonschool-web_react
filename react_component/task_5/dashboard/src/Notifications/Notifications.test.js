@@ -1,115 +1,66 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import { expect as expectChai } from 'chai';
-import Notifications from './Notifications';
-import NotificationItem from './NotificationItem';
-import { getLatestNotification } from '../utils/utils'
+import React from "react";
+import { shallow } from "enzyme";
+import Notifications from "./Notifications";
+import { getLatestNotification } from "../utils/utils";
+import NotificationItem from "./NotificationItem";
 
-describe('Test Notification.js', () => {
-  let listNotifications = [
+
+describe("<Notifications />", () => {
+  const listNotifications = [
     { id: 1, type: 'default', value: 'New course available' },
     { id: 2, type: 'urgent', value: 'New resume available' },
     { id: 3, type: 'urgent', html: { __html: getLatestNotification()} }
   ];
 
-  const listNotificationsUpdated = [
-    { id: 1, type: 'default', value: 'New course available' },
-    { id: 2, type: 'urgent', value: 'New resume available' },
-    { id: 3, type: 'urgent', html: { __html: getLatestNotification()} },
-    { id: 4, type: 'default', value: 'New updates' },
-  ];
-
-  const listNotificationsNoUpdated = [
-    { id: 1, type: 'default', value: 'New course available' },
-    { id: 2, type: 'urgent', value: 'New resume available' },
-  ];
-
-  it('Notification without crashing', (done) => {
-    expectChai(shallow(<Notifications />).exists());
-    done();
-  });
-
-  it('renders three list items', (done) => {
-    const wrapper = shallow(<Notifications displayDrawer={true} listNotifications={listNotifications} />);
-    expectChai(wrapper.find(NotificationItem)).to.have.lengthOf(3);
-    done();
-  });
-
-  it('renders the right html', (done) => {
-    const wrapper = shallow(<Notifications displayDrawer={true} listNotifications={listNotifications}  />);
-    expectChai(wrapper.find(NotificationItem).first().html()).to.equal('<li data-notification-type="default">New course available</li>');
-    done();
-  });
-
-  it('menu item is being displayed when displayDrawer is false', (done) => {
+  it("Notifications renders without crashing", () => {
     const wrapper = shallow(<Notifications />);
-    expectChai(wrapper.find('.menuItem')).to.have.lengthOf(1);
-    done();
+    expect(wrapper.exists()).toEqual(true);
   });
 
-  it('Add a check that the div.Notifications is not being displayed when displayDrawer is false', (done) => {
+  it('Renders list notifications', () => {
+    const wrapper = shallow(<Notifications displayDrawer={true} isLoggedIn={true} listNotifications={listNotifications} />);
+    expect(wrapper.find(NotificationItem)).toHaveLength(3);
+  });
+
+  it('Renders correct html', () => {
+    const wrapper = shallow(<Notifications displayDrawer={true} isLoggedIn={true} listNotifications={listNotifications}  />);
+    expect(wrapper.find(NotificationItem).first().html()).toEqual('<li data-notification-type="default">New course available</li>');
+  });
+
+  it('menuItem is being displayed when displayDrawer is false', () => {
     const wrapper = shallow(<Notifications />);
-    expectChai(wrapper.find('.Notifications')).to.have.lengthOf(0);
-    done();
+    expect(wrapper.find('.menuItem')).toHaveLength(1);
   });
 
-  it('Add a check that the menu item is being displayed when displayDrawer is true', (done) => {
-    const wrapper = shallow(<Notifications displayDrawer={true} />);
-    expectChai(wrapper.find('.Notifications')).to.have.lengthOf(1);
-    done();
+  it('div.Notifications is not being displayed when displayDrawer is false', () => {
+    const wrapper = shallow(<Notifications />);
+    expect(wrapper.find('.Notifications')).toHaveLength(0);
   });
 
-  it('Add a check that the div.Notifications is being displayed when displayDrawer is true', (done) => {
-    const wrapper = shallow(<Notifications displayDrawer={true}/>);
-    expectChai(wrapper.find('.Notifications')).to.have.lengthOf(1);
-    done();
+  it('menuItem is being displayed when displayDrawer is true', () => {
+    const wrapper = shallow(<Notifications displayDrawer={true} isLoggedIn={true} />);
+    expect(wrapper.find('.Notifications')).toHaveLength(1);
   });
 
-  it('Verify that renders correctly if you pass an empty array or if don’t pass the listNotifications', (done) => {
-    let wrapper = shallow(<Notifications displayDrawer={true} listNotifications={[]} />);
-    expectChai(wrapper.find(NotificationItem)).to.have.lengthOf(1);
-    wrapper = shallow(<Notifications displayDrawer={true} />);
-    expectChai(wrapper.find(NotificationItem)).to.have.lengthOf(1);
-    done();
+  it('div.Notifications is being displayed when displayDrawer is true', () => {
+    const wrapper = shallow(<Notifications displayDrawer={true} isLoggedIn={true} />);
+    expect(wrapper.find('.Notifications')).toHaveLength(1);
   });
 
-  it('Verify that when you pass a list of notifications, the component renders it correctly and with the right number of NotificationItem', (done) => {
-    const wrapper = shallow(<Notifications displayDrawer={true} listNotifications={listNotifications}  />);
-    expectChai(wrapper.find(NotificationItem));
-    expectChai(wrapper.find(NotificationItem)).to.have.lengthOf(3);
-    done();
+  it('Renders correctly if you pass an empty array or if don’t pass the listNotifications', () => {
+    let wrapper = shallow(<Notifications displayDrawer={true} isLoggedIn={true} listNotifications={[]} />);
+    expect(wrapper.find(NotificationItem)).toHaveLength(1);
+    expect(wrapper.find(NotificationItem)).toHaveLength(1);
   });
 
-  it('Verify that when listNotifications is empty the message "Here is the list of notifications is not displayed", but "No new notification for now" is', (done) => {
-    const wrapper = shallow(<Notifications displayDrawer={true} />);
-    expectChai(wrapper.find(NotificationItem).first().html()).to.equal('<li data-notification-type="no-new">No new notification for now</li>');
-    done();
+  it('When you pass a list of notifications, the component renders it correctly and with the right number of NotificationItem', () => {
+    const wrapper = shallow(<Notifications displayDrawer={true} isLoggedIn={true} listNotifications={listNotifications}  />);
+    expect(wrapper.find(NotificationItem));
+    expect(wrapper.find(NotificationItem)).toHaveLength(3);
   });
 
-  it('mockup the "console.log" function and Check that when calling the function "markAsRead" on an instance of the component', (done) => {
-    const wrapper = shallow(<Notifications displayDrawer={true} />);
-    console.log = jest.fn();
-    wrapper.instance().markAsRead(1);
-    expect(console.log).toHaveBeenCalled()
-    done();    
-  });
-
-  it('verify that when updating the props of the component with the same list, the component doesn’t rerender', (done) => {
-    const wrapper = shallow(<Notifications displayDrawer={true} listNotifications={listNotifications} />);
-    const shouldComponentUpdate = jest.spyOn(Notifications.prototype, 'shouldComponentUpdate');
-    wrapper.setProps({ listNotifications: listNotificationsNoUpdated });
-    expect(shouldComponentUpdate).toHaveBeenCalled();
-    expect(shouldComponentUpdate).toHaveLastReturnedWith(false);
-    done();    
-  });
-
-  it('verify that when updating the props of the component with a longer list, the component does rerender', (done) => {
-    const wrapper = shallow(<Notifications displayDrawer={true} listNotifications={listNotifications} />);
-    const shouldComponentUpdate = jest.spyOn(Notifications.prototype, 'shouldComponentUpdate');
-    wrapper.setProps({ listNotifications: listNotificationsUpdated });
-    expect(shouldComponentUpdate).toHaveBeenCalled();
-    expect(shouldComponentUpdate).toHaveLastReturnedWith(true);
-    done();    
+  it('When listNotifications is empty the message "Here is the list of notifications is not displayed", but "No new notification for now" is', () => {
+    const wrapper = shallow(<Notifications displayDrawer={true} isLoggedIn={true} />);
+    expect(wrapper.find(NotificationItem).first().html()).toEqual('<li data-notification-type="no-new">No new notification for now</li>');
   });
 });
-

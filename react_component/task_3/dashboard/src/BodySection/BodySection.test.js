@@ -1,20 +1,32 @@
 import React from 'react';
+import assert from 'assert';
 import { shallow } from 'enzyme';
-import { expect as expectChai } from 'chai';
-import BodySection from './BodySection'
+import BodySection from './BodySection';
 
-describe('Test BodySection.js', () => {
-  it('Render without crashing', (done) => {
-    expectChai(shallow(<BodySection title='test' />).exists());
-    done();
+describe('BodySection test', () => {
+
+  let BodySectionWithChildren = null;
+
+  beforeEach(() => {
+    BodySectionWithChildren = shallow(<BodySection title={'test title'}>
+                                        <p>test children node</p>
+                                      </ BodySection>);
   });
 
-  it('render "h2" with text "test title" and "p" with text "test children node"', (done) => {
-    const wrapper = shallow(<BodySection title='test title'><p>test children node</p></BodySection>);
-    expectChai(wrapper.find('h2')).to.have.lengthOf(1);
-    expectChai(wrapper.find('h2').text()).to.equal('test title');
-    expectChai(wrapper.find('p')).to.have.lengthOf(1);
-    expectChai(wrapper.find('p').text()).to.equal('test children node');
-    done();
+  afterEach(() => {
+    BodySectionWithChildren = null;
   });
-});
+
+  it('BodySection component actually renders without crashing', () => {
+    assert.equal(BodySectionWithChildren.length, 1);
+  });
+  
+  it('Whether two one h2 element and one p element exists in the render', () => {
+    assert.equal(BodySectionWithChildren.find('.bodySection').exists(), true);
+    
+    assert.equal(BodySectionWithChildren.find('h2').length, 1);
+    assert.equal(BodySectionWithChildren.find('h2').text(), 'test title');
+    assert.equal(BodySectionWithChildren.find('p').length, 1);
+    assert.equal(BodySectionWithChildren.find('p').text(), 'test children node')
+  });
+})

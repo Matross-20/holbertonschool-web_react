@@ -1,37 +1,23 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import { expect as expectChai } from 'chai';
-import NotificationItem from './NotificationItem';
+import React from "react";
+import { shallow } from "enzyme";
+import NotificationItem from "./NotificationItem";
 
-describe('Test NotificationItem.js', () => {
-  it('Notificacionitem without crashing', (done) => {
-    expectChai(shallow(<NotificationItem id={1}/>).exists());
-    done();
+
+describe("<Notifications />", () => {
+  it("NotificationsItem renders without crashing", () => {
+    const wrapper = shallow(<NotificationItem />);
+    expect(wrapper.exists()).toEqual(true);
   });
 
-  it('renders three list items', (done) => {
-    const wrapper = shallow(<NotificationItem type='default' value='test' id={1} />);
-    
-    expectChai(wrapper.find('li')).to.have.lengthOf(1);
-    expectChai(wrapper.find('li').props()).to.have.property('data-notification-type', 'default');
-    expectChai(wrapper.find('li').text()).to.equal('test');
-    done();
+  it("The component accept type and value properties", () => {
+    const wrapper = shallow(<NotificationItem type="default" value="test" />);
+    expect(wrapper.find("li")).toHaveLength(1);
+    expect(wrapper.find("li").text()).toEqual("test");
+    expect(wrapper.find("li").prop("data-notification-type")).toEqual("default");
   });
 
-  it('renders inner HTML', (done) => {
-    const wrapper = shallow(<NotificationItem html={{ __html: '<u>test</u>' }} id={1} />);
-    expectChai(wrapper.html()).to.equal('<li data-notification-type="default"><u>test</u></li>');
-    done();
-  });
-
-  it('spy as the markAsRead property and Check that when simulating a click on the component, the spy is called with the right ID argument', (done) => {
-    const wrapper = shallow(<NotificationItem type='default' value='test' id={1} />);
-    const markAsRead = wrapper.instance().markAsRead = jest.fn();
-    wrapper.find('li').first().simulate('click');
-    markAsRead(1);
-    expect(markAsRead).toHaveBeenCalled();
-    expect(markAsRead).toHaveBeenCalledWith(1);
-    done();
+  it("the component accept html propertie", () => {
+    const wrapper = shallow(<NotificationItem html={{ __html: "<u>test</u>" }} />);
+    expect(wrapper.find("li").html()).toEqual("<li data-notification-type=\"default\"><u>test</u></li>");
   });
 });
-

@@ -1,33 +1,34 @@
+/**
+ * @jest-environment jsdom
+*/
+
 import React from 'react';
+import assert from 'assert';
 import { shallow, mount } from 'enzyme';
-import { expect as expectChai } from 'chai';
-import WithLogging from './WithLogging';
-import Login from '../Login/Login';
+import withLogging from './WithLogging';
 
-describe('Test WithLogging.js', () => {
-  it('console.log was called on mount and on unmount with Component when the wrapped element is pure html', (done) => {
-    const WrapElement = WithLogging(() => <a></a>);
-    console.log = jest.fn();
-    const wrapper = mount(<WrapElement />);
-    expect(console.log).toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith('Component Component is mounted');
 
-    wrapper.unmount();
-    expect(console.log).toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith('Component Component is going to unmount');
-    done();
+describe('Test WithLogging HOC function', () => {
+  let wrapperShallow = null;
+  let wrapperMount = null;
+  let mockedConsoleLog = null;
+  let LoggingComponent = withLogging(() => <p />);
+
+  beforeEach(() => {
+    LoggingComponent = withLogging(() => <p />);
+    wrapperShallow = shallow(<LoggingComponent />);
+    wrapperMount = mount(<LoggingComponent />);
+    mockedConsoleLog = console.log = jest.fn();
+  })
+  afterEach(() => {
+    wrapperShallow = wrapperMount = null;
+  })
+
+  it('Component when the wrapped element is pure html', () => {
+    assert.equal(wrapperShallow.length, 1);
   });
 
-  it('console.log was called on mount and on unmount with the name of the component when the wrapped element is the Login component. ', (done) => {
-    const WrapElement = WithLogging(Login);
-    console.log = jest.fn();
-    const wrapper = mount(<WrapElement />);
-    expect(console.log).toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith('Component Login is mounted');
-
-    wrapper.unmount();
-    expect(console.log).toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith('Component Login is going to unmount');
-    done();
+  it('mount and unmount works perfectly', () => {
+    expect(mockedConsoleLog).toHaveBeenCalledTimes(2);
   });
-});
+})

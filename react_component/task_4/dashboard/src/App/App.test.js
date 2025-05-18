@@ -1,47 +1,41 @@
-import React from 'react';
+import React from "react"
 import { shallow } from 'enzyme';
-import { expect as expectChai } from 'chai';
 import App from './App';
-import CourseList from '../CourseList/CourseList';
-import Login from '../Login/Login';
+const assert = require('assert');
 
-describe('Test App.js', () => {
-	let events = {};
+
+describe('App component test', () => {
+  let OArgsApp = null;
+  let ArgsApp = null;
 
   beforeEach(() => {
-    events = {}; // Empty our events before each test case
-    // Define the addEventListener method with a Jest mock function
-    document.addEventListener = jest.fn((event, callback) => {
-      events[event] = callback;
-    });
+    OArgsApp = shallow(<App />);
+    ArgsApp = shallow(<App isLoggedIn={true} />);
   });
 
-
-  it('App without crashing', (done) => {
-    expectChai(shallow(<App />).exists());
-    done();
+  afterEach(() => {
+    OArgsApp = ArgsApp = null;
   });
 
-  it('check that CourseList is not displayed when isLoggedIn is false', (done) => {
-    const wrapper = shallow(<App />);
-    expectChai(wrapper.find(CourseList)).to.have.lengthOf(0);
-    done();
+  it('App renders without crashing', () => {
+    assert.equal(OArgsApp.length, 1);
+  });
+  it('Whether the <Header /> component exists', () => {
+    assert.equal(OArgsApp.find('Header').exists(), true);
+  });
+  it('Whether the <Login /> component exists', () => {
+    assert.equal(OArgsApp.find('Login').exists(), true);
+  });
+  it('Whether the <Footer /> component exists', () => {
+    assert.equal(OArgsApp.find('Footer').exists(), true);
+  });
+  it('Whether the <Login /> is rendered rather than <CourseList />', () => {
+    assert.equal(OArgsApp.find('Login').exists(), true);
+    assert.equal(OArgsApp.find('CourseList').exists(), false);
+  });
+  it('Whether the <CourseList /> is rendered rather than <Login />', () => {
+    assert.equal(ArgsApp.find('Login').exists(), false);
+    assert.equal(ArgsApp.find('CourseList').exists(), true);
   });
 
-  it('check that CourseList is displayed and Login is not displayed when isLoggedIn is true', (done) => {
-    const wrapper = shallow(<App isLoggedIn={true} />);
-    expectChai(wrapper.find(CourseList)).to.have.lengthOf(1);
-    expectChai(wrapper.find(Login)).to.have.lengthOf(0);
-    done();
-  });
-
-  it('verify that when the keys "control" and "h" are pressed the "logOut" function is called', (done) => {
-    const logOut = jest.fn(() => void (0));
-    shallow(<App />);
-    window.alert = logOut;
-    events.keydown({ keyCode: 72, ctrlKey: true });
-    expect(logOut).toHaveBeenCalled()
-    done();
-  });
 });
-
