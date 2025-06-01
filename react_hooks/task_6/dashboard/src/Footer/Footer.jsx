@@ -1,24 +1,29 @@
 import React, { useContext } from 'react';
-import './Footer.css';
-import { getCurrentYear, getFooterCopy } from '../utils/utils';
-import newContext from '../Context/context';
+import './Footer.css'
+import { getCurrentYear, getFooterCopy } from '../utils/utils.js';
 
-const Footer = () => {
-  const { user } = useContext(newContext);
+function Footer() {
+  const isIndex = window.location.pathname === '/';
 
   return (
-    <footer className="App-footer">
-      <div className="long-br"></div>
-      <p>
-        Copyright {getCurrentYear()} {getFooterCopy(true)}
-      </p>
-      {user?.isLoggedIn && (
+    <footer>
+      <div className='line'></div>
+      <div className='App-footer'>
         <p>
-          <a href="#">Contact us</a>
+          Copyright {getCurrentYear()} - {getFooterCopy(isIndex)}
         </p>
-      )}
+        {user && user.isLoggedIn && (
+          <p>
+            <a href='#'>Contact us</a>
+          </p>
+        )}
+      </div>
     </footer>
   );
+}
+
+Footer.propTypes = {
+  user: propTypes.object,
 };
 
 export default Footer;

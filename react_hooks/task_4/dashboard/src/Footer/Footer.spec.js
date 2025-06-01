@@ -1,21 +1,57 @@
-// src/Footer/Footer.spec.js
 import React from 'react';
-import { render } from '@testing-library/react';
-import Footer from './Footer';
-import { getCurrentYear, getFooterCopy } from '../utils/utils';
+import { render, screen } from '@testing-library/react';
+import Footer from '../Footer/Footer.jsx';
+import AppContext from '../App/Context/context';
+import { getCurrentYear, getFooterCopy } from '../utils/utils.js';
+import '@testing-library/jest-dom';
 
-  it('should render the copyright text', () => {
-    const { getByText } = render(<Footer />);
-    
-    // Check if the copyright text is rendered
-    expect(getByText(/Copyright/i)).toBeInTheDocument();
+jest.mock('../utils/utils', () => ({
+  getCurrentYear: () => 2025,
+  getFooterCopy: jest.fn(),
+}));
+
+describe('Footer Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
+  test('renders correct copyright text when isIndex is true', () => {
+    getFooterCopy.mockReturnValue('Holberton School');
 
-  it('should render the footer message based on isIndex argument in getFooterCopy', () => {
-    const isIndex = true;
-    const footerMessage = getFooterCopy(isIndex); // Test the utility function directly
+    render(
+      <AppContext.Provider value={{ user: { isLoggedIn: false } }}>
+        <Footer />
+      </AppContext.Provider>
+    );
 
-    expect(footerMessage).toBe('Holberton School'); // Replace with expected value based on your implementation
+    const copyright = screen.getByText('Copyright 2025 - Holberton School');
+    expect(copyright).toBeInTheDocument();
+    expect(getFooterCopy).toHaveBeenCalledWith(true);
   });
 
+  test('does not display Contact us link when user is logged out', () => {
+    getFooterCopy.mockReturnValue('Holberton School');
+
+    render(
+      <AppContext.Provider value={{ user: { isLoggedIn: false } }}>
+        <Footer />
+      </AppContext.Provider>
+    );
+
+    expect(screen.queryByText('Contact us')).not.toBeInTheDocument();
+  });
+
+  test('displays Contact us link when user is logged in', () => {
+    getFooterCopy.mockReturnValue('Holberton School');
+
+    render(
+      <AppContext.Provider value={{ user: { isLoggedIn: true } }}>
+        <Footer />
+      </AppContext.Provider>
+    );
+
+    const contactLink = screen.getByText('Contact us');
+    expect(contactLink).toBeInTheDocument();
+    expect(contactLink.tagName).toBe('A');
+  });
+});

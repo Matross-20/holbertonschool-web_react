@@ -1,38 +1,77 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import React from 'react';
+import { shallow, mount } from 'enzyme';
 import Notifications from './Notifications';
+import { StyleSheetTestUtils } from 'aphrodite';
+import NotificationItem from './NotificationItem';
 
-const notifications = [
-  { id: 1, value: 'New message', type: 'default' },
-  { id: 2, value: 'New alert', type: 'urgent' },
-  { id: 3, value: 'New task', type: 'default' },
-];
-
-
-describe('Notifications component tests', () => {
-  test('renders notifications title', () => {
-    render(<Notifications notifications={notifications} displayDrawer={true}/>);
-    const titleElement = screen.getByText(/Here is the list of notifications/i);
-    expect(titleElement).toBeInTheDocument();
+describe('<Notifications />', () => {
+  beforeEach(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
   });
 
-  test('renders the close button', () => {
-    render(<Notifications notifications={notifications} displayDrawer={true}/>);
-    const buttonElement = screen.getByRole('button', { name: /close/i });
-    expect(buttonElement).toBeInTheDocument();
+  afterEach(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+    jest.clearAllMocks();
   });
 
-  test('renders three notification items', () => {
-    render(<Notifications notifications={notifications} displayDrawer={true}/>);
-    const listItems = screen.getAllByRole('listitem');
-    expect(listItems).toHaveLength(3);
+  const testNotifications = [
+    { id: 1, type: 'default', value: 'New course available' },
+    { id: 2, type: 'urgent', value: 'New resume available' },
+  ];
+
+  it('calls handleDisplayDrawer when clicking on the menu item', () => {
+    const handleDisplayDrawer = jest.fn();
+    const wrapper = shallow(
+      <Notifications handleDisplayDrawer={handleDisplayDrawer} />
+    );
+    wrapper.find('div').first().simulate('click');
+    expect(handleDisplayDrawer).toHaveBeenCalled();
   });
 
-  test('logs message when close button is clicked', () => {
-    console.log = jest.fn();
-    render(<Notifications notifications={notifications} displayDrawer={true}/>);
-    const buttonElement = screen.getByRole('button', { name: /close/i });
-    fireEvent.click(buttonElement);
-    expect(console.log).toHaveBeenCalledWith('Close button has been clicked');
+  it('calls handleHideDrawer when clicking on the close button', () => {
+    const handleHideDrawer = jest.fn();
+    const wrapper = shallow(
+      <Notifications displayDrawer={true} handleHideDrawer={handleHideDrawer} />
+    );
+    wrapper.find('button').simulate('click');
+    expect(handleHideDrawer).toHaveBeenCalled();
+  });
+
+  it("renders the text 'Here is the list of notifications' when notifications are provided", () => {
+    const wrapper = shallow(
+      <Notifications displayDrawer={true} notifications={testNotifications} />
+    );
+    expect(wrapper.find('p').first().text()).toEqual(
+      'Here is the list of notifications'
+    );
+  });
+
+  it('calls markNotificationAsRead with the right ID when notification is clicked', () => {
+    const markNotificationAsRead = jest.fn();
+    const wrapper = shallow(
+      <Notifications
+        displayDrawer={true}
+        notifications={testNotifications}
+        markNotificationAsRead={markNotificationAsRead}
+      />
+    );
+
+    wrapper.find(NotificationItem).first().props().markAsRead();
+
+    expect(markNotificationAsRead).toHaveBeenCalled();
+  });
+
+  it('renders no notifications message when notifications array is empty', () => {
+    const wrapper = shallow(
+      <Notifications displayDrawer={true} notifications={[]} />
+    );
+    expect(wrapper.find('p').text()).toEqual('No new notification for now');
+  });
+
+  it('renders NotificationItem components when notifications are provided', () => {
+    const wrapper = shallow(
+      <Notifications displayDrawer={true} notifications={testNotifications} />
+    );
+    expect(wrapper.find(NotificationItem)).toHaveLength(2);
   });
 });

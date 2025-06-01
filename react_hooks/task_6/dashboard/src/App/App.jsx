@@ -1,190 +1,107 @@
-import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import Notifications from "../Notifications/Notifications";
-import Header from "../Header/Header";
-import BodySection from "../BodySection/BodySection";
-import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
-import Login from "../Login/Login";
-import CourseList from "../CourseList/CourseList";
-import Footer from "../Footer/Footer";
+import React, { useState, useCallback,useEffect } from "react";
+import ReactDOM from "react-dom/client";
 import PropTypes from "prop-types";
-import { getLatestNotification } from "../utils/utils";
+import axios from "axios";
+import Header from "../Header/Header.jsx";
+import Footer from "../Footer/Footer.jsx";
+import Notifications from "../Notifications/Notifications.jsx";
+import CourseList from "../CourseList/CourseList.jsx";
+import Login from "../Login/Login.jsx";
+import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom.jsx";
+import BodySection from "../BodySection/BodySection.jsx";
 import { StyleSheet, css } from "aphrodite";
-import newContext from '../Context/context';
+import { appReducer, initialState, APP_ACTIONS } from "./appReducer.js";
 
 const App = () => {
-  const [displayDrawer, setDisplayDrawer] = useState(true);
-  const [user, setUser] = useState({
-    email: "",
-    password: "",
-    isLoggedIn: false,
-  });
-  const [notifications, setNotifications] = useState([]);
-  const [courses, setCourses] = useState([]);
+  const [state, dispatch] = useReducer(appReducer, initialState);
+
+  const logIn = (email, password) => {
+    dispatch({
+      type: APP_ACTIONS.LOGIN,
+      payload: { email, password },
+    });
+  };
+
+  const logOut = () => {
+    dispatch({ type: APP_ACTIONS.LOGOUT });
+  };
+
+  const toggleDrawer = () => {
+    dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER });
+  };
+
+  const markNotificationAsRead = (id) => {
+    dispatch({ type: APP_ACTIONS.MARK_NOTIFICATION_READ, payload: id });
+  };
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get('/notifications.json');
-        const notificationsData = response.data.map(notification => {
-          if (notification.html) {
-            notification.html.__html = getLatestNotification();
-          }
-          return notification;
-        });
-        setNotifications(notificationsData);
+        const response = await axios.get("/notifications.json");
+        dispatch({ type: APP_ACTIONS.SET_NOTIFICATIONS, payload: response.data });
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error("Error fetching notifications:", error);
-        }
+        console.error("Error fetching notifications:", error);
       }
     };
-
     fetchNotifications();
   }, []);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get('/courses.json');
-        setCourses(response.data);
+        const response = await axios.get("/courses.json");
+        dispatch({ type: APP_ACTIONS.SET_COURSES, payload: response.data });
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error("Error fetching courses:", error);
-        }
+        console.error("Error fetching courses:", error);
       }
     };
-
-    if (user.isLoggedIn) {
-      fetchCourses();
-    }
-  }, [user]);
-
-  const handleDisplayDrawer = useCallback(() => {
-    setDisplayDrawer(true);
-  }, []);
-
-  const handleHideDrawer = useCallback(() => {
-    setDisplayDrawer(false);
-  }, []);
-
-  const logIn = useCallback((email, password) => {
-    setUser({
-      email: email,
-      password: password,
-      isLoggedIn: true,
-    });
-  }, []);
-
-  const logOut = useCallback(() => {
-    setUser({
-      email: "",
-      password: "",
-      isLoggedIn: false,
-    });
-  }, []);
-
-  const markNotificationAsRead = useCallback((id) => {
-    console.log(`Notification ${id} has been marked as read`);
-    setNotifications((prevNotifications) =>
-      prevNotifications.filter((notification) => notification.id !== id)
-    );
-  }, []);
+    fetchCourses();
+  }, [state.user.isLoggedIn]);
 
   return (
-    <newContext.Provider value={{ user, logOut }}>
+    <>
       <Notifications
-        listNotifications={notifications}
-        displayDrawer={displayDrawer}
-        handleDisplayDrawer={handleDisplayDrawer}
-        handleHideDrawer={handleHideDrawer}
+        notifications={state.notifications}
+        displayDrawer={state.displayDrawer}
+        handleDisplayDrawer={toggleDrawer}
+        handleHideDrawer={toggleDrawer}
         markNotificationAsRead={markNotificationAsRead}
       />
-
-      <div className={css(styles.container)}>
-        <div className={css(styles.app)}>
-          <Header />
-        </div>
-        <div className={css(styles.appBody)}>
-          {!user.isLoggedIn ? (
-            <BodySectionWithMarginBottom title="Log in to continue">
-              <Login logIn={logIn} />
-            </BodySectionWithMarginBottom>
-          ) : (
-            <BodySectionWithMarginBottom title="Course list">
-              <CourseList listCourses={courses} />
-            </BodySectionWithMarginBottom>
-          )}
-        </div>
-        <BodySection title="News from the School">
-          <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of
-            type and scrambled it to make a type specimen book. It has
-            survived not only five centuries, but also the leap into
-            electronic typesetting, remaining essentially unchanged. It was
-            popularised in the 1960s with the release of Letraset sheets
-            containing Lorem Ipsum passages, and more recently with desktop
-            publishing software like Aldus PageMaker including versions of
-            Lorem Ipsum.
-          </p>
-        </BodySection>
-
-        <div className={css(styles.footer)}>
-          <Footer />
-        </div>
-      </div>
-    </newContext.Provider>
+      <Header user={state.user} onLogout={logOut} />
+      {state.user.isLoggedIn ? (
+        <BodySectionWithMarginBottom className={css(styles.responsive)} title="Course list">
+          <CourseList courses={state.courses} />
+        </BodySectionWithMarginBottom>
+      ) : (
+        <BodySectionWithMarginBottom title="Log in to continue">
+          <Login logIn={logIn} />
+        </BodySectionWithMarginBottom>
+      )}
+      <BodySection title="News from the School">
+        <p>Lorem ipsum dolor sit amet...</p>
+      </BodySection>
+      <Footer user={state.user} />
+    </>
   );
 };
 
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {},
-};
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-};
-
-const cssVars = {
-  mainColor: "#e01d3f",
-};
-
-const screenSize = {
-  small: "@media screen and (max-width: 900px)",
-};
-
 const styles = StyleSheet.create({
-  container: {
-    width: "calc(100% - 16px)",
-    marginLeft: "8px",
-    marginRight: "8px",
-  },
-
-  app: {
-    borderBottom: `3px solid ${cssVars.mainColor}`,
-  },
-
-  appBody: {
-    display: "flex",
-    justifyContent: "center",
-  },
-
-  footer: {
-    borderTop: `3px solid ${cssVars.mainColor}`,
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    position: "fixed",
-    bottom: 0,
-    fontStyle: "italic",
-    [screenSize.small]: {
-      position: "static",
-    },
-  },
+  responsive: {
+    '@media (max-width: 899px)': {
+      display: 'flex',
+      flexWrap: 'nowrap',
+      flexDirection: 'column'
+    }
+  }
 });
+
+if (document.getElementById("root")) {
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}
 
 export default App;

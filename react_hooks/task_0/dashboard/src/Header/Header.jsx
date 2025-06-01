@@ -1,42 +1,62 @@
 import React, { useContext } from 'react';
-import logo from '../assets/holberton-logo.jpg';
 import { StyleSheet, css } from 'aphrodite';
-import newContext from '../Context/context';
+import holbertonLogo from "../assets/holberton-logo.jpg";
+import AppContext from '../Context/context';
 
 const Header = () => {
-  const { user, logOut } = useContext(newContext);
+  const { user, logOut } = useContext(AppContext);
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logOut();
+  };
 
   return (
-    <header className={css(styles.Appheader)}>
-      <img src={logo} alt="Holberton logo" />
-      <h1 className={css(styles.headerh1)}>School dashboard</h1>
-      {user?.isLoggedIn && (
-        <section id="logoutSection">
-          <p>
-            Welcome {user.email} <button onClick={logOut}>Logout</button>
-          </p>
-        </section>
+    <header>
+      <div className={css(styles.header, styles.responsive)}>
+        <img className={css(styles.img)} src={holbertonLogo} alt="Holberton logo" />
+        <h1 className={css(styles.h1)}>School dashboard</h1>
+      </div>
+      <div className={css(styles.line)}></div>
+        {user.isLoggedIn && (
+        <div id="logoutSection" data-testid="logoutSection">
+          Welcome {user.email} (<a href="#logout" onClick={handleLogout}>logout</a>)
+        </div>
       )}
     </header>
   );
 };
 
 const styles = StyleSheet.create({
-  Appheader: {
+  header: {
     display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center',
-    padding: '10px 0',
-    backgroundColor: '#f5f5f5',
+    marginLeft: '60px',
+    marginTop: '50px'
   },
-  headerimg: {
-    marginRight: '10px',
-    height: '60px',
+  img: {
+    width: '150px',
+    height: '150px',
+    marginTop: '5px'
   },
-  headerh1: {
+  h1: {
     color: '#e1003c',
-    fontSize: '24px',
-    margin: 0,
+    fontFamily: 'Roboto, sans-serif',
+    marginLeft: '5px'
   },
+  line: {
+    backgroundColor: 'red',
+    width: '100%',
+    height: '4px'
+  },
+  responsive: {
+    '@media (max-width: 899px)': {
+      display: 'flex',
+      justifyContent: 'center',
+      margin: 0
+    }
+  }
 });
 
 export default Header;

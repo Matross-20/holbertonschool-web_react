@@ -1,190 +1,107 @@
-import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import Notifications from "../Notifications/Notifications";
-import Header from "../Header/Header";
-import BodySection from "../BodySection/BodySection";
-import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
-import Login from "../Login/Login";
-import CourseList from "../CourseList/CourseList";
-import Footer from "../Footer/Footer";
+import React, { useState, useCallback,useEffect } from "react";
+import ReactDOM from "react-dom/client";
 import PropTypes from "prop-types";
-import { getLatestNotification } from "../utils/utils";
+import axios from "axios";
+import Header from "../Header/Header.jsx";
+import Footer from "../Footer/Footer.jsx";
+import Notifications from "../Notifications/Notifications.jsx";
+import CourseList from "../CourseList/CourseList.jsx";
+import Login from "../Login/Login.jsx";
+import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom.jsx";
+import BodySection from "../BodySection/BodySection.jsx";
 import { StyleSheet, css } from "aphrodite";
-import newContext from '../Context/context';
+import AppContext from "../Context/context.js";
 
-const App = () => {
-  const [displayDrawer, setDisplayDrawer] = useState(true);
+const App = () => { 
+  const [displayDrawer, setDisplayDrawer] = useState(false);
   const [user, setUser] = useState({
-    email: "",
-    password: "",
-    isLoggedIn: false,
+    email: '',
+    password: '',
+    isLoggedIn: false
   });
   const [notifications, setNotifications] = useState([]);
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    const fetchNotifications = async () => {
+    const fetchNOtifications = async () => {
       try {
-        const response = await axios.get('/notifications.json');
-        const notificationsData = response.data.map(notification => {
-          if (notification.html) {
-            notification.html.__html = getLatestNotification();
-          }
-          return notification;
-        });
-        setNotifications(notificationsData);
+        const response = await axios.get("/notifications.json");
+        setNotifications(response.data);
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error("Error fetching notifications:", error);
-        }
+        console.error("Error fetching notifications:", error);
       }
     };
-
-    fetchNotifications();
+    fetchNOtifications();
   }, []);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get('/courses.json');
+        const response = await axios.get("/courses.json");
         setCourses(response.data);
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error("Error fetching courses:", error);
-        }
+        console.error("Error fetching courses:", error);
       }
     };
-
-    if (user.isLoggedIn) {
-      fetchCourses();
-    }
-  }, [user]);
-
-  const handleDisplayDrawer = useCallback(() => {
-    setDisplayDrawer(true);
-  }, []);
-
-  const handleHideDrawer = useCallback(() => {
-    setDisplayDrawer(false);
-  }, []);
-
-  const logIn = useCallback((email, password) => {
-    setUser({
-      email: email,
-      password: password,
-      isLoggedIn: true,
-    });
-  }, []);
-
-  const logOut = useCallback(() => {
-    setUser({
-      email: "",
-      password: "",
-      isLoggedIn: false,
-    });
-  }, []);
-
-  const markNotificationAsRead = useCallback((id) => {
-    console.log(`Notification ${id} has been marked as read`);
-    setNotifications((prevNotifications) =>
-      prevNotifications.filter((notification) => notification.id !== id)
-    );
-  }, []);
+    fetchCourses();
+  }, [user.isLoggedIn]);
 
   return (
-    <newContext.Provider value={{ user, logOut }}>
+    <AppContext.Provider value={{ user, logOut }}>
       <Notifications
-        listNotifications={notifications}
+        notifications={notifications}
         displayDrawer={displayDrawer}
         handleDisplayDrawer={handleDisplayDrawer}
         handleHideDrawer={handleHideDrawer}
         markNotificationAsRead={markNotificationAsRead}
       />
-
-      <div className={css(styles.container)}>
-        <div className={css(styles.app)}>
-          <Header />
-        </div>
-        <div className={css(styles.appBody)}>
-          {!user.isLoggedIn ? (
-            <BodySectionWithMarginBottom title="Log in to continue">
-              <Login logIn={logIn} />
-            </BodySectionWithMarginBottom>
-          ) : (
-            <BodySectionWithMarginBottom title="Course list">
-              <CourseList listCourses={courses} />
-            </BodySectionWithMarginBottom>
-          )}
-        </div>
-        <BodySection title="News from the School">
-          <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of
-            type and scrambled it to make a type specimen book. It has
-            survived not only five centuries, but also the leap into
-            electronic typesetting, remaining essentially unchanged. It was
-            popularised in the 1960s with the release of Letraset sheets
-            containing Lorem Ipsum passages, and more recently with desktop
-            publishing software like Aldus PageMaker including versions of
-            Lorem Ipsum.
-          </p>
-        </BodySection>
-
-        <div className={css(styles.footer)}>
-          <Footer />
-        </div>
-      </div>
-    </newContext.Provider>
+      <Header />
+      {user.isLoggedIn ? (
+        <BodySectionWithMarginBottom className={css(styles.responsive)} title="Course list">
+          <CourseList courses={courses} />
+        </BodySectionWithMarginBottom>
+      ) : (
+        <BodySectionWithMarginBottom title="Log in to continue">
+          <Login logIn={logIn} />
+        </BodySectionWithMarginBottom>
+      )}
+      <BodySection title="News from the School">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur
+          adipiscing elit, sed do eiusmod tempor
+          incididunt ut labore et dolore magna
+          aliqua. Ut enim ad minim veniam, quis
+          nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis
+          aute irure dolor in reprehenderit in
+          voluptate velit esse cillum dolore eu fugiat
+          nulla pariatur. Excepteur sint occaecat
+          cupidatat non proident, sunt in culpa qui
+          officia deserunt mollit anim id est laborum.
+        </p>
+      </BodySection>
+      <Footer />
+    </AppContext.Provider>
   );
 };
 
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {},
-};
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-};
-
-const cssVars = {
-  mainColor: "#e01d3f",
-};
-
-const screenSize = {
-  small: "@media screen and (max-width: 900px)",
-};
-
 const styles = StyleSheet.create({
-  container: {
-    width: "calc(100% - 16px)",
-    marginLeft: "8px",
-    marginRight: "8px",
-  },
-
-  app: {
-    borderBottom: `3px solid ${cssVars.mainColor}`,
-  },
-
-  appBody: {
-    display: "flex",
-    justifyContent: "center",
-  },
-
-  footer: {
-    borderTop: `3px solid ${cssVars.mainColor}`,
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    position: "fixed",
-    bottom: 0,
-    fontStyle: "italic",
-    [screenSize.small]: {
-      position: "static",
-    },
-  },
+  responsive: {
+    '@media (max-width: 899px)': {
+      display: 'flex',
+      flexWrap: 'nowrap',
+      flexDirection: 'column'
+    }
+  }
 });
+
+if (document.getElementById("root")) {
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}
 
 export default App;

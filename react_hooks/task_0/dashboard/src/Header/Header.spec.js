@@ -1,23 +1,45 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import Header from './Header';
+import { render, screen, fireEvent } from '@testing-library/react';
+import Header from './Header.jsx';
+import AppContext from '../Context/context.js';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-  it('should render the logo and title', () => {
-    const { getByAltText, getByText } = render(<Header />);
-    
-    expect(getByAltText(/holberton logo/i)).toBeInTheDocument();
-    expect(getByText(/School dashboard/i)).toBeInTheDocument();
+describe('Header Component', () => {
+  beforeEach(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
   });
-  it('should render the Holberton logo', () => {
+
+  afterEach(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
+
+  test('does not render logoutSection when user is not logged in', () => {
     render(<Header />);
-    const logo = screen.getByAltText(/holberton logo/i);
-    expect(logo).toBeInTheDocument();
+    expect(screen.queryByTestId('logoutSection')).toBeNull();
   });
 
-  it('should render a heading with the text "School Dashboard"', () => {
-    render(<Header />);
-    const heading = screen.getByRole('heading', { level: 1, name: /school dashboard/i });
-    expect(heading).toBeInTheDocument();
+  test('renders logoutSection when user is logged in', () => {
+    const user = { email: 'test@example.com', isLoggedIn: true };
+    const logOut = jest.fn();
+    render(
+      <AppContext.Provider value={{ user, logOut }}>
+        <Header />
+      </AppContext.Provider>
+    );
+    expect(screen.getByTestId('logoutSection')).toBeInTheDocument();
+    expect(screen.getByText(/test@example.com/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'logout' })).toBeInTheDocument();
   });
 
-  
+  test('calls logOut when logout link is clicked', () => {
+    const user = { email: 'test@example.com', isLoggedIn: true };
+    const logOut = jest.fn();
+    render(
+      <AppContext.Provider value={{ user, logOut }}>
+        <Header />
+      </AppContext.Provider>
+    );
+    fireEvent.click(screen.getByRole('link', { name: 'logout' }));
+    expect(logOut).toHaveBeenCalled();
+  });
+});

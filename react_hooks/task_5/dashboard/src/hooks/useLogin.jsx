@@ -1,48 +1,33 @@
-// filepath: /Users/melekmoalla/Desktop/study/study/holbertonschool-web_react/react_hooks/task_5/dashboard/src/hooks/useLogin.jsx
-import { useState } from 'react';
+import { use } from "react";
+import { useState, useEffect } from "react";
 
 const useLogin = (onLogin) => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [enableSubmit, setEnableSubmit] = useState(false);
 
-  const validateForm = (data) => {
-    const { email, password } = data;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex for email validation
-    const isEmailValid = emailRegex.test(email);
-    const isPasswordValid = password.length >= 8;
-    setEnableSubmit(isEmailValid && isPasswordValid);
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validatePassword = (password) => password.length >= 8;
 
-  const handleChangeEmail = (event) => {
-    const newEmail = event.target.value;
-    setFormData((prevData) => {
-      const updatedData = { ...prevData, email: newEmail };
-      validateForm(updatedData);
-      return updatedData;
-    });
-  };
+  useEffect(() => {
+    setEnableSubmit(validateEmail(email) && validatePassword(password));
+  }, [email, password]);
 
-  const handleChangePassword = (event) => {
-    const newPassword = event.target.value;
-    setFormData((prevData) => {
-      const updatedData = { ...prevData, password: newPassword };
-      validateForm(updatedData);
-      return updatedData;
-    });
-  };
+  const handleEmailChange = (e) => setEmail(e.target.value);
+  const handlePasswordChange = (e) => setPassword(e.target.value);
 
-  const handleLoginSubmit = (event) => {
-    event.preventDefault();
-    const { email, password } = formData;
-    onLogin(email, password);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (enableSubmit) onLogin(email, password);
   };
 
   return {
-    formData,
+    email,
+    password,
     enableSubmit,
-    handleChangeEmail,
-    handleChangePassword,
-    handleLoginSubmit,
+    handleEmailChange,
+    handlePasswordChange,
+    handleSubmit
   };
 };
 

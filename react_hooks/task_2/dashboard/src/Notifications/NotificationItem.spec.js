@@ -1,34 +1,37 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
-import NotificationItem from './NotificationItem';  // Adjust path if necessary
+import NotificationItem from './NotificationItem';
 
-describe('NotificationItem component', () => {
-  
-  test('should have color blue and data-notification-type set to "default" when type is "default"', () => {
-    // Render NotificationItem with type 'default'
-    render(<NotificationItem type="default" value="Test notification" />);
-
-    // Select the li element
-    const listItem = screen.getByRole('listitem');
-
-    // Check if the li element has the correct color
-    expect(listItem).toHaveStyle('color: blue');
-
-    // Check if the data-notification-type attribute is set to "default"
-    expect(listItem).toHaveAttribute('data-notification-type', 'default');
+describe('<NotificationItem />', () => {
+  it('renders without errors', () => {
+    render(<NotificationItem type="default" value="test" />);
+    expect(screen.getByRole('listitem')).toBeInTheDocument();
   });
 
-  test('should have color red and data-notification-type set to "urgent" when type is "urgent"', () => {
-    // Render NotificationItem with type 'urgent'
-    render(<NotificationItem type="urgent" value="Test urgent notification" />);
-
-    // Select the li element
-    const listItem = screen.getByRole('listitem');
-
-    // Check if the li element has the correct color
-    expect(listItem).toHaveStyle('color: red');
-
-    // Check if the data-notification-type attribute is set to "urgent"
-    expect(listItem).toHaveAttribute('data-notification-type', 'urgent');
+  it('renders correct type and value props', () => {
+    render(<NotificationItem type="default" value="test" />);
+    const li = screen.getByRole('listitem');
+    expect(li).toHaveTextContent('test');
+    expect(li).toHaveAttribute('data-notification-type', 'default');
   });
 
+  it('renders html prop correctly', () => {
+    render(<NotificationItem html={{ __html: '<u>test</u>' }} />);
+    expect(screen.getByRole('listitem')).toContainHTML('<u>test</u>');
+  });
+
+  it('calls markAsRead when clicked', () => {
+    const markAsReadMock = jest.fn();
+    const wrapper = shallow(
+      <NotificationItem id={1} markAsRead={markAsReadMock} />
+    );
+    wrapper.find('li').simulate('click');
+    expect(markAsReadMock).toHaveBeenCalledWith(1);
+  });
+});
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
 });
