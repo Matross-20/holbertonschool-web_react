@@ -1,35 +1,23 @@
 import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure } from 'enzyme';
+import { shallow } from 'enzyme';
 import Header from './Header';
-import { StyleSheetTestUtils, } from 'aphrodite';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-configure({ adapter: new Adapter() });
+StyleSheetTestUtils.suppressStyleInjection();
 
-describe("Testing the <Header /> Component", () => {
+describe('<Header />', () => {
+  it('renders without crashing', () => {
+    shallow(<Header />);
+  });
 
-	let wrapper;
+  it('renders img and h1 tags', () => {
+    const wrapper = shallow(<Header />);
+    expect(wrapper.find('img')).toHaveLength(1);
+    expect(wrapper.find('h1')).toHaveLength(1);
+  });
 
-	beforeEach(() => {
-		wrapper = shallow(<Header shouldRender />);
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
-
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
-
-	it("<Header /> is rendered without crashing", () => {
-		expect(wrapper.render()).to.not.be.an('undefined');
-	});
-
-	it("<Header /> render img tag", () => {
-		expect(wrapper.find('img')).to.have.lengthOf(1);
-	});
-
-	it("<Header /> render h1 tag", () => {
-		expect(wrapper.find('h1')).to.have.lengthOf(1);
-	});
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
 
 });

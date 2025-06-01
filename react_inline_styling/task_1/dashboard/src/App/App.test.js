@@ -1,76 +1,73 @@
 import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import App from './App';
+import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
 import Footer from '../Footer/Footer';
-import Notifications from '../Notifications/Notifications';
 import CourseList from '../CourseList/CourseList';
-import { StyleSheetTestUtils, } from 'aphrodite';
+import PropTypes from 'prop-types';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-configure({ adapter: new Adapter() });
+StyleSheetTestUtils.suppressStyleInjection();
 
-describe("Testing the <App /> Component", () => {
+describe('<App />', () => {
+  
+  const listNotifications = [
+    { id: 1, type: 'default', value: 'New course available' },
+    { id: 2, type: 'urgent', value: 'New resume available' },
+    { id: 3, type: 'urgent', html: { __html: '<strong>Urgent requirement</strong> - complete by EOD!' } },  
+  ];
 
-	let wrapper;
+  it('renders without crashing', () => {
+    shallow(<App />);
+  });
 
-	beforeEach(() => {
-		wrapper = shallow(<App />);
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
+  it('contains the Notifications component', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.contains(<Notifications listNotifications={listNotifications} />)).toBe(true);
+  });
 
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
+  it('contains the CourseList component when logged in', () => {
+    const wrapper = shallow(<App isLoggedIn={true} />);
+    expect(wrapper.contains(<Login />)).toBe(false);
+    expect(wrapper.find(CourseList).exists()).toBe(true);
+  });
+    
+  it('contains the Header component', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.contains(<Header />)).toBe(true);
+  });
 
-	it("<App /> is rendered without crashing", () => {
-		expect(wrapper).to.not.be.an('undefined');
-	});
+  it('contains the Login component', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.contains(<Login />)).toBe(true);
+  });
 
-	it("<App /> contains the <Notifications /> Component", () => {
-		expect(wrapper.find(Notifications)).to.have.lengthOf(1);
-	});
+  it('contains the Footer component', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.contains(<Footer />)).toBe(true);
+  });
 
-	it("<App /> contains the <Header /> Component", () => {
-		expect(wrapper.contains(<Header />)).to.equal(true);
-	});
+  it('calls logOut and alert when "control" and "h" keys are pressed', () => {
+    const logOutMock = jest.fn();
+    const alertMock = jest.fn();
+    global.alert = alertMock;
 
-	it("<App /> contains the <Login /> Component", () => {
-		expect(wrapper.contains(<Login />)).to.equal(true);
-	});
+    const wrapper = shallow(<App logOut={logOutMock} />);
+    const instance = wrapper.instance();
 
-	it("<App /> contains the <Footer /> Component", () => {
-		expect(wrapper.contains(<Footer />)).to.equal(true);
-	});
+    instance.handleKeyDown({ ctrlKey: true, key: 'h' });
 
-	it("<App /> doesn't contain <CourseList />", () => {
-		expect(wrapper.find(CourseList)).to.have.lengthOf(0);
-	});
+    expect(logOutMock).toHaveBeenCalled();
+    expect(alertMock).toHaveBeenCalledWith('Logging you out');
 
-});
+    global.alert = window.alert; // Restore the original alert function
+  });
 
-describe("Testing the <App /> when isLoggedIn is true", () => {
-
-	let props = {
-		isLoggedIn: true,
-	};
-
-	let component = shallow(<App {...props} />);
-
-	expect(component.contains(<Login />)).to.equal(false);
-	expect(component.find(CourseList)).to.have.lengthOf(1);
-});
-
-describe('logOut alerts with correct string', () => {
-	const myLogOut = jest.fn(() => undefined);
-	const appComp = mount(<App logOut={myLogOut} />);
-	const log = jest.spyOn(console, 'log');
-
-	expect(appComp.props.logOut);
-	expect(log);
-
-	jest.restoreAllMocks();
-
+  afterAll(() => {
+    // Stop suppressing style injection.
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });  
+  
 });

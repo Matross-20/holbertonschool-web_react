@@ -1,29 +1,18 @@
-:root {
-    --holberton-red: #e1484c;
-  }
-  
-  body {
-    max-width: 90%;
-    margin: 0 auto;
-  }
-  
-  div {
-    padding: 2px 8px;
-  }
-  
-  .App {
-    position: relative;
-    min-height: 100vh;
-  }
-  
-  .App-header {
+.App-header {
     display: flex;
-    flex-direction: row;
-    justify-content: left;
-    border-bottom: 3px solid var(--holberton-red);
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+    color: white;
+    border-bottom: 3px solid red;
   }
   
   .App-header h1 {
-    margin: auto auto auto 0;
-    color: var(--holberton-red);
+    color: red;
   }
+  
+  .App-header img {
+    height: 250px;
+    margin-right: 20px;
+  }
+  

@@ -1,40 +1,28 @@
 import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount, } from 'enzyme';
-import BodySectionWithMarginBottom from './BodySectionWithMarginBottom.js';
-import BodySection from './BodySection.js';
-import { StyleSheetTestUtils, } from 'aphrodite';
+import { shallow } from 'enzyme';
+import BodySectionWithMarginBottom from './BodySectionWithMarginBottom';
+import BodySection from './BodySection';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-configure({
-	adapter: new Adapter()
-});
+StyleSheetTestUtils.suppressStyleInjection();
 
-describe("Testing the <BodySectionWithMarginBottom /> Component", () => {
+describe('<BodySectionWithMarginBottom />', () => {
+  it('renders BodySection component and passes props correctly', () => {
+    const wrapper = shallow(
+      <BodySectionWithMarginBottom title="test title">
+        <p>test children node</p>
+      </BodySectionWithMarginBottom>
+    );
 
-	beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
-
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
-
-	it("Renders the 'BodySection' Component correctly", () => {
-		let props = {
-			title: 'title',
-			children: React.createElement('p', 'test child'),
-		};
-
-		let wrapper = shallow(
-			<BodySectionWithMarginBottom {...props} />
-		);
-
-		expect(wrapper.containsAllMatchingElements([
-			<div>
-				<BodySection {...props} />
-			</div>
-		])).to.equal(true);
-	});
+    const bodySection = wrapper.find(BodySection);
+    expect(bodySection).toHaveLength(1);
+    expect(bodySection.props().title).toEqual('test title');
+    expect(bodySection.find('p').text()).toEqual('test children node');
+  });
+  
+  afterAll(() => {
+    // Stop suppressing style injection.
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
 
 });
