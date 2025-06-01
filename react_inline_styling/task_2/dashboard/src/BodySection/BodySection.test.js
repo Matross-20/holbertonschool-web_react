@@ -1,16 +1,8 @@
 import { shallow, mount } from "enzyme";
 import React from "react";
 import BodySection from "./BodySection";
-import { StyleSheetTestUtils } from "aphrodite";
 
 describe("<BodySection />", () => {
-  beforeAll(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
-  afterAll(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
-
   it("BodySection renders without crashing", () => {
     const wrapper = shallow(<BodySection />);
     expect(wrapper.exists()).toEqual(true);
@@ -31,5 +23,16 @@ describe("<BodySection />", () => {
 
     expect(p).toHaveLength(1);
     expect(p.text()).toEqual("test children node");
+  });
+  it("BodySection has correct class for style", () => {
+    const wrapper = shallow(
+      <BodySection title="test title">
+        <p>test children node</p>
+      </BodySection>
+    );
+
+    const div = wrapper.find(".bodySection").first();
+
+    expect(div.exists()).toEqual(true);
   });
 });

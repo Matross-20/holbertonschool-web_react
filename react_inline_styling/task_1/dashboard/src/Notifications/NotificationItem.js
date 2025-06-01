@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./Notifications.css";
 
 const NotificationItem = React.memo(function NotificationItem({
   type,
