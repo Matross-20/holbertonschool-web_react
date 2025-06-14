@@ -4,8 +4,8 @@ import "./Header.css";
 
 function Header() {
   return (
-    <div className="App-header">
-      <img src={holberton_logo} alt="Holberton Logo" />
+    <div className="header">
+      <img src={holberton_logo} />
       <h1>School dashboard</h1>
     </div>
   );

@@ -1,39 +1,41 @@
 import React from "react";
 import PropTypes from "prop-types";
+import "./CourseList.css";
 
-export default function CourseListRow({
-  isHeader,
-  textFirstCell,
-  textSecondCell,
-}) {
+const rowStyles = { backgroundColor: "#f5f5f5ab" };
+const headerRowStyles = { backgroundColor: "#deb5b545" };
 
-  const rowStyle = { backgroundColor: '#f5f5f5ab'}
-  const headerStyle = { backgroundColor: '#deb5b545'}
-  const text = {textAlign: 'center', border:'1px solid lightgray'}
+function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
+  let element;
 
-  if (isHeader) {
+  if (isHeader === true) {
+    //
     if (textSecondCell === null) {
-      return (
-        <tr style={headerStyle}>
-          <th colSpan="2" style={text}>{textFirstCell}</th>
-        </tr>
-      );
+      element = <th colSpan="2">{textFirstCell}</th>;
     } else {
-      return (
-        <tr style={headerStyle}>
-          <th style={text}>{textFirstCell}</th>
-          <th style={text}>{textSecondCell}</th>
-        </tr>
+      element = (
+        <>
+          <th>{textFirstCell}</th>
+          <th>{textSecondCell}</th>
+        </>
       );
     }
-  } else {
-    return (
-      <tr style={rowStyle}>
-        <td style={text}>{textFirstCell}</td>
-        <td style={text}>{textSecondCell}</td>
-      </tr>
+    //
+  } else if (isHeader === false) {
+    element = (
+      <>
+        <td>{textFirstCell}</td>
+        <td>{textSecondCell}</td>
+      </>
     );
   }
+
+  let isHeaderStyle;
+
+  if (isHeader) isHeaderStyle = headerRowStyles;
+  else isHeaderStyle = rowStyles;
+
+  return <tr style={isHeaderStyle}>{element}</tr>;
 }
 
 CourseListRow.defaultProps = {
@@ -44,5 +46,7 @@ CourseListRow.defaultProps = {
 CourseListRow.propTypes = {
   isHeader: PropTypes.bool,
   textFirstCell: PropTypes.string.isRequired,
-  textSecondCell: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) 
+  textSecondCell: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
+
+export default CourseListRow;

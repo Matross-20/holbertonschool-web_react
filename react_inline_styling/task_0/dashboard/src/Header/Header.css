@@ -1,14 +1,14 @@
 :root {
-  --principal-color: #e14852;
+  --main-color: #e01d3f;
 }
 
-.App-header {
+.header {
   display: flex;
-  color: var(--principal-color);
   align-items: center;
+  color: var(--main-color);
+  font-size: 20px;
 }
 
-.App-header img {
+.header img {
   width: 200px;
-  height: 200px;
 }

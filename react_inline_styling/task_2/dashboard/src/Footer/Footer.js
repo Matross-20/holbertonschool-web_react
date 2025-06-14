@@ -3,11 +3,11 @@ import { getFullYear, getFooterCopy } from "../utils/utils";
 
 function Footer() {
   return (
-    <footer>
+    <div className="footer">
       <p>
         Copyright {getFullYear()} - {getFooterCopy(true)}
       </p>
-    </footer>
+    </div>
   );
 }
 

@@ -1,106 +1,112 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { css, StyleSheet } from 'aphrodite';
+import React, { Component } from "react";
 import Notifications from "../Notifications/Notifications";
-import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
+import BodySection from "../BodySection/BodySection";
+import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
 import Login from "../Login/Login";
 import CourseList from "../CourseList/CourseList";
+import Footer from "../Footer/Footer";
+import PropTypes from "prop-types";
 import { getLatestNotification } from "../utils/utils";
-import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
-import BodySection from "../BodySection/BodySection";
-
+import { StyleSheet, css } from "aphrodite";
 
 const listCourses = [
-  {id: 1, name: 'ES6', credit: 60},
-  {id: 2, name: 'Webpack', credit: 20},
-  {id: 3, name: 'React', credit: 40}
-]
+  { id: 1, name: "ES6", credit: 60 },
+  { id: 2, name: "Webpack", credit: 20 },
+  { id: 3, name: "React", credit: 40 },
+];
 
 const listNotifications = [
-  {id: 1, type: 'default', value: 'New course available'},
-  {id: 2, type: 'urgent', value: 'New resume available'},
-  {id: 3, type: 'urgent', html: { __html: getLatestNotification() }}
-]
+  { id: 1, type: "default", value: "New course available" },
+  { id: 2, type: "urgent", value: "New resume available" },
+  { id: 3, type: "urgent", html: { __html: getLatestNotification() } },
+];
 
-const styles = StyleSheet.create({
-  app: {
-    borderBottom: "3px solid #e14852",
-    width: "100%"
-  },
-  body: {
-    display: "flex",
-    justifyContent: 'space-evenly',
-    textAlign: 'center'
-    
-  },
-  footer: {
-    borderTop: "3px solid #e14852",
-    display: "flex",
-    justifyContent: "center",
-    fontStyle: "italic",
-    bottom: 0,
-    width: "100%"
-  }
-})
-
-class App extends React.Component {
+class App extends Component {
   constructor(props) {
     super(props);
-    this.handlePress = this.handlePress.bind(this)
+    this.handleKeyCombination = this.handleKeyCombination.bind(this);
   }
 
-  componentDidMount() {
-    window.addEventListener('keydown', this.handlePress)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handlePress)
-  }
-
-  handlePress(event) {
-    if (event.ctrlKey && event.key === 'h') {
-      alert('Logging you out');
-      this.props.logOut()
+  handleKeyCombination(e) {
+    if (e.key === "h" && e.ctrlKey) {
+      alert("Logging you out");
+      this.props.logOut();
     }
   }
 
-  render () {
-    return(  
-    <>
-      <Notifications listNotifications={listNotifications}/>
-      <div className={css(styles.app)}>
-        <Header />
-      </div>
-      <div className={css(styles.body)}>
-        {!this.props.isLoggedIn ? 
-          <BodySectionWithMarginBottom title="Log in to continue">
-            <Login /> 
-          </BodySectionWithMarginBottom> : 
-          <BodySectionWithMarginBottom title="Course list">
-            <CourseList listCourses={listCourses}/>
-          </BodySectionWithMarginBottom>
-        }
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyCombination);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyCombination);
+  }
+
+  render() {
+    const { isLoggedIn, logOut } = this.props;
+    return (
+      <>
+        <Notifications listNotifications={listNotifications} />
+        <div className={css(styles.app)}>
+          <Header />
+        </div>
+        <div className={css(styles.body)}>
+          {!isLoggedIn ? (
+            <BodySectionWithMarginBottom title="Log in to continue">
+              <Login />
+            </BodySectionWithMarginBottom>
+          ) : (
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList listCourses={listCourses} />
+            </BodySectionWithMarginBottom>
+          )}
+        </div>
         <BodySection title="News from the School">
-          <p>New News</p>
+          <p>Some Random Text</p>
         </BodySection>
-      </div>
-      <div className={css(styles.footer)}>
-        <Footer />
-      </div>
-    </>
+
+        <div className={css(styles.footer)}>
+          <Footer />
+        </div>
+      </>
     );
   }
 }
 
 App.defaultProps = {
   isLoggedIn: false,
-  logOut: () => undefined
+  logOut: () => {},
 };
 
 App.propTypes = {
   isLoggedIn: PropTypes.bool,
   logOut: PropTypes.func,
 };
+
+const cssVars = {
+  mainColor: "#e01d3f",
+};
+
+const styles = StyleSheet.create({
+  app: {
+    borderBottom: `3px solid ${cssVars.mainColor}`,
+  },
+
+  body: {
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  footer: {
+    borderTop: `3px solid ${cssVars.mainColor}`,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    position: "fixed",
+    bottom: 0,
+    fontStyle: "italic",
+  },
+});
 
 export default App;

@@ -1,19 +1,17 @@
-.table-cell {
-  border-bottom: 1px solid gray;
-  border-right: 1px solid gray;
+:root {
+  --border-table-color: rgb(170, 170, 170);
+}
+th {
+  border-top: 1px solid var(--border-table-color);
+  border-bottom: 1px solid var(--border-table-color);
+  text-align: left;
+  font-size: 18px;
 }
 
-.course-list {
-  margin-top: 20px;
-  width: 100%;
-  border-top: 1px solid gray;
-  border-left: 1px solid gray;
+th[colspan="2"] {
+  text-align: center;
 }
 
-.courses-body {
-  height: 65vh;
-}
-
-.no-courses {
-  margin-bottom: 1px solid gray;
+td {
+  text-align: left;
 }

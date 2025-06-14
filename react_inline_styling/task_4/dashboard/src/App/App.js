@@ -1,112 +1,140 @@
-import React, {Component, Fragment } from 'react';
-import Header from '../Header/Header.js';
-import Login from '../Login/Login.js';
-import Footer from '../Footer/Footer.js';
-import Notifications from '../Notifications/Notifications.js';
-import CourseList from '../CourseList/CourseList';
-import PropTypes from 'prop-types';
-import { getLatestNotification } from '../utils/utils';
-import BodySection from '../BodySection/BodySection'
-import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom'
-import { StyleSheet, css } from 'aphrodite';
+import React, { Component } from "react";
+import Notifications from "../Notifications/Notifications";
+import Header from "../Header/Header";
+import BodySection from "../BodySection/BodySection";
+import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
+import Login from "../Login/Login";
+import CourseList from "../CourseList/CourseList";
+import Footer from "../Footer/Footer";
+import PropTypes from "prop-types";
+import { getLatestNotification } from "../utils/utils";
+import { StyleSheet, css } from "aphrodite";
 
+const listCourses = [
+  { id: 1, name: "ES6", credit: 60 },
+  { id: 2, name: "Webpack", credit: 20 },
+  { id: 3, name: "React", credit: 40 },
+];
 
-export default class App extends Component {
+const listNotifications = [
+  { id: 1, type: "default", value: "New course available" },
+  { id: 2, type: "urgent", value: "New resume available" },
+  { id: 3, type: "urgent", html: { __html: getLatestNotification() } },
+];
+
+document.body.style.margin = 0;
+
+class App extends Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleKeyCombination = this.handleKeyCombination.bind(this);
   }
 
-  componentDidMount() {
-    document.addEventListener("keydown", this.handleClick);
-  }
-
-  handleClick(event) {
-    if (event.keyCode === 72 && event.ctrlKey) {
-      alert('Logging you out');
+  handleKeyCombination(e) {
+    if (e.key === "h" && e.ctrlKey) {
+      alert("Logging you out");
       this.props.logOut();
     }
   }
 
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyCombination);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyCombination);
+  }
+
   render() {
-    let {
-      isLoggedIn,
-    } = this.props;
-    let  listCourses = [
-      { id: 1, name: 'ES6', credit: 60 },
-      { id: 2, name: 'Webpack', credit: 20 },
-      { id: 3, name: 'React', credit: 40 }
-    ];
-
-    let  listNotifications = [
-      { id: 1, type: 'default', value: 'New course available' },
-      { id: 2, type: 'urgent', value: 'New resume available' },
-      { id: 3, type: 'urgent', html: { __html: getLatestNotification()} }
-    ];
-
-  return (
-    <Fragment>
-    <Notifications listNotifications={listNotifications} />
-	<div className="App">
-
-      <Header />
-	  <div className={css(style.body)}>
-
-      {
-            isLoggedIn === false &&
-            <BodySectionWithMarginBottom title="Log in to continue">
-            <Login />
-            </BodySectionWithMarginBottom>
-
-          }
-          {
-            isLoggedIn === true &&
-            <BodySectionWithMarginBottom title="Course list">
-
-            <CourseList listCourses={listCourses} />
-            </BodySectionWithMarginBottom>
-
-          }
-             <BodySection title="News from the school">
+    const { isLoggedIn, logOut } = this.props;
+    return (
+      <>
+        <Notifications listNotifications={listNotifications} />
+        <div className={css(styles.container)}>
+          <div className={css(styles.app)}>
+            <Header />
+          </div>
+          <div className={css(styles.appBody)}>
+            {!isLoggedIn ? (
+              <BodySectionWithMarginBottom title="Log in to continue">
+                <Login />
+              </BodySectionWithMarginBottom>
+            ) : (
+              <BodySectionWithMarginBottom title="Course list">
+                <CourseList listCourses={listCourses} />
+              </BodySectionWithMarginBottom>
+            )}
+          </div>
+          <BodySection title="News from the School">
             <p>
-            Apartments simplicity or understood do it we. Song such eyes had and off.
-             </p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industry's standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book. It has
+              survived not only five centuries, but also the leap into
+              electronic typesetting, remaining essentially unchanged. It was
+              popularised in the 1960s with the release of Letraset sheets
+              containing Lorem Ipsum passages, and more recently with desktop
+              publishing software like Aldus PageMaker including versions of
+              Lorem Ipsum.
+            </p>
           </BodySection>
-		  </div>
 
-		  <div className={css(style.footer)}>
-
-      <Footer />
-	  </div>
-      </div>
-
-      </Fragment>
+          <div className={css(styles.footer)}>
+            <Footer />
+          </div>
+        </div>
+      </>
     );
-  };
+  }
+}
+
+App.defaultProps = {
+  isLoggedIn: false,
+  logOut: () => {},
 };
-const style = StyleSheet.create({
-	body: {
-	  backgroundColor: '#fff',
-	  padding: '4rem',
-	  minHeight: '24rem',
-	},
-	footer: {
-	  backgroundColor: '#fff',
-	  textAlign: 'center',
-	  width: '100%',
-	  bottom: '0px',
-	  borderTop: '3px solid #e1354b',
-	  fontStyle: 'italic',
-	  padding: '1rem 0'
-	}
-  });
 
 App.propTypes = {
   isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func
+  logOut: PropTypes.func,
+};
 
+const cssVars = {
+  mainColor: "#e01d3f",
 };
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => void(0)
+
+const screenSize = {
+  small: "@media screen and (max-width: 900px)",
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: "calc(100% - 16px)",
+    marginLeft: "8px",
+    marginRight: "8px",
+  },
+
+  app: {
+    borderBottom: `3px solid ${cssVars.mainColor}`,
+  },
+
+  appBody: {
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  footer: {
+    borderTop: `3px solid ${cssVars.mainColor}`,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    position: "fixed",
+    bottom: 0,
+    fontStyle: "italic",
+    [screenSize.small]: {
+      position: "static",
+    },
+  },
+});
+
+export default App;

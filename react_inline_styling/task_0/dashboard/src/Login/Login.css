@@ -1,12 +1,12 @@
 :root {
-  --principal-color: #e14852;
+  --main-color: #e01d3f;
 }
 
-.body-login {
-  margin: 50px 0 350px 60px;
+.login {
+  margin: 50px;
   flex-grow: 1;
 }
-
-.body-login input {
-  margin: 0 20px 0 10px;
+.login input {
+  margin-left: 10px;
+  margin-right: 20px;
 }

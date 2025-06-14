@@ -1,30 +1,29 @@
 import React from "react";
-import { css, StyleSheet } from 'aphrodite';
-
-
-const styles = StyleSheet.create({
-  bodyLogin: {
-    margin: '50px 0 300px 0px',
-    flexGrow: 1
-  },
-  bodyLoginInput: {
-    margin: '0 10px 0 0px'
-  }
-})
+import { StyleSheet, css } from "aphrodite";
 
 function Login() {
   return (
-    <div className='body-login'>
-      <div className={css(styles.bodyLogin)}>
-        <p>Login to access the full dashboard</p>
-        <label htmlFor="fname">Email:</label>
-        <input type="email" id="email" className={css(styles.bodyLoginInput)}/>
-        <label htmlFor="lname">Password:</label>
-        <input type="password" id="password" className={css(styles.bodyLoginInput)}/>
-        <button>OK</button>
-      </div>
+    <div className={css(styles.login)}>
+      <p>Login to access the full dashboard</p>
+      <label htmlFor="email">Email:</label>
+      <input type="email" id="email" className={css(styles.loginInput)} />
+      <label htmlFor="password">Password:</label>
+      <input type="password" id="password" className={css(styles.loginInput)} />
+      <button>OK</button>
     </div>
   );
 }
+
+const styles = StyleSheet.create({
+  login: {
+    margin: "50px",
+    flexGrow: 1,
+  },
+
+  loginInput: {
+    marginLeft: "10px",
+    marginRight: "20px",
+  },
+});
 
 export default Login;

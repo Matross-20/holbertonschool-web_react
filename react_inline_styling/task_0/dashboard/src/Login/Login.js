@@ -3,11 +3,11 @@ import "./Login.css";
 
 function Login() {
   return (
-    <div className="body-login">
+    <div className="login">
       <p>Login to access the full dashboard</p>
-      <label htmlFor="fname">Email:</label>
+      <label htmlFor="email">Email:</label>
       <input type="email" id="email" />
-      <label htmlFor="lname">Password:</label>
+      <label htmlFor="password">Password:</label>
       <input type="password" id="password" />
       <button>OK</button>
     </div>
