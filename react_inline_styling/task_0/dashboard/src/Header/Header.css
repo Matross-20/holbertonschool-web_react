@@ -1,14 +1,22 @@
-/* src/Header/Header.css */
+:root {
+  --color-white: #fff;
+  --color-hb: #e1354b;
+}
+
+.App-logo {
+  width: 200px;
+  height: 200px;
+}
+
 .App-header {
-    display: flex;
-    align-items: center;
-  }
-  
-  .App-header img {
-    margin-right: 10px;
-  }
-  
-  .App-header h1 {
-    color: #e1003c;
-  }
-  
+  background-color: var(--color-white);
+  border-bottom: 3px solid var(--color-hb);
+  height: 200px;
+}
+
+.App-header h1 {
+  display: inline;
+  position: relative;
+  top: -6rem;
+  color: var(--color-hb);
+}
