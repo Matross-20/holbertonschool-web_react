@@ -1,56 +1,57 @@
-import React, { PureComponent, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, css } from 'aphrodite';
+import React from "react";
+import PropTypes from "prop-types";
+import { css, StyleSheet } from 'aphrodite';
 
-export default class NotificationItem extends PureComponent {
-	render() {
-		let {id,type,value,html,markAsRead} = this.props;
-		let liStyle = (type === 'urgent') ? styles.urgentNotif : styles.defaultNotif;
-
-		return (
-			<Fragment>
-				{html !== undefined &&<li className={css(liStyle)} onClick={() => markAsRead(id)}
-						data-priority-type={type}
-						dangerouslySetInnerHTML={html}/>}
-				{html === undefined && <li className={css(liStyle)} onClick={() => markAsRead(id)}
-				data-priority-type={type}>{value}</li>}
-			</Fragment>
-		);
-	};
-};
 const styles = StyleSheet.create({
-	defaultNotif: {
-		color: 'blue',
-		'@media (max-width: 900px)': {
-			borderBottom: '1px solid black',
-			padding: '10px 8px'
-		  }
+  urgent: {
+    color: '#ff0000',
+    borderBottom: 'black'
+  },
+  default: {
+    color: '#0000ff',
+    // borderBottom: '1px solid black',
+  },
+  styleSmall : {
+    '@media (max-width: 900px)': {
+      borderBottom:'1px solid black',
+      padding: '10px 8px',
+      fontSize: '20px'
+    }
+  }
+})
 
 
-	},
-	urgentNotif: {
-		color: 'red',
-		'@media (max-width: 900px)': {
-			borderBottom: '1px solid black',
-			padding: '10px 8px'
-		  }
+class NotificationItem extends React.PureComponent {
+  constructor (props) {
+    super(props)
+  }
+  render(){
 
-
-	},
-
-});
-
-
-NotificationItem.propTypes = {
-	html: PropTypes.shape({
-		__html: PropTypes.string,
-	}),
-	type: PropTypes.string.isRequired,
-	value: PropTypes.string,
-	markAsRead: PropTypes.func,
-};
+    if (this.props.value) {
+      return (<li data-notification-type={this.props.type} className={css(this.props.type === 'urgent' ? styles.urgent : styles.default, styles.styleSmall)} onClick={() => {this.props.markAsRead(this.props.id)}} >{this.props.value}</li>);
+    } else {
+      return (
+        <li data-notification-type={this.props.type} dangerouslySetInnerHTML={this.props.html} className={css(this.props.type === 'urgent' ? styles.urgent : styles.default, styles.styleSmall)} onClick={() => {this.props.markAsRead(this.props.id)}}></li>
+      );
+    }
+  }
+}
 
 NotificationItem.defaultProps = {
-	type: "default",
+  type: "default",
+  value: "",
+  html: {},
+  markAsRead: () => {}
 };
 
+NotificationItem.propTypes = {
+  type: PropTypes.string,
+  value: PropTypes.string,
+  html: PropTypes.shape({
+    __html: PropTypes.string,
+  }),
+  markAsRead: PropTypes.func,
+  id: PropTypes.number,
+};
+
+export default NotificationItem;

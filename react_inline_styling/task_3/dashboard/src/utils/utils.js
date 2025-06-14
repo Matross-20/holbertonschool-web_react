@@ -1,22 +1,15 @@
-const getFullYear = () => {
-	let current_year = new Date().getFullYear();
-	return current_year;
+export function getFullYear() {
+    let date = new Date()
+    return date.getFullYear()
 }
 
-const getFooterCopy = (isIndex) => {
-	if (isIndex) {
-		return "Holberton School";
-	} else {
-		return "Holberton School main dashboard";
-	}
+export function getFooterCopy(isIndex) {
+    if (!isIndex) {
+        return 'Holberton School main dashboard'
+    }
+    return 'Holberton School'
 }
-const getLatestNotification = () => {
-	return "<strong>Urgent requirement</strong> - complete by EOD";
-};
 
-
-module.exports = {
-	getLatestNotification,
-	getFooterCopy,
-	getFullYear,
-};
+export function getLatestNotification() {
+    return '<strong>Urgent requirement</strong> - complete by EOD'
+}

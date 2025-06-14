@@ -1,28 +1,30 @@
-import React, { Component, Fragment} from 'react';
-import { StyleSheet, css } from 'aphrodite';
+import React from "react";
+import { css, StyleSheet } from 'aphrodite';
 
-export default class Login extends Component {
-	render() {
-		return (
-		<Fragment>
-        <div className="Login-body">
-        <p>
-            Login to access the full dashboard
-        </p>
-        <label htmlFor="email"> Email: </label>
-        <input type="email" id="email" name="email" className={css(style.loginContainerInput)}/>
-        <label htmlFor="password"> Password: </label>
-        <input type="password" id="password" name="password" className={css(style.loginContainerInput)}/>
-        <button> OK</button>
-            </div>
-			</Fragment>
-		);
-	}
+
+const styles = StyleSheet.create({
+  bodyLogin: {
+    margin: '50px 0 300px 0px',
+    flexGrow: 1
+  },
+  bodyLoginInput: {
+    margin: '0 10px 0 0px'
+  }
+})
+
+function Login() {
+  return (
+    <div className='body-login'>
+      <div className={css(styles.bodyLogin)}>
+        <p>Login to access the full dashboard</p>
+        <label htmlFor="fname">Email:</label>
+        <input type="email" id="email" className={css(styles.bodyLoginInput)}/>
+        <label htmlFor="lname">Password:</label>
+        <input type="password" id="password" className={css(styles.bodyLoginInput)}/>
+        <button>OK</button>
+      </div>
+    </div>
+  );
 }
-const style = StyleSheet.create({
-	loginContainerInput: {
-	  marginRight: '9px',
-	  marginLeft: '9px',
-	}
-  });
 
+export default Login;

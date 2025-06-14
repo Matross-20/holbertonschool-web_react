@@ -1,44 +1,58 @@
-import React from 'react';
-import PropTypes from 'prop-types'; // ES6
-import { StyleSheet, css } from 'aphrodite';
+import React from "react";
+import PropTypes from "prop-types";
+import { css, StyleSheet } from 'aphrodite';
 
-export default function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
-  let trContent = '';
-  let bodyStyle = { backgroundColor: '#f5f5f5ab' };
-  let headerStyle = { backgroundColor: '#deb5b545' };
-  const styleInLine = isHeader ? headerStyle : bodyStyle;
+const styles = StyleSheet.create({
+  rowStyle: {
+    backgroundColor: '#f5f5f5ab'
+  },
+  headerStyle: {
+    backgroundColor: '#deb5b545'
+  },
+  text: {
+    textAlign: 'center',
+    border: '1px solid lightgray'
+  }
+})
 
+export default function CourseListRow({
+  isHeader,
+  textFirstCell,
+  textSecondCell,
+}) {
 
   if (isHeader) {
     if (textSecondCell === null) {
-		trContent = (<th colSpan='2' className={css(style.thFirt, style.thTd)}>{textFirstCell}</th>);
-    }
-    else {
-      trContent = (<React.Fragment><th>{textFirstCell}</th><th>{textSecondCell}</th></React.Fragment>);
+      return (
+        <tr className={css(styles.headerStyle)}>
+          <th colSpan="2" className={css(styles.text)}>{textFirstCell}</th>
+        </tr>
+      );
+    } else {
+      return (
+        <tr className={css(styles.headerStyle)}>
+          <th className={css(styles.text)}>{textFirstCell}</th>
+          <th className={css(styles.text)}>{textSecondCell}</th>
+        </tr>
+      );
     }
   } else {
-    trContent = (<React.Fragment><td>{textFirstCell}</td><td>{textSecondCell}</td></React.Fragment>);
+    return (
+      <tr className={css(styles.rowStyle)}>
+        <td className={css(styles.text)}>{textFirstCell}</td>
+        <td className={css(styles.text)}>{textSecondCell}</td>
+      </tr>
+    );
   }
-  return (<tr style={styleInLine}>{trContent}</tr>);
 }
-const style = StyleSheet.create({
-	thFirt: {
-	  textAlign: 'center',
-	},
-	thTd: {
-	  padding: '0.25rem',
-	  border: '1px solid lightgray',
-	}
-  });
+
+CourseListRow.defaultProps = {
+  isHeader: false,
+  textSecondCell: null,
+};
 
 CourseListRow.propTypes = {
   isHeader: PropTypes.bool,
   textFirstCell: PropTypes.string.isRequired,
-  textSecondCell: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  textSecondCell: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) 
 };
-
-CourseListRow.defaultProps = {
-  isHeader: false,
-  textSecondCell: null
-};
-
