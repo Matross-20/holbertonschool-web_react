@@ -1,38 +1,65 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "./Notifications.css";
+import React, { PureComponent, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { StyleSheet, css } from 'aphrodite';
 
-class NotificationItem extends React.PureComponent {
-  constructor (props) {
-    super(props)
-  }
-  render(){
+class NotificationItem extends PureComponent {
+	render() {
+		let {
+			id,
+			type,
+			value,
+			html,
+			markAsRead
+		} = this.props;
 
-    if (this.props.value) {
-      return (<li data-notification-type={this.props.type} onClick={() => {this.props.markAsRead(this.props.id)}} >{this.props.value}</li>);
-    } else {
-      return (
-        <li data-notification-type={this.props.type} dangerouslySetInnerHTML={this.props.html} onClick={() => {this.props.markAsRead(this.props.id)}}></li>
-      );
-    }
-  }
-}
+		let liStyle = (type === 'urgent') ? styles.urgentNotif : styles.defaultNotif;
 
-NotificationItem.defaultProps = {
-  type: "default",
-  value: "",
-  html: {},
-  markAsRead: () => {}
+		return (
+			<Fragment>
+				{
+					html !== undefined &&
+					<li
+						className={css(liStyle)}
+						onClick={() => markAsRead(id)}
+						data-priority-type={type}
+						dangerouslySetInnerHTML={html}
+					/>
+				}
+				{
+					html === undefined &&
+					<li
+						className={css(liStyle)}
+						onClick={() => markAsRead(id)}
+						data-priority-type={type}
+					>
+						{value}
+					</li>
+				}
+			</Fragment>
+		);
+	};
 };
 
+const styles = StyleSheet.create({
+	defaultNotif: {
+		color: 'blue',
+	},
+	urgentNotif: {
+		color: 'red',
+	},
+});
+
 NotificationItem.propTypes = {
-  type: PropTypes.string,
-  value: PropTypes.string,
-  html: PropTypes.shape({
-    __html: PropTypes.string,
-  }),
-  markAsRead: PropTypes.func,
-  id: PropTypes.number,
+	html: PropTypes.shape({
+		__html: PropTypes.string,
+	}),
+	type: PropTypes.string.isRequired,
+	value: PropTypes.string,
+	markAsRead: PropTypes.func,
+};
+
+NotificationItem.defaultProps = {
+	type: "default",
 };
 
 export default NotificationItem;

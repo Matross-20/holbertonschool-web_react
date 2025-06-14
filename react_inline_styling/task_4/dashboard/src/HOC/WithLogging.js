@@ -1,14 +1,19 @@
 import React, { Component, Children } from 'react';
 
-export default class WithLogging extends Component {
-	constructor(props) {super(props);};
-
-	componentDidMount() { let comps = this.props.children.type.name || 'Component';
-		console.log(`Component ${comps} is mounted`);
+class WithLogging extends Component {
+	constructor(props) {
+		super(props);
 	};
 
-	componentWillUnmount() { let comps = this.props.children.type.name || 'Component';
-		console.log(`Component ${comps} is going to unmount`);
+	componentDidMount() {
+		// console.log(this.props);
+		let compName = this.props.children.type.name || 'Component';
+		console.log(`Component ${compName} is mounted`);
+	};
+
+	componentWillUnmount() {
+		let compName = this.props.children.type.name || 'Component';
+		console.log(`Component ${compName} is going to unmount`);
 	};
 
 	render() {
@@ -16,3 +21,4 @@ export default class WithLogging extends Component {
 	};
 };
 
+export default WithLogging;

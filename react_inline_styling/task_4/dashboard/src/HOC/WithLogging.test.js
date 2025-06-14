@@ -6,17 +6,18 @@ import WithLogging from './WithLogging.js';
 import sinonChai from 'sinon-chai';
 import { spy } from 'sinon';
 import Login from '../Login/Login.js';
-import { StyleSheetTestUtils } from "aphrodite";
+import { StyleSheetTestUtils, } from 'aphrodite';
 
 chai.use(sinonChai);
-let logs = spy(console, 'log');
 
 configure({
 	adapter: new Adapter()
 });
 
+let log = spy(console, 'log');
 
-describe("Test WithLogging.js", () => {
+describe("Testing the <WithLogging /> Component", () => {
+
 	beforeEach(() => {
 		StyleSheetTestUtils.suppressStyleInjection();
 	});
@@ -25,26 +26,26 @@ describe("Test WithLogging.js", () => {
 		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
 	});
 
-	it("console.log was called on mount and on unmount with Component pure html", () => {
+	it("Renders the correct children with pure html as a child", () => {
 		let wrapper = mount(
 			<WithLogging>
 				<p>simple phrase</p>
 			</WithLogging>
 		);
-		expect(logs).to.have.been.calledWith('Component Component is mounted');
+		expect(log).to.have.been.calledWith('Component Component is mounted');
 		wrapper.unmount();
-		expect(logs).to.have.been.calledWith('Component Component is going to unmount');
+		expect(log).to.have.been.calledWith('Component Component is going to unmount');
 	});
 
-	it("Renders the correct children with <Login /> ", () => {
+	it("Renders the correct children with <Login /> Component as a child", () => {
 		let wrapper = mount(
 			<WithLogging>
 				<Login />
 			</WithLogging>
-      );
-		expect(logs).to.have.been.calledWith('Component Login is mounted');
+		);
+		expect(log).to.have.been.calledWith('Component Login is mounted');
 		wrapper.unmount();
-		expect(logs).to.have.been.calledWith('Component Login is going to unmount');
+		expect(log).to.have.been.calledWith('Component Login is going to unmount');
 	});
 
 });

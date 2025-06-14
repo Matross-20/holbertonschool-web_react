@@ -1,12 +1,7 @@
-:root {
-  --principal-color: #e14852;
+.Login-body {
+  padding: 36px 24px;
 }
 
-.body-login {
-  margin: 50px 0 350px 60px;
-  flex-grow: 1;
-}
-
-.body-login input {
-  margin: 0 20px 0 10px;
+.Login-body input {
+  margin: 0 16px 0 8px;
 }

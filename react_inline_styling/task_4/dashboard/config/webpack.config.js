@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
 	devtool: 'inline-source-map',
   entry: './src/index.js',
   output: {
@@ -19,6 +19,7 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			template: './dist/index.html',
       title: 'Holberton Dashboard',
+			favicon: './dist/favicon.ico',
     }),
 	],
 	module: {

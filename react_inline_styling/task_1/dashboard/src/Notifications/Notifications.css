@@ -1,7 +1,19 @@
-[data-notification-type="default"] {
-  color: blue;
+.Notifications {
+	border: 2px dotted var(--holberton-red);
+	padding: 6px 12px;
+	position: relative;
+	margin-top: 12px;
 }
 
-[data-notification-type="urgent"] {
-  color: red;
+.menuItem {
+	text-align: right;
+	font-weight: bold;
+}
+
+li[data-priority-type="default"] {
+	color: blue;
+}
+
+li[data-priority-type="urgent"] {
+	color: red;
 }
