@@ -1,8 +1,18 @@
-/* Footer CSS */
+/* src/Footer/Footer.css */
 .App-footer {
-  height: 10vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-style: italic;
-}
+    text-align: center;
+    margin-top: 50px;
+    font-size: 12px;
+    color: gray;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  .long-br {
+    border-top: 1px solid red;
+    margin-bottom: 20px;
+  }
+  
