@@ -1,29 +1,39 @@
-import React, { Component } from 'react';
+import React from "react";
 import PropTypes from 'prop-types';
+import { css, StyleSheet } from 'aphrodite';
 
-class BodySection extends Component {
-	constructor(props) {
-		super(props);
-	}
 
-	render() {
-		const {
-			title,
-			children,
-		} = this.props;
+const styles = StyleSheet.create({
+  bodySection: {
+    width: '600px',
+  },
+  sectionMarginSmall: {
+    '@media (max-width: 900px)': {
+        marginLeft: '10px'
+    }
+  }
+})
 
-		return (
-			<div className="BodySection">
-				<h2>{title}</h2>
-				{children}
-			</div>
-		);
-	}
-};
+class BodySection extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+  render() {
+    return (
+      <div className={css(styles.bodySection, styles.sectionMarginSmall)}>
+        <h2>{this.props.title}</h2>
+        {this.props.children}
+      </div>
+    );
+  }
+}
 
 BodySection.propTypes = {
-	title: PropTypes.string,
-	children: PropTypes.node
+    title: PropTypes.string
+}
+
+BodySection.defaultProps = {
+    title: ''
 }
 
 export default BodySection;

@@ -1,35 +1,27 @@
-import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure } from 'enzyme';
-import Login from './Login';
-import { StyleSheetTestUtils, } from 'aphrodite';
+/**
+ * @jest-environment jsdom
+ */
 
-configure({adapter: new Adapter()});
+import React from "react";
+import { shallow } from "enzyme";
+import Login from "./Login";
+import { StyleSheetTestUtils } from 'aphrodite';
 
-describe("Testing the <Login /> Component", () => {
-	
-	let wrapper;
+StyleSheetTestUtils.suppressStyleInjection();
 
-	beforeEach(() => {
-		wrapper = shallow(<Login shouldRender />);
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
+describe("<Login />", () => {
+    it("Login renders without any errors", () => {
+      const wrapper = shallow(<Login />);
+      expect(wrapper.exists()).toEqual(true);
+    });
 
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
+    it("VVerify that the components renders 2 input tags", () => {
+      const wrapper = shallow(<Login />);
+      expect(wrapper.find("div.body-login input")).toHaveLength(2);
+    });
 
-	it("<Login /> is rendered without crashing", () => {
-		expect(wrapper.render()).to.not.be.an('undefined');
-	});
-
-	it("<Login /> render 2 inputs", () => {
-		expect(wrapper.find('input')).to.have.lengthOf(2);
-	});
-
-	it("<Login /> render 2 labels", () => {
-		expect(wrapper.find('label')).to.have.lengthOf(2);
-	});
-
-});
+    it("Verify that the components renders 2 label tags", () => {
+      const wrapper = shallow(<Login />);
+      expect(wrapper.find("div.body-login label")).toHaveLength(2);
+    });
+})

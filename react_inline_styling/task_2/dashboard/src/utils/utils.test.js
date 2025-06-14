@@ -1,30 +1,27 @@
-import { getFooterCopy, getFullYear, getLatestNotification } from './utils';
-import { StyleSheetTestUtils } from 'aphrodite';
+import { getFullYear, getFooterCopy, getLatestNotification } from "./utils";
 
-describe("Utils functions", () => {
+describe("utils_tests", function () {
+  describe("getFullYear", function () {
+    it("Return a current year", function () {
+      const year = getFullYear();
+      expect(year).toEqual(new Date().getFullYear());
+    });
+  });
 
-	beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
+  describe("getFooterCopy", function () {
 
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
+    it("Return a true message", function () {
+      expect(getFooterCopy(true)).toEqual("Holberton School");
+    });
 
-	test("getFullYear returns the correct year", () => {
-		expect(getFullYear()).toEqual(2021);
-	});
+    it("Return a false message", function () {
+      expect(getFooterCopy(false)).toEqual("Holberton School main dashboard");
+    });
+  });
 
-	test("getFooterCopy returns the correct string when the argument is true", () => {
-		expect(getFooterCopy(true)).toEqual("Holberton School");
-	});
-
-	test("getFooterCopy returns the correct string when the argument is false", () => {
-		expect(getFooterCopy(false)).toEqual("Holberton School main dashboard");
-	});
-
-	test("getLatestNotification returns the expected string", () => {
-		expect(getLatestNotification()).toEqual("<strong>Urgent requirement</strong> - complete by EOD");
-	});
-
+  describe("getLatestNotification", function () {
+    it("Return correct element", function () {
+      expect(getLatestNotification()).toEqual("<strong>Urgent requirement</strong> - complete by EOD");
+    });
+  });
 });

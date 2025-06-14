@@ -1,65 +1,38 @@
-import React, { PureComponent, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, css } from 'aphrodite';
+import React from "react";
+import PropTypes from "prop-types";
+import "./Notifications.css";
 
-class NotificationItem extends PureComponent {
-	render() {
-		let {
-			id,
-			type,
-			value,
-			html,
-			markAsRead
-		} = this.props;
+class NotificationItem extends React.PureComponent {
+  constructor (props) {
+    super(props)
+  }
+  render(){
 
-		let liStyle = (type === 'urgent') ? styles.urgentNotif : styles.defaultNotif;
-
-		return (
-			<Fragment>
-				{
-					html !== undefined &&
-					<li
-						className={css(liStyle)}
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-						dangerouslySetInnerHTML={html}
-					/>
-				}
-				{
-					html === undefined &&
-					<li
-						className={css(liStyle)}
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-					>
-						{value}
-					</li>
-				}
-			</Fragment>
-		);
-	};
-};
-
-const styles = StyleSheet.create({
-	defaultNotif: {
-		color: 'blue',
-	},
-	urgentNotif: {
-		color: 'red',
-	},
-});
-
-NotificationItem.propTypes = {
-	html: PropTypes.shape({
-		__html: PropTypes.string,
-	}),
-	type: PropTypes.string.isRequired,
-	value: PropTypes.string,
-	markAsRead: PropTypes.func,
-};
+    if (this.props.value) {
+      return (<li data-notification-type={this.props.type} onClick={() => {this.props.markAsRead(this.props.id)}} >{this.props.value}</li>);
+    } else {
+      return (
+        <li data-notification-type={this.props.type} dangerouslySetInnerHTML={this.props.html} onClick={() => {this.props.markAsRead(this.props.id)}}></li>
+      );
+    }
+  }
+}
 
 NotificationItem.defaultProps = {
-	type: "default",
+  type: "default",
+  value: "",
+  html: {},
+  markAsRead: () => {}
+};
+
+NotificationItem.propTypes = {
+  type: PropTypes.string,
+  value: PropTypes.string,
+  html: PropTypes.shape({
+    __html: PropTypes.string,
+  }),
+  markAsRead: PropTypes.func,
+  id: PropTypes.number,
 };
 
 export default NotificationItem;

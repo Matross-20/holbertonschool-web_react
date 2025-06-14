@@ -1,34 +1,21 @@
 import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount, } from 'enzyme';
-import BodySection from './BodySection.js';
+import { shallow } from 'enzyme';
+import BodySection from './BodySection';
 import { StyleSheetTestUtils } from 'aphrodite';
 
-configure({
-	adapter: new Adapter()
-});
+StyleSheetTestUtils.suppressStyleInjection();
 
-describe("Testing the <BodySection /> Component", () => {
-
-	beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
-
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
-
-	it("Renders the correct children", () => {
-		let wrapper = shallow(
+describe('<BodySection />', () => {
+  it('renders a <BodySection /> component', () => {
+		const wrapper = shallow(
 			<BodySection title="test title">
 				<p>test children node</p>
 			</BodySection>
 		);
-		expect(wrapper.containsAllMatchingElements([
-			<h2>test title</h2>,
-			<p>test children node</p>
-		])).to.equal(true);
+		expect(wrapper).toHaveLength(1);
+		expect(wrapper.find('h2').length).toEqual(1);
+		expect(wrapper.find('h2').text()).toEqual('test title');
+		expect(wrapper.find('p').length).toEqual(1);
+		expect(wrapper.find('p').text()).toEqual('test children node');
 	});
-
 });
