@@ -1,25 +1,26 @@
 :root {
-  --holberton-red: #e1484c;
-}
+	--hred: #e1484c;
+  }
 
-body {
-  max-width: 90%;
-  margin: 0 auto;
-}
+  body {
+	max-width: 90%;
+	margin: 0 auto;
+  }
 
-div {
-  padding: 2px 8px;
-}
+  div {
+	padding: 2px 8px;
+  }
 
-.App {
-  position: relative;
-  min-height: 100vh;
-}
+  .App {
+	position: relative;
+	min-height: 100vh;
+  }
 
-.upperside {
-  display: flex;
-  flex-direction: row-reverse;
-  width: 100%;
-  border-bottom: 3px solid var(--holberton-red);
-  justify-content: space-between;
-}
+  .upperside {
+	display: flex;
+	flex-direction: row-reverse;
+	width: 100%;
+	border-bottom: 3px solid var(--hred);
+	justify-content: space-between;
+  }
+  
