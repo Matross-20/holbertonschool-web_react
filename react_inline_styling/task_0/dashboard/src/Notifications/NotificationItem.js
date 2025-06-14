@@ -1,35 +1,16 @@
 import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-class NotificationItem extends PureComponent {
+export default class NotificationItem extends PureComponent {
 	render() {
-		let {
-			id,
-			type,
-			value,
-			html,
-			markAsRead
-		} = this.props;
-
+		let {id,type,value,html,markAsRead} = this.props;
 		return (
 			<Fragment>
-				{
-					html !== undefined &&
-					<li
-						onClick={() => markAsRead(id)}
+				{html !== undefined &&<li onClick={() => markAsRead(id)}
 						data-priority-type={type}
-						dangerouslySetInnerHTML={html}
-					/>
-				}
-				{
-					html === undefined &&
-					<li
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-					>
-						{value}
-					</li>
-				}
+						dangerouslySetInnerHTML={html}/>}
+				{html === undefined && <li onClick={() => markAsRead(id)}
+				data-priority-type={type}>{value}</li>}
 			</Fragment>
 		);
 	};
@@ -48,4 +29,3 @@ NotificationItem.defaultProps = {
 	type: "default",
 };
 
-export default NotificationItem;

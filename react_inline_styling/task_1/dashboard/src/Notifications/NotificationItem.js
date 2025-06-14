@@ -2,44 +2,22 @@ import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, css } from 'aphrodite';
 
-class NotificationItem extends PureComponent {
+export default class NotificationItem extends PureComponent {
 	render() {
-		let {
-			id,
-			type,
-			value,
-			html,
-			markAsRead
-		} = this.props;
-
+		let {id,type,value,html,markAsRead} = this.props;
 		let liStyle = (type === 'urgent') ? styles.urgentNotif : styles.defaultNotif;
 
 		return (
 			<Fragment>
-				{
-					html !== undefined &&
-					<li
-						className={css(liStyle)}
-						onClick={() => markAsRead(id)}
+				{html !== undefined &&<li className={css(liStyle)} onClick={() => markAsRead(id)}
 						data-priority-type={type}
-						dangerouslySetInnerHTML={html}
-					/>
-				}
-				{
-					html === undefined &&
-					<li
-						className={css(liStyle)}
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-					>
-						{value}
-					</li>
-				}
+						dangerouslySetInnerHTML={html}/>}
+				{html === undefined && <li className={css(liStyle)} onClick={() => markAsRead(id)}
+				data-priority-type={type}>{value}</li>}
 			</Fragment>
 		);
 	};
 };
-
 const styles = StyleSheet.create({
 	defaultNotif: {
 		color: 'blue',
@@ -48,6 +26,7 @@ const styles = StyleSheet.create({
 		color: 'red',
 	},
 });
+
 
 NotificationItem.propTypes = {
 	html: PropTypes.shape({
@@ -62,4 +41,3 @@ NotificationItem.defaultProps = {
 	type: "default",
 };
 
-export default NotificationItem;

@@ -8,24 +8,24 @@ import { spy } from 'sinon';
 import Login from '../Login/Login.js';
 
 chai.use(sinonChai);
+let logs = spy(console, 'log');
 
 configure({
 	adapter: new Adapter()
 });
 
-let log = spy(console, 'log');
 
-describe("Testing the <WithLogging /> Component", () => {
+describe("Test WithLogging.js", () => {
 
-	it("Renders the correct children with pure html as a child", () => {
+	it("console.log was called on mount and on unmount with Component when the wrapped element is pure html", () => {
 		let wrapper = mount(
 			<WithLogging>
 				<p>simple phrase</p>
 			</WithLogging>
 		);
-		expect(log).to.have.been.calledWith('Component Component is mounted');
+		expect(logs).to.have.been.calledWith('Component Component is mounted');
 		wrapper.unmount();
-		expect(log).to.have.been.calledWith('Component Component is going to unmount');
+		expect(logs).to.have.been.calledWith('Component Component is going to unmount');
 	});
 
 	it("Renders the correct children with <Login /> Component as a child", () => {
@@ -33,10 +33,10 @@ describe("Testing the <WithLogging /> Component", () => {
 			<WithLogging>
 				<Login />
 			</WithLogging>
-		);
-		expect(log).to.have.been.calledWith('Component Login is mounted');
+      );
+		expect(logs).to.have.been.calledWith('Component Login is mounted');
 		wrapper.unmount();
-		expect(log).to.have.been.calledWith('Component Login is going to unmount');
+		expect(logs).to.have.been.calledWith('Component Login is going to unmount');
 	});
 
 });

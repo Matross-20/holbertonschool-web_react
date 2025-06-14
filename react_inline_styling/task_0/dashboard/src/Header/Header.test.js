@@ -5,9 +5,8 @@ import { shallow, configure } from 'enzyme';
 import Header from './Header';
 
 configure({adapter: new Adapter()});
-
 describe("Testing the <Header /> Component", () => {
-	
+
 	let wrapper;
 
 	beforeEach(() => {
