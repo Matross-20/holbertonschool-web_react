@@ -1,25 +1,18 @@
-:root {
-  --border-table-color: rgb(170, 170, 170);
-}
-
 #CourseList {
-  margin-top: 40px;
-  border: 1px solid var(--border-table-color);
-  border-collapse: collapse;
-  width: 95%;
-}
-
-#CourseList th {
-  border-top: 1px solid var(--border-table-color);
-  border-bottom: 1px solid var(--border-table-color);
-  text-align: left;
-  font-size: 18px;
-}
-
-#CourseList th[colspan="2"] {
-  text-align: center;
-}
-
-#CourseList td {
-  text-align: left;
-}
+    width: 100%;
+    border: 1px solid #ddd;
+    margin: 20px 0;
+    text-align: left;
+    border-collapse: collapse;
+  }
+  
+  #CourseList th,
+  #CourseList td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #CourseList th {
+    background-color: #f4f4f4;
+  }
+  

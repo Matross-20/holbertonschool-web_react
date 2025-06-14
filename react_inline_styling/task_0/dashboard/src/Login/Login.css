@@ -1,12 +1,29 @@
-:root {
-  --main-color: #e01d3f;
-}
-
-.login {
-  margin: 50px;
-  flex-grow: 1;
-}
-.login input {
-  margin-left: 10px;
-  margin-right: 20px;
-}
+/* src/Login/Login.css */
+.App-body {
+    margin-top: 20px;
+  }
+  
+  .long-br {
+    border-top: 1px solid red;
+    margin-bottom: 20px;
+  }
+  
+  .App-body form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  

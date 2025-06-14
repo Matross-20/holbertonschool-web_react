@@ -1,31 +1,27 @@
-:root {
-  --main-color: #e01d3f;
-}
-
-.menuItem {
-  text-align: right;
-}
-
 .Notifications {
-  float: right;
-  border: 3px dashed var(--main-color);
-  padding: 10px;
-  margin-bottom: 20px;
-}
-
-.Notifications button img {
-  width: 10px;
-}
-
-.Notifications p {
-  margin: 0;
-  margin-top: 15px;
-}
-
-[data-notification-type="default"] {
-  color: blue;
-}
-
-[data-notification-type="urgent"] {
-  color: red;
-}
+    width: 300px;
+    background-color: white;
+    border: 1px solid #e1003c;
+    padding: 20px;
+    font-size: 14px;
+    position: relative;
+  }
+  
+  .Notifications ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .Notifications li {
+    margin-bottom: 10px;
+  }
+  
+  .Notifications li[data-priority="default"] {
+    color: black;
+  }
+  
+  .Notifications li[data-priority="urgent"] {
+    color: #e1003c;
+    font-weight: bold;
+  }
+  
