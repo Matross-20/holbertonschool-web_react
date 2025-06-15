@@ -1,53 +1,35 @@
-import React, { Component, Fragment} from 'react';
-import { StyleSheet, css, } from 'aphrodite';
+import React from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
-class Login extends Component {
-	render() {
-		return (
-			<Fragment>
-				<div className={css(styles.loginBody)}>
-					<p>
-						Login to access the full dashboard
-					</p>
-					<div className={css(styles.inputContainer)}>
-						<label htmlFor="email">Email: </label>
-						<input className={css(styles.input)} type="email" id="email" name="email" />
-					</div>
-					<div className={css(styles.inputContainer)}>
-						<label htmlFor="password">Password: </label>
-						<input className={css(styles.input)} type="password" id="password" name="password" />
-					</div>
-					<div className={css(styles.inputContainer)}>
-						<button>OK</button>
-					</div>
-				</div>
-			</Fragment>
-		);
-	}
-};
+
+function Login() {
+  return (
+    <>
+      <main className={css(styles.main)}>
+        <p>Login to access the full dashboard</p>
+        <label htmlFor="email" className={css(styles.blockLabel)}>Email:</label>
+        <input type="email" id="email" name="email"/>
+        <label htmlFor="pwd" className={css(styles.blockLabel)}>Password:</label>
+        <input type="password" id="pwd" name="pwd"/>
+        <button type='button'>OK</button>
+      </main>
+    </>
+  );
+}
 
 const styles = StyleSheet.create({
-	loginBody: {
-		padding: '36px 24px',
-	},
-	input: {
-		margin: '0 16px 0 8px',
-	},
-	inputContainer: {
-		display: 'inline',
-		'@media (max-width: 900px)': {
-			display: 'block',
-		},
-	},
-});
-
-// const styles = StyleSheet.create({
-// 	loginBody: {
-// 		padding: '36px 24px',
-// 	},
-// 	input: {
-// 		margin: '0 16px 0 8px',
-// 	},
-// });
+  main: {
+    margin: "48px",
+    justifyContent: "center",
+    '@media (max-width: 900px)': {
+      margin: 0,
+    },
+  },
+    blockLabel: {
+      '@media (max-width: 900px)': {
+      display: "block",
+    },
+  },
+})
 
 export default Login;

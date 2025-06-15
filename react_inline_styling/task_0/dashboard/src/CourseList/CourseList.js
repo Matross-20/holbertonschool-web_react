@@ -1,54 +1,41 @@
-import React, { Component, } from 'react';
+import React from 'react';
 import './CourseList.css';
 import CourseListRow from './CourseListRow';
-import PropTypes from 'prop-types';
 import CourseShape from './CourseShape';
+import PropTypes from 'prop-types';
 
-class CourseList extends Component {
-	render() {
-		let {
-			listCourses,
-		} = this.props;
+function CourseList({ listCourses }) {
+  return ( 
+    <>
+      <table id='CourseList'>
+        <thead> 
+          <CourseListRow textFirstCell="Available courses" isHeader={ true } />
+          <CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader={ true } />
+        </thead> 
+        <tbody> 
+          { listCourses.length === 0 
+            ? <CourseListRow textFirstCell="No course available yet" isHeader={ false } />
+            : listCourses.map((course) => (
+                <CourseListRow 
+                  key={course.id}
+                  textFirstCell={course.name}
+                  textSecondCell={course.credit}
+                  isHeader={false}
+                />
+	      ))
+          }	
+        </tbody>   
+      </table>
+    </>
+  );
+}
 
-		if (!listCourses) {
-			return (
-				<div>
-					No course available yet
-				</div>
-			);
-		} else {
-			return (
-				<table id="CourseList">
-					<thead>
-						<CourseListRow textFirstCell="Available courses" isHeader={true} />
-						<CourseListRow textFirstCell="Course name" textSecondCell="Credit" />
-					</thead>
-					<tbody>
-						{
-							listCourses.map(course => {
-								return (
-									<CourseListRow
-										key={course.id}
-										textFirstCell={course.name}
-										textSecondCell={course.credit}
-										isHeader={false}
-									/>
-								)
-							})
-						}
-					</tbody>
-				</table>
-			);
-		}
-	};
-};
-
-CourseList.propTypes = {
-	listCourses: PropTypes.arrayOf(CourseShape),
-};
+CourseList.prototype = {
+  listCourses: PropTypes.arrayOf(CourseShape)
+}
 
 CourseList.defaultProps = {
-	listCourses: [],
-};
+  listCourses: []
+}
 
-export default CourseList;
+export default CourseList

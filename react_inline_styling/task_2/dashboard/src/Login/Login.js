@@ -1,29 +1,26 @@
-import React, { Component, Fragment } from "react";
+import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
 
-
-class Login extends Component{
-    render() {
-        return (
-            <Fragment>
-                <div className={css(styles.AppBody)}>
+function Login() {
+  return (
+	  <>
+      <main className={css(styles.main)}>
         <p>Login to access the full dashboard</p>
-        <label htmlFor='email'>Email</label>
-        <input id='email' type='email'></input>
-        <label htmlFor='password'>Password</label>
-        <input id='password' type='password'></input>
-        <button>OK</button>
-        </div>
-            </Fragment>
-        );
-    }
+        <label htmlFor="email">Email:</label>
+        <input type="email" id="email" name="email"/>
+        <label htmlFor="pwd">Password:</label>
+        <input type="password" id="pwd" name="pwd"/>
+        <button type='button'>OK</button>
+      </main>
+	  </>
+  );
 }
 
 const styles = StyleSheet.create({
-    AppBody: {
-        marginTop: "50px",
-    }
-});
+  main: {
+    margin: "48px"
+  }
+})
 
 export default Login;

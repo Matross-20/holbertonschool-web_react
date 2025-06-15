@@ -1,6 +1,8 @@
-
 .App-footer {
-    margin-top: 25%;
-    display: flex;
-    justify-content: center;
-  }
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  text-align: center;
+  border-top: 4px solid #DF344B; 
+  font-style: italic;
+}

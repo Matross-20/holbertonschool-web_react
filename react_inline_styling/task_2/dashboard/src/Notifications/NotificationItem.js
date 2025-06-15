@@ -1,65 +1,34 @@
-import React, { PureComponent, Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import { StyleSheet, css } from 'aphrodite';
 
-class NotificationItem extends PureComponent {
-	render() {
-		let {
-			id,
-			type,
-			value,
-			html,
-			markAsRead
-		} = this.props;
+function NotificationItem({ type, html, value, markAsRead, id }) {
+  return <li data-notification-type={type} dangerouslySetInnerHTML={html} onClick={markAsRead} className={css(type === "urgent" ? styles.urgent : styles.default) }>{value}</li>
+};
 
-		let liStyle = (type === 'urgent') ? styles.urgentNotif : styles.defaultNotif;
+NotificationItem.prototype = {
+  value: PropTypes.string,
+  html: PropTypes.shape({
+    __html: PropTypes.string,
+  }),
+  type: PropTypes.string.isRequired,
+  markAsRead: PropTypes.func,
+  id: PropTypes.number
+}
 
-		return (
-			<Fragment>
-				{
-					html !== undefined &&
-					<li
-						className={css(liStyle)}
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-						dangerouslySetInnerHTML={html}
-					/>
-				}
-				{
-					html === undefined &&
-					<li
-						className={css(liStyle)}
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-					>
-						{value}
-					</li>
-				}
-			</Fragment>
-		);
-	};
+NotificationItem.defaultProps = {
+  type: 'default',
+  markAsRead: () => {},
+  id: NaN
 };
 
 const styles = StyleSheet.create({
-	defaultNotif: {
-		color: 'blue',
-	},
-	urgentNotif: {
-		color: 'red',
-	},
+  default: {
+    color: "blue",
+  },
+  urgent: {
+    color: "red",
+  }
 });
-
-NotificationItem.propTypes = {
-	html: PropTypes.shape({
-		__html: PropTypes.string,
-	}),
-	type: PropTypes.string.isRequired,
-	value: PropTypes.string,
-	markAsRead: PropTypes.func,
-};
-
-NotificationItem.defaultProps = {
-	type: "default",
-};
 
 export default NotificationItem;

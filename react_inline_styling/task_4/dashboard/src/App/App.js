@@ -1,159 +1,96 @@
-import React, { Component, Fragment } from 'react';
+import React from "react";
+import Notifications from "../Notifications/Notifications";
+import Login from "../Login/Login";
+import Footer from "../Footer/Footer";
+import Header from "../Header/Header";
+import CourseList from "../CourseList/CourseList";
 import PropTypes from 'prop-types';
-import Header from '../Header/Header.js';
-import Login from '../Login/Login.js';
-import Footer from '../Footer/Footer.js';
-import Notifications from '../Notifications/Notifications.js';
-import CourseList from '../CourseList/CourseList';
-import { getLatestNotification } from '../utils/utils';
-import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom.js';
-import BodySection from '../BodySection/BodySection.js';
-import WithLogging from '../HOC/WithLogging.js';
+import BodySection from '../BodySection/BodySection';
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
+import { getLatestNotification } from "../utils/utils";
 import { StyleSheet, css } from 'aphrodite';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.ctrlHEventHandler = this.ctrlHEventHandler.bind(this);
-  }
 
-  ctrlHEventHandler(e) {
-    let k = e.key;
-    if ((e.metaKey || e.ctrlKey) && k === 'h') {
-      e.preventDefault();
-      alert('Logging you out');
-      this.props.logOut();
-    }
-  };
-
-  handleKeyPressDown() {
-    document.addEventListener("keydown", this.ctrlHEventHandler, false);
-  };
-
-  componentDidMount() {
-    this.handleKeyPressDown();
-  };
-
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.ctrlHEventHandler, false);
-  };
-
-  render() {
-
-    let {
-      isLoggedIn,
-    } = this.props;
-
-    let i = 0;
-    
-    let listNotifications = [
-      {
-        id: i++,
-        type: "default",
-        value: "New course available",
-      },
-      {
-        id: i++,
-        type: "urgent",
-        value: "New resume available",
-      },
-      {
-        id: i++,
-        type: "urgent",
-        html: {__html: getLatestNotification()},
-      }
-    ];
-
-    let listCourses = [
-      {
-        id: 1,
-        name: "ES6",
-        credit: 60,
-      },
-      {
-        id: 2,
-        name: "Webpack",
-        credit: 20,
-      },
-      {
-        id: 3,
-        name: "React",
-        credit: 40,
-      },
-    ];
-
-    return (
-      <Fragment>
-        <div className={css(styles.app)}>
-          <div className={css(styles.upperside)}>
-            <Notifications listNotifications={listNotifications} />
-            <Header />
-          </div>
-          {
-            isLoggedIn === false &&
-            <BodySectionWithMarginBottom title="Log in to continue">
-              <Login />
-            </BodySectionWithMarginBottom>
-          }
-          {
-            isLoggedIn === true &&
-            <BodySectionWithMarginBottom title="Course list">
-              <CourseList listCourses={listCourses} />
-            </BodySectionWithMarginBottom>
-          }
-          <BodySection title="News from the school">
-            <p>
-              Labore ut consequat esse nostrud aute exercitation occaecat consequat ad cillum enim et est ex.
-               Qui proident veniam in aute magna occaecat.
-               Esse duis proident aliqua proident eu magna aliqua est exercitation.
-               Cupidatat ex eiusmod et commodo laborum veniam deserunt ad est excepteur cillum laborum.
-            </p>
-          </BodySection>
-          <Footer />
-        </div>
-      </Fragment>
-    );  
-  };
-};
+const listCourses = [
+  {id: 1, name: 'ES6', credit: 60},
+  {id: 2, name: 'Webpack', credit: 20},
+  {id: 3, name: 'React', credit: 40},
+];
+const listNotifications = [
+  {id: 1, type: 'default', value: 'New course available'},
+  {id: 2, type: 'urgent', value: 'New resume available'},
+  {id: 3, type: 'urgent', html: { __html: getLatestNotification()} },
+];
 
 const styles = StyleSheet.create({
-  app: {
-    position: 'relative',
-    minHeight: '100vh',
+  body: {
+    fontFamily: 'Arial, Helvetica, sans-serif'
   },
-  upperside: {
-    display: "flex",
-    flexDirection: "row-reverse",
-    width: "100%",
-    borderBottom: `3px solid var(--holberton-red)`,
-    justifyContent: "space-between",
+  footer: {
+    fontFamily: 'Arial, Helvetica, sans-serif'
+  },
+  paraNews: {
+    width: "760px",
+    '@media (max-width: 900px)': {
+      width: "420px",
+    },
+  },
+})
+
+class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
-});
 
-// const globalStyles = StyleSheet.create({
-//   globals: {
-//     ':root': {
-//       '--holberton-red': '#e1484c',
-//     },
-//     'body': {
-//       maxWidth: '90%',
-//       margin: '0 auto',
-//     },
-//     'div': {
-//       padding: '2px 8px',
-//     },
-//   },
-// });
+  static propTypes = {
+	  logOut: PropTypes.func,
+    isLoggedIn: PropTypes.bool
+  };
 
-// css(globalStyles.globals);
+  static defaultProps = {
+    logOut: () => {},
+    isLoggedIn: false
+  };
 
-App.propTypes = {
-  logOut: PropTypes.func,
-};
+  handleKeyDown(event) {
+    if (event.key === "h" && event.ctrlKey) {
+      alert("Logging you out");
+      this.props.logOut();
+    }
+  }
 
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {},
-};
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  render () {
+    return (
+      <>
+        <Notifications listNotifications={listNotifications} />
+        <div className="App">
+          <Header />
+            { this.props.isLoggedIn
+              ? <BodySectionWithMarginBottom title="Course list">
+                  <CourseList listCourses={listCourses} />
+                </BodySectionWithMarginBottom>
+              : <BodySectionWithMarginBottom title="Log in to continue">
+                  <Login />
+                </BodySectionWithMarginBottom>
+            }
+          <Footer />
+        </div>
+        <BodySection title="News from the School">
+          <p className={css(styles.paraNews)}>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur</p>
+        </BodySection>
+      </>
+    );
+  }
+}
 
 export default App;

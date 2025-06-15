@@ -1,43 +1,55 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const path = require("path");
 
 module.exports = {
-  mode: 'development',
-	devtool: 'inline-source-map',
-  entry: './src/index.js',
+  entry: "./src/index.js",
+  mode: "development",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: "bundle.js",
+    path: path.resolve("./dist")
   },
 	devServer: {
-		hot: true,
-		contentBase: path.resolve(__dirname, 'dist'),
-	},
-	plugins: [
-		new CleanWebpackPlugin(),
-		new HtmlWebpackPlugin({
-			template: './dist/index.html',
-      title: 'Holberton Dashboard',
-			favicon: './dist/favicon.ico',
-    }),
-	],
+    hot: true,
+    contentBase: path.resolve('./dist'),
+    compress: true,
+    port: 3000,
+  },
+	devtool: 'inline-source-map',
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000
+  },
 	module: {
-		rules: [
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      },
 			{
-				test: /\.(js|jsx)$/,
+				test: /\.(png|jpe?g|gif)$/i,
+				use: ['file-loader',
+						{
+		    			loader: 'image-webpack-loader',
+		    			options: {
+			  				bypassOnDebug: true,
+			  				disable: true,
+			  			},
+			  		},
+				],
+		  },
+			{
+				test: /\.jsx?$/,
 				exclude: /node_modules/,
-				loader: 'babel-loader',
+				use: {
+					loader: 'babel-loader',
+		      options: {
+						presets: ['@babel/preset-env', '@babel/react']
+					}
+			  }
 			},
-			{
-				test: /\.css$/i,
-				use: ['style-loader', 'css-loader'],
-			},
-			{
-				test: /\.(png|svg|jpg|jpeg|gif)$/i,
-				type: 'asset/resource',
-				loader: 'image-webpack-loader',
-			},
-		],
-	},
+    ]
+  }
 };

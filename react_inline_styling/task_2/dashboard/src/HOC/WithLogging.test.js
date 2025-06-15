@@ -1,51 +1,14 @@
-import React from 'react';
-import chai, { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { configure, mount } from 'enzyme';
-import WithLogging from './WithLogging.js';
-import sinonChai from 'sinon-chai';
-import { spy } from 'sinon';
-import Login from '../Login/Login.js';
-import { StyleSheetTestUtils, } from 'aphrodite';
 
-chai.use(sinonChai);
+in task_4/dashboard/src/HOC/WithLogging.test.js, write some tests for the HOC component:
 
-configure({
-	adapter: new Adapter()
-});
+The first test should make sure console.log was called on mount and on unmount with Component when the wrapped element is pure html
+The second test should make sure console.log was called on mount and on unmount with the name of the component when the wrapped element is the Login component. Component Login is mounted and Component Login is going to unmount should be sent to the console
+Tips:
 
-let log = spy(console, 'log');
+Writing a unit test for HOC can be difficult. Create a variable with the HOC wrapping a function rendering the React component or html. e.g. WithLogging(() => <p />)
+Requirements:
 
-describe("Testing the <WithLogging /> Component", () => {
+Make sure that the messages Component Login is mounted and Component Login is going to unmount are sent when loading the app
+In the test file, make sure to restore the console function you mocked
+The console in your browser should not show any error or warning
 
-	beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
-
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
-
-	it("Renders the correct children with pure html as a child", () => {
-		let wrapper = mount(
-			<WithLogging>
-				<p>simple phrase</p>
-			</WithLogging>
-		);
-		expect(log).to.have.been.calledWith('Component Component is mounted');
-		wrapper.unmount();
-		expect(log).to.have.been.calledWith('Component Component is going to unmount');
-	});
-
-	it("Renders the correct children with <Login /> Component as a child", () => {
-		let wrapper = mount(
-			<WithLogging>
-				<Login />
-			</WithLogging>
-		);
-		expect(log).to.have.been.calledWith('Component Login is mounted');
-		wrapper.unmount();
-		expect(log).to.have.been.calledWith('Component Login is going to unmount');
-	});
-
-});

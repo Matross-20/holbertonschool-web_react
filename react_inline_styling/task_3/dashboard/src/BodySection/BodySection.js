@@ -1,29 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
 
-class BodySection extends Component {
-	constructor(props) {
-		super(props);
-	}
 
-	render() {
-		const {
-			title,
-			children,
-		} = this.props;
-
-		return (
-			<div className="BodySection">
-				<h2>{title}</h2>
-				{children}
-			</div>
-		);
-	}
-};
-
-BodySection.propTypes = {
-	title: PropTypes.string,
-	children: PropTypes.node
+let styles = {
+	margin: "40px",
 }
 
-export default BodySection;
+function BodySection({ title, children }) {
+  return (
+    <div className='bodySection' style={styles}>
+      <h2>{title}</h2>
+      {children}
+    </div>
+  )
+}
+
+export default BodySection
