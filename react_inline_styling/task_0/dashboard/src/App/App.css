@@ -1,67 +1,24 @@
-.App-header {
-  display: flex;
-  align-items: center;
-}
-/* task_1/dashboard/src/Notifications.css */
-
-.notifications {
-  border: 3px dotted #ff0000;
-  padding: 10px;
-  margin: 10px 0;
+body {
+  padding: 0;
 }
 
-.App-header img {
-  margin-right: 10px;
-}
-
-.App-header h1 {
-  color: #e1003c;
-}
-
-
-.App-body {
-  margin-top: 20px;
-}
-
-.long-br {
-  border-top: 1px solid red;
-  margin-bottom: 20px;
-}
-
-.App-body form {
+.App {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  height: 100vh;
+}
+
+.CourseListContainer {
+  height: 70%;
+}
+
+#CourseList {
+  width: 80%;
+  margin: 0 auto;
   margin-top: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
+#CourseList th {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
 }
-
-button {
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-
-.App-footer {
-  text-align: center;
-  margin-top: 50px;
-  font-size: 12px;
-  color: gray;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 10px 0;
-}
-
