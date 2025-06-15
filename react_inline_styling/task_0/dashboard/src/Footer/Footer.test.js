@@ -1,24 +1,31 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import { expect } from 'chai';
-import App from '../App/App';
-import Footer from './Footer'
+import Adapter from 'enzyme-adapter-react-16';
+import { shallow, configure } from 'enzyme';
+import Footer from './Footer';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-describe('Test Footer.js', () => {
-  it('Footer without crashing', (done) => {
-    expect(shallow(<Footer />).exists());
-    done();
-  });
+configure({adapter: new Adapter()});
 
-  it('div with the class App-footer', (done) => {
-    const wrapper = shallow(<App />);
-    expect(wrapper.contains(<footer className='App-footer' />))
-    done();
-  });
+describe("Testing the <Footer /> Component", () => {
+	
+	let wrapper;
 
-  it('renders Copyright text', (done) => {
-    const wrapper = shallow(<Footer />);
-    expect(wrapper.text('Copyright')).contain('Copyright');
-    done();
-  });
+	beforeEach(() => {
+		StyleSheetTestUtils.suppressStyleInjection();
+		wrapper = shallow(<Footer shouldRender />);
+	});
+
+	afterEach(() => {
+		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+	});
+
+	it("<Footer /> is rendered without crashing", () => {
+		expect(wrapper.render()).to.not.be.an('undefined');
+	});
+
+	it("<Footer /> renders at least the text: Copyright", () => {
+		expect(wrapper.children('p').html()).to.include('Copyright');
+	});
+
 });

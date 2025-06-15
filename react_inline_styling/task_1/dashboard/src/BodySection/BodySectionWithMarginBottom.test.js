@@ -1,33 +1,40 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { expect as expectChai } from 'chai';
-import BodySectionWithMarginBottom from './BodySectionWithMarginBottom';
-import BodySection from './BodySection';
-import { StyleSheetTestUtils } from "aphrodite";
+import { expect } from 'chai';
+import Adapter from 'enzyme-adapter-react-16';
+import { shallow, configure, mount, } from 'enzyme';
+import BodySectionWithMarginBottom from './BodySectionWithMarginBottom.js';
+import BodySection from './BodySection.js';
+import { StyleSheetTestUtils, } from 'aphrodite';
 
-describe('Test BodySectionWithMarginBottom.js', () => {
-  beforeAll(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
+configure({
+	adapter: new Adapter()
+});
 
-  afterAll(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
+describe("Testing the <BodySectionWithMarginBottom /> Component", () => {
 
-  it('Render without crashing', (done) => {
-    expectChai(shallow(<BodySectionWithMarginBottom title='test title' />).exists());
-    done();
-  });
+	beforeEach(() => {
+		StyleSheetTestUtils.suppressStyleInjection();
+	});
 
-  it ('Test if render correctly a BodySection component and that the props are passed correctly to the child component', (done) => {
-    const wrapper = shallow(<BodySectionWithMarginBottom title='test title'><p>test children node</p></BodySectionWithMarginBottom>)
-    expectChai(wrapper.contains(<div className='bodySectionWithMargin' />));
-    expectChai(wrapper.children()).to.have.lengthOf(1);
-    expectChai(wrapper.find(BodySection)).to.have.lengthOf(1);
-    expectChai(wrapper.find(BodySection).children()).to.have.lengthOf(1);
-    expectChai(wrapper.find(BodySection).props().title).to.equal('test title');
-    expectChai(wrapper.find('p')).to.have.lengthOf(1);
-    expectChai(wrapper.find('p').text()).to.equal('test children node');
-    done();
-  })
+	afterEach(() => {
+		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+	});
+
+	it("Renders the 'BodySection' Component correctly", () => {
+		let props = {
+			title: 'title',
+			children: React.createElement('p', 'test child'),
+		};
+
+		let wrapper = shallow(
+			<BodySectionWithMarginBottom {...props} />
+		);
+
+		expect(wrapper.containsAllMatchingElements([
+			<div>
+				<BodySection {...props} />
+			</div>
+		])).to.equal(true);
+	});
+
 });

@@ -1,14 +1,11 @@
-:root {
-  --color-white: #fff;
-  --color-hb: #e1354b;
+.App-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
-.App-footer {
-  background-color: var(--color-white);
+.App-footer p {
   text-align: center;
-  width: 100%;
-  bottom: 0px;
-  border-top: 3px solid var(--color-hb);
-  font-style: italic;
-  padding: 1rem 0;
+  border-top: 3px solid var(--holberton-red);
+  padding: 16px 0;
 }

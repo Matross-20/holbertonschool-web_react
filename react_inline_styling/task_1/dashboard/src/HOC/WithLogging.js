@@ -1,24 +1,30 @@
-import React from 'react';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-function WithLogging(WrapComponent) {
-  return class extends React.Component {
+class WithLogging extends Component {
     constructor(props) {
-      super(props);
-      this.displayName = WrapComponent.name ? `WithLogging(${WrapComponent.name})` : `WithLogging(Component)`;
+        super(props);
     }
-  
+
     componentDidMount() {
-      console.log(`Component ${WrapComponent.name ? WrapComponent.name : 'Component'} is mounted`);
+        console.log(`Component ${this.props.displayName} is mounted`);
     }
-  
+
     componentWillUnmount() {
-      console.log(`Component ${WrapComponent.name ? WrapComponent.name : 'Component'} is going to unmount`);
+        console.log(`Component ${this.props.displayName} is going to unmount`);
     }
 
     render() {
-      return <WrapComponent {...this.props} />
+        const {
+            children,
+        } = this.props;
+
+        return (
+            <>
+                {children}
+            </>
+        );
     }
-  }
 }
 
 export default WithLogging;

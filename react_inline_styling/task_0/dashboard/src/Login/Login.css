@@ -1,9 +1,7 @@
-:root {
-  --color-white: #fff;
-  --color-hb: #e1354b;
+.Login-body {
+  padding: 36px 24px;
 }
 
-.login-container input {
-  margin-right: 9px;
-  margin-left: 9px;
+.Login-body input {
+  margin: 0 16px 0 8px;
 }

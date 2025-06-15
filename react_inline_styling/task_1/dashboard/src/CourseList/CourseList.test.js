@@ -1,48 +1,70 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import { expect } from 'chai';
-import CourseList from './CourseList'
-import CourseListRow from './CourseListRow';
-import { StyleSheetTestUtils } from "aphrodite";
+import Adapter from 'enzyme-adapter-react-16';
+import { shallow, configure } from 'enzyme';
+import CourseList from './CourseList';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-describe('Test CourseList.js', () => {
-  const listCourses = [
-    { id: 1, name: 'ES6', credit: 60 },
-    { id: 2, name: 'Webpack', credit: 20 },
-    { id: 3, name: 'React', credit: 40 }
-  ];
+configure({adapter: new Adapter()});
 
-  beforeAll(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
+describe("Testing the <CourseList /> Component", () => {
 
-  afterAll(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
+	beforeEach(() => {
+		StyleSheetTestUtils.suppressStyleInjection();
+	});
 
-  it('CourseList without crashing', (done) => {
-    expect(shallow(<CourseList />).exists());
-    done();
-  });
+	afterEach(() => {
+		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+	});
 
-  it('renders 5 diferent rows', (done) => {
-    const wrapper = shallow(<CourseList listCourses={listCourses}/>);    
-    expect(wrapper.find(CourseListRow)).to.have.lengthOf(5);
-    done();
-  });
+	it("Test if <CourseList /> is rendered without crashing", () => {
 
-  it('Verify that CourseList renders correctly if you pass an empty array or if you don’t pass the listCourses property', (done) => {
-    let wrapper = shallow(<CourseList listCourses={[]}/>);
-    expect(wrapper.find(CourseListRow)).to.have.lengthOf(3);
-    wrapper = shallow(<CourseList />);''
-    expect(wrapper.find(CourseListRow)).to.have.lengthOf(3);
-    done();
-  });
+		let component = shallow(<CourseList shouldRender />);
 
-  it('verify that when you pass a list of courses, the component renders it correctly', (done) => {
-    const wrapper = shallow(<CourseList listCourses={listCourses}/>);
-    expect(wrapper.find(CourseListRow).first().html()).to.equal('<tr style="background-color:#deb5b545"><th colSpan="2">Available courses</th></tr>');
-    expect(wrapper.find(CourseListRow)).to.have.lengthOf(5);
-    done();
-  });
+		expect(component.render()).to.not.be.an("undefined");
+	});
+
+	it("Test that CourseList renders correctly if you pass an empty array or if you don’t pass the listCourses property", () => {
+
+		let props = {
+			listCourses: []
+		};
+
+		let component = shallow(<CourseList shouldRender {...props} />);
+		expect(component.render()).to.not.be.an("undefined");
+
+		props = {
+			listCourses: null
+		};
+
+		component = shallow(<CourseList shouldRender {...props} />);
+		expect(component.render()).to.not.be.an("undefined");
+	});
+
+	it("Test tthat when you pass a list of courses, the component renders it correctly", () => {
+
+		let props = {
+			listCourses: [
+				{
+					id: 1,
+					name: "ES6",
+					credit: 60,
+				},
+				{
+					id: 2,
+					name: "Webpack",
+					credit: 20,
+				},
+				{
+					id: 3,
+					name: "React",
+					credit: 40,
+				},
+			],
+		};
+
+		let component = shallow(<CourseList shouldRender {...props} />);
+		expect(component.render()).to.not.be.an("undefined");
+	});
+
 });

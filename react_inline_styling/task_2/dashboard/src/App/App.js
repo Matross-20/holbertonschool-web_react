@@ -1,97 +1,132 @@
-import React from 'react';
-import Notifications from '../Notifications/Notifications';
-import Header from '../Header/Header';
-import Login from '../Login/Login';
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import Header from '../Header/Header.js';
+import Login from '../Login/Login.js';
+import Footer from '../Footer/Footer.js';
+import Notifications from '../Notifications/Notifications.js';
 import CourseList from '../CourseList/CourseList';
-import Footer from '../Footer/Footer';
-import PropTypes from 'prop-types'; // ES6
+import BodySection from '../BodySection/BodySection';
 import { getLatestNotification } from '../utils/utils';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
-import BodySection from '../BodySection/BodySection';
 import { StyleSheet, css } from 'aphrodite';
 
-
-const listCourses = [
-  { id: 1, name: 'ES6', credit: 60 },
-  { id: 2, name: 'Webpack', credit: 20 },
-  { id: 3, name: 'React', credit: 40 }
-];
-
-const listNotifications = [
-  { id: 1, type: 'default', value: 'New course available' },
-  { id: 2, type: 'urgent', value: 'New resume available' },
-  { id: 3, type: 'urgent', html: { __html: getLatestNotification()} }
-];
-
-class App extends React.Component {
+class App extends Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
+    this.ctrlHEventHandler = this.ctrlHEventHandler.bind(this);
   }
 
-  componentDidMount() {
-    document.addEventListener("keydown", this.handleClick);
-  }
-
-  handleClick(event) {
-    if (event.keyCode === 72 && event.ctrlKey) {
+  ctrlHEventHandler(e) {
+    let k = e.key;
+    if ((e.metaKey || e.ctrlKey) && k === 'h') {
+      e.preventDefault();
       alert('Logging you out');
       this.props.logOut();
     }
-  }
+  };
+
+  handleKeyPressDown() {
+    document.addEventListener('keydown', this.ctrlEventHandler, false);
+  };
+
+  componentDidMount() {
+    this.handleKeyPressDown();
+  };
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.ctrlEventHandler, false);
+  };
 
   render() {
+
+    let {
+      isLoggedIn,
+    } = this.props;
+
+    let i = 0;
+    
+    let listNotifications = [
+      {
+        id: i++,
+        type: "default",
+        value: "New course available",
+      },
+      {
+        id: i++,
+        type: "urgent",
+        value: "New resume available",
+      },
+      {
+        id: i++,
+        type: "urgent",
+        html: {__html: getLatestNotification()},
+      }
+    ];
+
+    let listCourses = [
+      {
+        id: 1,
+        name: "ES6",
+        credit: 60,
+      },
+      {
+        id: 2,
+        name: "Webpack",
+        credit: 20,
+      },
+      {
+        id: 3,
+        name: "React",
+        credit: 40,
+      },
+    ];
+
     return (
-      <React.Fragment>
-        <Notifications listNotifications={listNotifications}></Notifications>
-        <div className='App'>
-          <Header></Header>
-          <div className={css(style.appBody)}>
-            {this.props.isLoggedIn ? 
-              <BodySectionWithMarginBottom title='Course list'>
-                <CourseList listCourses={listCourses} ></CourseList>
-              </BodySectionWithMarginBottom> : 
-              <BodySectionWithMarginBottom title='Log in to continue'>
-                <Login></Login>
-              </BodySectionWithMarginBottom>}
-            <BodySection title='News from the School'>
-              <p>Some news</p>
-            </BodySection>
+      <Fragment>
+        <div className="App">
+          <div className={css(styles.upperside)}>
+            <Notifications listNotifications={listNotifications} />
+            <Header />
           </div>
-          <div className={css(style.appFooter)}>
-            <Footer></Footer>
-          </div>
+          {
+            isLoggedIn === false &&
+            <BodySectionWithMarginBottom title="Log in to continue">
+            <Login />
+            </BodySectionWithMarginBottom>
+          }
+          {
+            isLoggedIn === true &&
+            <BodySectionWithMarginBottom title="Course list">
+            <CourseList listCourses={listCourses} />
+            </BodySectionWithMarginBottom>
+          }
+          <BodySection title="News from the School">
+            <p>Some random text</p>
+          </BodySection>
+          <Footer />
         </div>
-      </React.Fragment>
-    );
-  }
+      </Fragment>
+    );  
+  };
+};
+
+const styles = StyleSheet.create({
+  upperside: {
+    display: "flex",
+    flexDirection: "row-reverse",
+    width: "100%",
+    borderBottom: "3px solid red",
+    justifyContent: "space-between",
 }
+});
 
 App.propTypes = {
-  isLoggedIn: PropTypes.bool,
   logOut: PropTypes.func
 };
 
 App.defaultProps = {
   isLoggedIn: false,
-  logOut: () => void(0)
+  logOut: () => {},
 };
-
-const style = StyleSheet.create({
-  appBody: {
-    backgroundColor: '#fff',
-    padding: '4rem',
-    minHeight: '26rem',
-  },
-  appFooter: {
-    backgroundColor: '#fff',
-    textAlign: 'center',
-    width: '100%',
-    bottom: '0px',
-    borderTop: '3px solid #e1354b',
-    fontStyle: 'italic',
-    padding: '1rem 0'
-  }
-});
 
 export default App;

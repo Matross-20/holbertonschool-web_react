@@ -1,36 +1,65 @@
-import React from 'react'
-import PropTypes from 'prop-types'; // ES6
+import React, { PureComponent, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, css } from 'aphrodite';
 
-class NotificationItem extends React.PureComponent {
-  render() {
-    if (this.props.value) return (<li data-notification-type={this.props.type} onClick={() => { this.props.markAsRead(this.props.id) }} className={css(this.props.type === 'urgent' ? style.urgent : style.default)}>{this.props.value}</li>);
-    else return (<li data-notification-type={this.props.type} dangerouslySetInnerHTML={this.props.html} onClick={() => { this.props.markAsRead(this.props.id) }} className={css(this.props.type === 'urgent' ? style.urgent : style.default)}></li>);
-  }
-}
+class NotificationItem extends PureComponent {
+	render() {
+		let {
+			id,
+			type,
+			value,
+			html,
+			markAsRead
+		} = this.props;
+
+		let liStyle = (type === 'urgent') ? styles.urgentNotif : styles.defaultNotif;
+
+		return (
+			<Fragment>
+				{
+					html !== undefined &&
+					<li
+						className={css(liStyle)}
+						onClick={() => markAsRead(id)}
+						data-priority-type={type}
+						dangerouslySetInnerHTML={html}
+					/>
+				}
+				{
+					html === undefined &&
+					<li
+						className={css(liStyle)}
+						onClick={() => markAsRead(id)}
+						data-priority-type={type}
+					>
+						{value}
+					</li>
+				}
+			</Fragment>
+		);
+	};
+};
+
+const styles = StyleSheet.create({
+	defaultNotif: {
+		color: 'blue',
+	},
+	urgentNotif: {
+		color: 'red',
+	},
+});
 
 NotificationItem.propTypes = {
-  id: PropTypes.number.isRequired,
-  type: PropTypes.string,
-  html: PropTypes.shape({ __html: PropTypes.string }),
-  value: PropTypes.string,
-  markAsRead: PropTypes.func
-}
+	html: PropTypes.shape({
+		__html: PropTypes.string,
+	}),
+	type: PropTypes.string.isRequired,
+	value: PropTypes.string,
+	markAsRead: PropTypes.func,
+};
 
 NotificationItem.defaultProps = {
-  type: 'default',
-  value: '',
-  html: {},
-  markAsRead: () => void(0)
-}
-
-const style = StyleSheet.create({
-  default: {
-    color: '#0000ff',
-  },
-  urgent: {
-    color: '#ff0000',
-  }
-});
+	type: "default",
+};
 
 export default NotificationItem;
