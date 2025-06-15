@@ -1,3 +1,0 @@
-/*
- * StyleSheetTestUtils.suppressStyleInjection()
- */
