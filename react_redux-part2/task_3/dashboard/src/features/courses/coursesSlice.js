@@ -1,53 +1,46 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-const API_BASE_URL = "http://localhost:5173";
-
-const ENDPOINTS = {
-  courses: `${API_BASE_URL}/courses.json`,
-};
-
-export const fetchCourses = createAsyncThunk(
-  "courses/fetchCourses",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await fetch(ENDPOINTS.courses);
-      if (!response.ok) throw new Error("Failed to fetch courses");
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { logout } from '../auth/authSlice';
 
 const initialState = {
-  courses: [],
+    courses: [],
 };
-
+const API_BASE_URL = 'http://localhost:5173';
+const ENDPOINTS = {
+    courses: `${API_BASE_URL}/courses.json`,
+};
+export const fetchCourses = createAsyncThunk(
+    'courses/fetchCourses',
+    async () => {
+        const response = await axios.get(ENDPOINTS.courses);
+        return response.data.courses;
+    }
+);
 const coursesSlice = createSlice({
-  name: "courses",
-  initialState,
-  reducers: {
-    selectCourse: (state, action) => {
-      const course = state.courses.find(course => course.id === action.payload);
-      if (course) {
-        course.isSelected = true;
-      }
+    name: 'courses',
+    initialState,
+    reducers: {
+        selectCourse: (state, { payload }) => {
+            const course = state.courses.find(c => c.id === payload);
+            if (course) course.isSelected = true;
+        },
+        unSelectCourse: (state, { payload }) => {
+            const course = state.courses.find(c => c.id === payload);
+            if (course) course.isSelected = false;
+        }
     },
-    unSelectCourse: (state, action) => {
-      const course = state.courses.find(course => course.id === action.payload);
-      if (course) {
-        course.isSelected = false;
-      }
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchCourses.fulfilled, (state, action) => {
+                state.courses = action.payload.map((course) => ({
+                    ...course,
+                    isSelected: false,
+                }));
+            })
+            .addCase(logout, (state) => {
+                state.courses = initialState.courses;
+            });
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchCourses.fulfilled, (state, action) => {
-        state.courses = action.payload;
-      })
-      .addCase("auth/logout", () => initialState); // Reset state on logout
-  },
 });
 
 export const { selectCourse, unSelectCourse } = coursesSlice.actions;

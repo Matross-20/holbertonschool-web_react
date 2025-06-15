@@ -1,57 +1,46 @@
-import React from 'react';
+import CourseListRow from './CourseListRow/CourseListRow';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCourse, unSelectCourse } from './coursesSlice';
-import WithLogging from '../../hoc/WithLogging';
-import './CourseList.css';
+import './CourseList.css'
+import WithLogging from '../../components/HOC/WithLogging';
+import { selectCourse, unSelectCourse } from '../../features/courses/coursesSlice';
 
-const CourseList = () => {
-  const dispatch = useDispatch();
-  const courses = useSelector((state) => state.courses.courses);
+function CourseList() {
+    const { courses } = useSelector((state) => state.courses);
+    const dispatch = useDispatch();
+    const onChangeRow = (id, checked) => {
+        const action = checked ? selectCourse : unSelectCourse;
+        dispatch(action(id));
+    };
+    return (
+        <div className="courses">
+            {courses.length > 0 ? (
+                <table id="CourseList">
+                    <thead>
+                        <CourseListRow textFirstCell="Available courses" isHeader={true} />
+                        <CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader={true} />
+                    </thead>
+                    <tbody>
+                        {courses.map((course) => (
+                            <CourseListRow
+                                key={course.id}
+                                id={course.id}
+                                textFirstCell={course.name}
+                                textSecondCell={course.credit}
+                                onChangeRow={onChangeRow}
+                                isSelected={course.isSelected || false}
+                            />
+                        ))}
+                    </tbody>
+                </table>
+            ) : (
+                <table id="CourseList">
+                    <thead>
+                        <CourseListRow isHeader={true} textFirstCell="No course available yet" />
+                    </thead>
+                </table>
+            )}
+        </div>
+    );
+}
 
-  const onChangeRow = (id, checked) => {
-    if (checked) {
-      dispatch(selectCourse(id));
-    } else {
-      dispatch(unSelectCourse(id));
-    }
-  };
-
-  return (
-    <div className="course-list">
-      <h2>Course List</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Course Name</th>
-            <th>Credits</th>
-            <th>Select</th>
-          </tr>
-        </thead>
-        <tbody>
-          {courses.length > 0 ? (
-            courses.map((course) => (
-              <tr key={course.id}>
-                <td>{course.name}</td>
-                <td>{course.credits}</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={course.isSelected || false}
-                    onChange={(e) => onChangeRow(course.id, e.target.checked)}
-                  />
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="3">No courses available</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-const WrappedCourseList = WithLogging(CourseList);
-export default WrappedCourseList;
+export default WithLogging(CourseList);

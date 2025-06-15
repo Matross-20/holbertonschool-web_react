@@ -1,4 +1,4 @@
-import { render, screen, describe, expect, it } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import BodySection from './BodySection';
 
 describe('BodySection', () => {

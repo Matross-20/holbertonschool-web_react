@@ -1,48 +1,57 @@
-import React, { memo, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { markNotificationAsRead } from "../../app/notificationsSlice";
-import "./Notifications.css";
+import { memo, useCallback, useRef, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { markNotificationAsRead } from '../../features/notifications/notificationsSlice';
+import NotificationItem from '../NotificationItem/NotificationItem';
+import './Notifications.css';
+import closeIcon from '../../assets/close-icon.png';
 
-const Notifications = () => {
-  const dispatch = useDispatch();
-  const notifications = useSelector((state) => state.notifications.list);
-  const notificationsRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
+const Notifications = memo(function Notifications() {
+    const dispatch = useDispatch();
+    const notifications = useSelector((state) => state.notifications.notifications);
 
-  console.log("Notifications component re-rendered");
+    console.log('Get re render once again!')
 
-  const handleToggleDrawer = () => {
-    setIsVisible((prev) => !prev);
-  };
+    const DrawerRef = useRef(null);
 
-  const handleMarkAsRead = (id) => dispatch(markNotificationAsRead(id));
+    const handleToggleDrawer = useCallback(() => {
+        DrawerRef.current.classList.toggle('visible');
+    }, []);
 
-  return (
-    <div className="notifications-container">
-      <div className="menuItem" onClick={handleToggleDrawer}>
-        Your notifications
-      </div>
-      <div
-        ref={notificationsRef}
-        className={`notifications ${isVisible ? "" : "visible"}`}
-      >
-        <button onClick={handleToggleDrawer} className="close-btn">
-          Close
-        </button>
-        <ul>
-          {notifications.length > 0 ? (
-            notifications.map((notif) => (
-              <li key={notif.id} onClick={() => handleMarkAsRead(notif.id)}>
-                {notif.message}
-              </li>
-            ))
-          ) : (
-            <li>No new notifications</li>
-          )}
-        </ul>
-      </div>
-    </div>
-  );
-};
+    const handleMarkNotificationAsRead = useCallback((id) => {
+        dispatch(markNotificationAsRead(id));
+    }, [dispatch]);
 
-export default memo(Notifications);
+    return (
+        <>
+            <div className="notification-title" onClick={handleToggleDrawer}>
+                Your notifications
+            </div>
+            <div className="Notifications visible" ref={DrawerRef} >
+                {notifications.length > 0 ? (
+                    <>
+                        <p>Here is the list of notifications</p>
+                        <button onClick={handleToggleDrawer} aria-label="Close">
+                            <img src={closeIcon} alt="close icon" />
+                        </button>
+                        <ul>
+                            {notifications.map((notification) => (
+                                <NotificationItem
+                                    key={notification.id}
+                                    id={notification.id}
+                                    type={notification.type}
+                                    value={notification.value}
+                                    html={notification.html}
+                                    markAsRead={handleMarkNotificationAsRead}
+                                />
+                            ))}
+                        </ul>
+                    </>
+                ) : (
+                    <p>No new notifications for now</p>
+                )}
+            </div>
+        </>
+    );
+});
+
+export default Notifications;

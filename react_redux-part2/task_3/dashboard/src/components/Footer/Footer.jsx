@@ -1,16 +1,13 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
+import { getCurrentYear, getFooterCopy } from '../../utils/utils';
 import './Footer.css';
 
-const Footer = () => {
-  const { isLoggedIn } = useSelector((state) => state.auth);
-
-  return (
-    <footer className="footer">
-      <p>&copy; 2024 Holberton School</p>
-      {isLoggedIn && <a href="/contact">Contact us</a>}
-    </footer>
-  );
-};
-
-export default Footer;
+export default function Footer() {
+    const { isLoggedIn } = useSelector((state) => state.auth);
+    return (
+        <div className="App-footer">
+            <p>Copyright {getCurrentYear()} - {getFooterCopy(true)}</p>
+            {isLoggedIn && <a href="#">Contact us</a>}
+        </div>
+    );
+}

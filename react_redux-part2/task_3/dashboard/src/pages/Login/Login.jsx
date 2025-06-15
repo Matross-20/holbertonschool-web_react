@@ -1,41 +1,52 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { login } from "../../app/authSlice";
-import useLogin from "../../hooks/useLogin";
+import { useDispatch } from 'react-redux';
+import WithLogging from '../../components/HOC/WithLogging';
+import useLogin from '../../hooks/useLogin';
+import './Login.css';
+import { login } from '../../features/auth/authSlice';
 
-const Login = () => {
-  const dispatch = useDispatch();
+function Login() {
+    const dispatch = useDispatch();
+    const {
+        email,
+        password,
+        enableSubmit,
+        handleChangeEmail,
+        handleChangePassword,
+        handleLoginSubmit
+    } = useLogin({
+        onLogin: (email, password) => dispatch(login({ email, password }))
+    });
 
-  const { email, password, isValid, handleChange, handleSubmit } = useLogin({
-    onLogin: (user) => dispatch(login(user)),
-  });
+    return (
+        <form aria-label="form" onSubmit={handleLoginSubmit}>
+            <div className="App-body">
+                <p>Login to access the full dashboard</p>
+                <div className="form">
+                    <label htmlFor="email">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        value={email}
+                        onChange={handleChangeEmail}
+                    />
+                    <label htmlFor="password">Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        value={password}
+                        onChange={handleChangePassword}
+                    />
+                    <input
+                        type="submit"
+                        value="OK"
+                        disabled={!enableSubmit}
+                    />
+                </div>
+            </div>
+        </form>
+    );
+}
 
-  return (
-    <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          value={email}
-          onChange={handleChange}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={handleChange}
-          placeholder="Password"
-          required
-        />
-        <button type="submit" disabled={!isValid}>
-          Login
-        </button>
-      </form>
-    </div>
-  );
-};
-
-export default Login;
+export default WithLogging(Login);
