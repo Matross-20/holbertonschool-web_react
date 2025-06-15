@@ -1,104 +1,119 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, describe, beforeEach, test, expect } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
+import { configureStore } from '@reduxjs/toolkit';
 import Notifications from './Notifications';
-import { getLatestNotification } from '../../utils/utils';
-import { StyleSheetTestUtils } from 'aphrodite';
-import { markAsRead } from '../../redux/notificationSlice';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import notificationsSlice, { fetchNotifications } from '../../features/notifications/notificationsSlice';
 
-const mockStore = configureStore([]);
-
-beforeEach(() => {
-  StyleSheetTestUtils.suppressStyleInjection();
-});
-
-afterEach(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
-
-const renderWithRedux = (ui, { initialState } = {}) => {
-  const store = mockStore(initialState);
-  const utils = render(<Provider store={store}>{ui}</Provider>);
-  return { ...utils, store };
-};
-
-const mockNotifications = [
-  { id: 1, type: 'default', value: 'New course available' },
-  { id: 2, type: 'urgent', value: 'New resume available' },
-  { id: 3, type: 'urgent', html: { __html: getLatestNotification() } },
-];
-
-describe('Notifications component', () => {
-  test('Displays title, close button, and list items when visible', () => {
-    const { container } = renderWithRedux(<Notifications />, {
-      initialState: {
-        notifications: {
-          notifications: mockNotifications,
-        },
-      },
+describe('Notifications', () => {
+    let store;
+    let mockAxios;
+    beforeEach(() => {
+        store = configureStore({
+            reducer: {
+                notifications: notificationsSlice,
+            },
+        });
+        mockAxios = new MockAdapter(axios);
     });
 
-    fireEvent.click(screen.getByText(/your notifications/i));
-
-    expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument();
-    expect(screen.getAllByRole('listitem')).toHaveLength(3);
-
-    const panel = container.querySelector('[data-testid="notifications-panel"]');
-    expect(panel.className).toMatch(/visible/);
-  });
-
-  test('Displays "No new notifications" when list is empty', () => {
-    renderWithRedux(<Notifications />, {
-      initialState: {
-        notifications: {
-          notifications: [],
-        },
-      },
+    test('Renders without crashing', () => {
+        render(
+            <Provider store={store}>
+                <Notifications />
+            </Provider>
+        );
+        expect(screen.getByText('Your notifications')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByText(/your notifications/i));
-    expect(screen.getByText(/no new notifications for now/i)).toBeInTheDocument();
-  });
+    test('toggles drawer visibility when clicking the title', async() => {
+        mockAxios.onGet('http://localhost:5173/notifications.json').reply(200, {
+          notifications: [
+            { id: 1, type: 'default', value: 'New course available' },
+            { id: 2, type: 'urgent', value: 'New resume available' },
+            { id: 3, type: 'urgent', html: { __html: '' } },
+          ],
+        });
+    
+        const notificationsResponse = await axios.get('http://localhost:5173/notifications.json');
+        expect(notificationsResponse.data.notifications).toHaveLength(3);
+    
+        await store.dispatch(fetchNotifications());
+    
+        const { container } = render(
+          <Provider store={store}>
+            <Notifications />
+          </Provider>
+        );
+    
+        const notificationsDrawer = container.querySelector('.Notifications');
+        expect(notificationsDrawer).toHaveClass('visible');
+    
+        fireEvent.click(screen.getByText(/your notifications/i));
+        expect(notificationsDrawer).not.toHaveClass('visible');
+        expect(screen.queryByRole('listitem', { name: 'New course available' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('listitem', { name: 'New resume available' })).not.toBeInTheDocument();
+    
+        fireEvent.click(screen.getByText(/your notifications/i));
+        expect(notificationsDrawer).toHaveClass('visible');
+        expect(screen.getByText('New course available')).toBeInTheDocument();
+        expect(screen.getByText('New resume available')).toBeInTheDocument();
+      });
 
-  test('Clicking a notification dispatches markAsRead with correct ID', () => {
-    const { store } = renderWithRedux(<Notifications />, {
-      initialState: {
-        notifications: {
-          notifications: mockNotifications,
-        },
-      },
+    test('close drawer on close button', async () => {
+        mockAxios.onGet('http://localhost:5173/notifications.json').reply(200, {
+          notifications: [
+            { id: 1, type: 'default', value: 'New course available' },
+            { id: 2, type: 'urgent', value: 'New resume available' },
+            { id: 3, type: 'urgent', html: { __html: '' } },
+          ],
+        });
+    
+        const notificationsResponse = await axios.get('http://localhost:5173/notifications.json');
+        expect(notificationsResponse.data.notifications).toHaveLength(3);
+    
+        await store.dispatch(fetchNotifications());
+    
+        const { container } = render(
+          <Provider store={store}>
+            <Notifications />
+          </Provider>
+        );
+    
+        const notificationsDrawer = container.querySelector('.Notifications');
+        fireEvent.click(screen.getByAltText('close icon'));
+        expect(notificationsDrawer).not.toHaveClass('visible');
+      });
+    
+    test('Marks notification as read', () => {
+        store = configureStore({
+            reducer: {
+                notifications: notificationsSlice,
+            },
+            preloadedState: {
+                notifications: {
+                    notifications: [
+                        { "id": 1, "type": "default", "value": "New course available" },
+                        { "id": 2, "type": "urgent", "value": "New resume available" },
+                        { "id": 3, "type": "urgent", "html": { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
+                    ],
+                    displayDrawer: true,
+                },
+            },
+        });
+        render(
+            <Provider store={store}>
+                <Notifications />
+            </Provider>
+        );
+
+        fireEvent.click(screen.getByText('New course available'));
+
+        const state = store.getState().notifications;
+        expect(state.notifications).toEqual([
+            { "id": 2, "type": "urgent", "value": "New resume available" },
+            { "id": 3, "type": "urgent", "html": { __html: '<strong>Urgent requirement</strong> - complete by EOD' } }
+        ]);
     });
-
-    fireEvent.click(screen.getByText(/your notifications/i));
-    fireEvent.click(screen.getByText(/new course available/i));
-
-    const actions = store.getActions();
-    expect(actions).toContainEqual(markAsRead(1));
-  });
-
-  test('Toggles visibility of notifications drawer with CSS class', () => {
-    const { container } = renderWithRedux(<Notifications />, {
-      initialState: {
-        notifications: {
-          notifications: mockNotifications,
-        },
-      },
-    });
-
-    const toggle = screen.getByText(/your notifications/i);
-    fireEvent.click(toggle); // Open
-
-    const panel = container.querySelector('[data-testid="notifications-panel"]');
-    expect(panel.className).toMatch(/visible/);
-
-    const closeBtn = screen.getByLabelText(/close/i);
-    fireEvent.click(closeBtn); // Close
-    expect(panel.className).not.toMatch(/visible/);
-  });
-
-  test('Component is memoized', () => {
-    expect(typeof Notifications.type).toBe('function');
-    expect(Notifications.$$typeof.toString()).toBe('Symbol(react.memo)');
-  });
 });

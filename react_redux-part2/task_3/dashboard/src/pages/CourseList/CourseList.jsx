@@ -1,56 +1,57 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchCourses } from '../../features/courses/coursesSlice';
-import CourseListRow from './CourseListRow/CourseListRow';
-import WithLogging from '../../components/HOC/WithLogging';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCourse, unSelectCourse } from './coursesSlice';
+import WithLogging from '../../hoc/WithLogging';
+import './CourseList.css';
 
-function CourseList() {
+const CourseList = () => {
   const dispatch = useDispatch();
   const courses = useSelector((state) => state.courses.courses);
 
-  useEffect(() => {
-    dispatch(fetchCourses());
-  }, [dispatch]);
+  const onChangeRow = (id, checked) => {
+    if (checked) {
+      dispatch(selectCourse(id));
+    } else {
+      dispatch(unSelectCourse(id));
+    }
+  };
 
   return (
-    <div>
-      <table id="CourseList">
+    <div className="course-list">
+      <h2>Course List</h2>
+      <table>
         <thead>
-          {courses.length > 0 ? (
-            <>
-              <CourseListRow
-                textFirstCell="Available courses"
-                isHeader={true}
-              />
-              <CourseListRow
-                textFirstCell="Course name"
-                textSecondCell="Credit"
-                isHeader={true}
-              />
-            </>
-          ) : (
-            <CourseListRow
-              isHeader={true}
-              textFirstCell="No course available yet"
-            />
-          )}
+          <tr>
+            <th>Course Name</th>
+            <th>Credits</th>
+            <th>Select</th>
+          </tr>
         </thead>
-        {courses.length > 0 && (
-          <tbody>
-            {courses.length > 0 ? (
-              courses.map((course) => (
-                <CourseListRow
-                  key={course.id}
-                  textFirstCell={course.name}
-                  textSecondCell={course.credit}
-                />
-              ))
-            ) : null}
-          </tbody>
-        )}
+        <tbody>
+          {courses.length > 0 ? (
+            courses.map((course) => (
+              <tr key={course.id}>
+                <td>{course.name}</td>
+                <td>{course.credits}</td>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={course.isSelected || false}
+                    onChange={(e) => onChangeRow(course.id, e.target.checked)}
+                  />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3">No courses available</td>
+            </tr>
+          )}
+        </tbody>
       </table>
     </div>
   );
-}
+};
 
-export default WithLogging(CourseList);
+const WrappedCourseList = WithLogging(CourseList);
+export default WrappedCourseList;

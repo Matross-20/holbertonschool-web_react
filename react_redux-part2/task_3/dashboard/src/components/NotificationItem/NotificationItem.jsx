@@ -1,36 +1,21 @@
-import { memo } from 'react';
+import React from "react";
 
-const NotificationItem = memo(function NotificationItem({
-  type,
-  html,
-  value,
-  markAsRead,
-  id,
-}) {
-  console.log(`Rendering NotificationItem with id: ${id}, type: ${type}, value: ${value}`);
+const NotificationItem = ({ type, value, id }) => {
+  const style = { color: type === "urgent" ? "red" : "blue" };
 
-  const handleClick = () => markAsRead(id);
-
-  if (type === 'urgent' && html !== undefined) {
-    return (
-      <li
-        style={{ color: 'red', cursor: 'pointer' }}
-        data-notification-type={type}
-        onClick={handleClick}
-        dangerouslySetInnerHTML={html}
-      />
-    );
-  }
+  const markAsRead = () => {
+    // Implement mark as read logic
+  };
 
   return (
-    <li
-      style={{ color: type === 'urgent' ? 'red' : 'blue', cursor: 'pointer' }}
+    <div
+      style={style}
       data-notification-type={type}
-      onClick={handleClick}
+      onClick={() => markAsRead(id)}
     >
       {value}
-    </li>
+    </div>
   );
-});
+};
 
 export default NotificationItem;
