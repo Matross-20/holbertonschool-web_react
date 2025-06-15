@@ -1,108 +1,50 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import Header from './Header';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
-import { StyleSheetTestUtils } from 'aphrodite';
+import { configureStore } from '@reduxjs/toolkit';
+import Header from "./Header";
+import authSlice, { login } from '../../features/auth/authSlice';
 
-jest.mock('../../assets/holberton-logo.jpg', () => 'mocked-path.jpg');
-
-const mockStore = configureStore([]);
-
-beforeEach(() => {
-  StyleSheetTestUtils.suppressStyleInjection();
-});
-
-afterEach(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
-
-describe('Header Component', () => {
-  const defaultStore = mockStore({
-    auth: {
-      isLoggedIn: false,
-      user: {},
-    },
-  });
-
-  const loggedInStore = mockStore({
-    auth: {
-      isLoggedIn: true,
-      user: {
-        email: 'user@example.com',
-      },
-    },
-  });
-
-  test('Should contain <h1> and <img> with correct content', () => {
-    render(
-      <Provider store={loggedInStore}>
-        <Header />
-      </Provider>
-    );
-
-    const headingElement = screen.getByRole('heading', { name: /school dashboard/i });
-    const imgElement = screen.getByAltText(/holberton logo/i);
-    expect(headingElement).toBeInTheDocument();
-    expect(imgElement).toBeInTheDocument();
-  });
-
-  test('Header is a functional component', () => {
-    expect(typeof Header).toBe('function');
-  });
-
-  describe('When user is logged out', () => {
-    test('Renders logo and heading', () => {
-      render(
-        <Provider store={defaultStore}>
-          <Header />
-        </Provider>
-      );
-
-      expect(screen.getByRole('img')).toHaveAttribute('src', 'mocked-path.jpg');
-      expect(screen.getByRole('heading')).toHaveTextContent('School Dashboard');
+describe('Header', () => {
+    let store;
+    beforeEach(() => {
+        store = configureStore({
+            reducer: {
+                auth: authSlice,
+            },
+        });
     });
 
-    test('Does not render logout section', () => {
-      expect(screen.queryByTestId('logoutSection')).not.toBeInTheDocument();
+    it('Should render without crashing', () => {
+        render(
+            <Provider store={store}>
+                <Header />
+            </Provider>
+        );
+        expect(screen.getByText(/school Dashboard/i)).toBeInTheDocument();
     });
 
-    test('No logout link', () => {
-      expect(screen.queryByRole('link', { name: /logout/i })).not.toBeInTheDocument();
-    });
-  });
-
-  describe('When user is logged in', () => {
-    test('Renders welcome message and logout link', () => {
-      render(
-        <Provider store={loggedInStore}>
-          <Header />
-        </Provider>
-      );
-      expect(screen.getByText(/welcome/i)).toBeInTheDocument();
-      expect(screen.getByText('user@example.com')).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: /logout/i })).toBeInTheDocument();
+    it('Should display logout button when logged in', () => {
+        store.dispatch(login({ email: 'test@example.com', password: 'password123' }));
+        const { container } = render(
+            <Provider store={store}>
+                <Header />
+            </Provider>
+        );
+        const logoutSection = container.querySelector('#logoutSection');
+        expect(logoutSection).toHaveTextContent(/welcome test@example.com/i);
+        const state = store.getState().auth;
+        expect(state.isLoggedIn).toBe(true);
     });
 
-    test('Calls logOut function when logout clicked', () => {
-      render(
-        <Provider store={loggedInStore}>
-          <Header />
-        </Provider>
-      );
-
-      const logoutLink = screen.getByRole('link', { name: /logout/i });
-      fireEvent.click(logoutLink);
-      expect(logoutLink).toBeInTheDocument();
+    it('Should dispatch logout action on logout button click', () => {
+        store.dispatch(login({ email: 'test@example.com', password: 'password123' }));
+        render(
+            <Provider store={store}>
+                <Header />
+            </Provider>
+        );
+        fireEvent.click(screen.getByText('(logout)'));
+        const state = store.getState().auth;
+        expect(state.isLoggedIn).toBe(false);
     });
-
-    test('Displays logout section div with id="logoutSection"', () => {
-      const { container } = render(
-        <Provider store={loggedInStore}>
-          <Header />
-        </Provider>
-      );
-      const logoutDiv = container.querySelector('#logoutSection');
-      expect(logoutDiv).toBeInTheDocument();
-    });
-  });
 });

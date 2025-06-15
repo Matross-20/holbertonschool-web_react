@@ -1,55 +1,135 @@
-import reducer, { fetchCourses } from "../courses/coursesSlice";
-import { logout } from "../auth/authSlice";
-import axios from "axios";
-import MockAdapter from "axios-mock-adapter";
+import coursesSlice, { clearCourses, fetchCourses } from '../courses/coursesSlice';
+import { logout } from '../auth/authSlice';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 
 const mock = new MockAdapter(axios);
 
-const initialState = {
-  courses: [],
-};
-
-describe("coursesSlice", () => {
-  afterEach(() => {
-    mock.reset();
-  });
-
-  it("should return the initial state by default", () => {
-    const nextState = reducer(undefined, { type: undefined });
-    expect(nextState).toEqual(initialState);
-  });
-
-  it("should fetch courses data successfully", async () => {
-    const mockCourses = [
-      { id: 1, name: "Math" },
-      { id: 2, name: "Science" },
-    ];
-
-    mock.onGet("http://localhost:5173/courses.json").reply(200, mockCourses);
-
-    const dispatch = jest.fn();
-    const getState = () => ({});
-    const thunkAction = fetchCourses();
-
-    const result = await thunkAction(dispatch, getState, undefined);
-    const fulfilledAction = {
-      type: fetchCourses.fulfilled.type,
-      payload: mockCourses,
+describe('coursesSlice', () => {
+    const initialState = {
+        courses: [],
+        status: 'idle',
+        error: null
     };
 
-    const nextState = reducer(initialState, fulfilledAction);
-    expect(nextState.courses).toEqual(mockCourses);
-  });
+    it('Should return the initial state', () => {
+        expect(coursesSlice(undefined, { type: 'unknown' })).toEqual(initialState);
+    });
 
-  it("should reset the courses state to empty on logout", () => {
-    const currentState = {
-      courses: [
-        { id: 1, name: "Math" },
-        { id: 2, name: "Science" },
-      ],
-    };
+    describe('fetchCourses async thunk', () => {
+        it('Should handle fetchCourses.pending', () => {
+            const action = { type: fetchCourses.pending.type };
+            const state = coursesSlice(initialState, action);
+            expect(state).toEqual({
+                ...initialState,
+                status: 'loading'
+            });
+        });
 
-    const nextState = reducer(currentState, logout());
-    expect(nextState).toEqual(initialState);
-  });
+        it('Should handle fetchCourses.fulfilled', () => {
+            const mockCourses = [
+                { id: 1, name: 'ES6', credit: 60 },
+                { id: 2, name: 'Webpack', credit: 20 }
+            ];
+            const action = { type: fetchCourses.fulfilled.type, payload: mockCourses };
+            const state = coursesSlice(initialState, action);
+            expect(state).toEqual({
+                ...initialState,
+                status: 'succeeded',
+                courses: mockCourses
+            });
+        });
+
+        it('Should handle fetchCourses.rejected', () => {
+            const action = {
+                type: fetchCourses.rejected.type,
+                error: { message: 'Network error' }
+            };
+            const state = coursesSlice(initialState, action);
+            expect(state).toEqual({
+                ...initialState,
+                status: 'failed',
+                error: 'Network error'
+            });
+        });
+
+        it('Should handle fetchCourses.rejected when base URL or port is incorrect', async () => {
+            const incorrectBaseURL = 'http://loclhost:5173';
+            mock.onGet(`${incorrectBaseURL}/courses.json`).networkError();
+            const dispatch = jest.fn();
+            const getState = jest.fn();
+            await fetchCourses()(dispatch, getState, null);
+            expect(dispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: fetchCourses.rejected.type,
+                })
+            );
+        });
+
+        it('Should handle fetchCourses.rejected when endpoint is incorrect', async () => {
+            const incorrectEndpoint = 'http://localhost:5173/corses.json';
+            mock.onGet(incorrectEndpoint).reply(404);
+            const dispatch = jest.fn();
+            const getState = jest.fn();
+            await fetchCourses()(dispatch, getState, null);
+            expect(dispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: fetchCourses.rejected.type,
+                })
+            );
+        });
+
+        it('Test courses', async () => {
+            mock.onGet('http://localhost:5173/courses.json').reply(200, {
+                "courses": [
+                    { "id": 1, "name": "ES6", "credit": 60 },
+                    { "id": 2, "name": "Webpack", "credit": 20 },
+                    { "id": 3, "name": "React", "credit": 40 }
+                ]
+            });
+            const coursesResponse = await axios.get('http://localhost:5173/courses.json');
+            const dispatch = jest.fn();
+            const getState = jest.fn();
+            await fetchCourses()(dispatch, getState, null);
+            expect(dispatch).toHaveBeenCalledTimes(2);
+            const fulfilledAction = dispatch.mock.calls[1][0];
+            expect(fulfilledAction).toEqual(
+                expect.objectContaining({
+                    type: fetchCourses.fulfilled.type,
+                    payload: coursesResponse.data.courses,
+                })
+            );
+        });
+    });
+
+    describe('clearCourses action', () => {
+        it('Should clear courses array', () => {
+            const previousState = {
+                courses: [
+                    { id: 1, name: 'ES6', credit: 60 },
+                    { id: 2, name: 'Webpack', credit: 20 }
+                ],
+                status: 'succeeded',
+                error: null
+            };
+            const state = coursesSlice(previousState, clearCourses());
+            expect(state).toEqual(initialState);
+        });
+    });
+
+    describe('logout action', () => {
+        it('Should reset courses array on logout', () => {
+            const stateWithCourses = {
+                courses: [
+                    { id: 1, title: 'Introduction to Programming' },
+                    { id: 2, title: 'Advanced Mathematics' },
+                ],
+                status: 'succeeded',
+                error: null
+            };
+            const action = { type: logout.type };
+            const state = coursesSlice(stateWithCourses, action);
+            expect(state).toEqual(initialState);
+        });
+    });
 });

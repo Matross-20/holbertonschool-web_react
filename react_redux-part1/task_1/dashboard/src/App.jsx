@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useReducer } from 'react';
 import axios from 'axios';
+import './App.css';
 import Notifications from './components/Notifications/Notifications';
 import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';

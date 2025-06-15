@@ -1,12 +1,12 @@
-import { combineReducers } from 'redux';
-import authReducer from '../features/auth/authSlice';
-import notificationsReducer from '../features/notifications/notificationsSlice';
-import coursesReducer from '../features/courses/coursesSlice';
+import { combineReducers } from '@reduxjs/toolkit';
+import authReducer from './authReducer';
+import notificationsReducer from './notificationsReducer';
+import coursesReducer from './coursesReducer';
 
 const rootReducer = combineReducers({
-  auth: authReducer,
-  notifications: notificationsReducer,
-  courses: coursesReducer,
+    auth: authReducer,
+    notifications: notificationsReducer,
+    courses: coursesReducer
 });
 
 export default rootReducer;

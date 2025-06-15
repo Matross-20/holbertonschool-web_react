@@ -1,47 +1,33 @@
-import authReducer, { login, logout } from '../auth/authSlice';
+import authReducer, { login, logout } from "../auth/authSlice";
 
-describe('authSlice', () => {
-  const initialState = {
-    user: {
-      email: '',
-      password: '',
-    },
-    isLoggedIn: false,
-  };
+describe("authSlice", () => {
+    const initialState = {
+        user: { email: "", password: "" },
+        isLoggedIn: false,
+    };
 
-  it('should return the initial state by default', () => {
-    // ⚠️ Important : utiliser type: undefined
-    expect(authReducer(undefined, { type: undefined })).toEqual(initialState);
-  });
-
-  it('should handle login', () => {
-    // ✅ Mot de passe suffisamment long pour matcher les tests internes
-    const action = login({
-      email: 'john.doe@holbertonschool.com',
-      password: 'password123',
+    it("should return the initial state", () => {
+        expect(authReducer(undefined, { type: "unknown" })).toEqual(initialState);
     });
 
-    const expectedState = {
-      user: {
-        email: 'john.doe@holbertonschool.com',
-        password: 'password123',
-      },
-      isLoggedIn: true,
-    };
+    it("should handle login", () => {
+        const user = { email: "test@example.com", password: "password" };
+        const action = login(user);
+        const expectedState = {
+            user,
+            isLoggedIn: true,
+        };
 
-    expect(authReducer(initialState, action)).toEqual(expectedState);
-  });
+        expect(authReducer(initialState, action)).toEqual(expectedState);
+    });
 
-  it('should handle logout', () => {
-    const loggedInState = {
-      user: {
-        email: 'john.doe@holbertonschool.com',
-        password: 'password123',
-      },
-      isLoggedIn: true,
-    };
+    it("should handle logout", () => {
+        const loggedInState = {
+            user: { email: "test@example.com", password: "password" },
+            isLoggedIn: true,
+        };
+        const action = logout();
 
-    const action = logout();
-    expect(authReducer(loggedInState, action)).toEqual(initialState);
-  });
+        expect(authReducer(loggedInState, action)).toEqual(initialState);
+    });
 });

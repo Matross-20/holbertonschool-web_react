@@ -1,15 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import Header from './Header';
-import { StyleSheetTestUtils } from "aphrodite";
-
-beforeEach(() => {
-  StyleSheetTestUtils.suppressStyleInjection();
-});
-
-afterEach(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
-
 
 export const convertHexToRGBA = (hexCode) => {
     let hex = hexCode.replace('#', '');

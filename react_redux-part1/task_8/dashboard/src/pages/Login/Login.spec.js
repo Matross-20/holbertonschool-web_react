@@ -1,78 +1,60 @@
-// src/pages/Login/Login.spec.js
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { renderWithProvider } from '../../tests/test-utils';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import Login from './Login';
-import { store } from '../../redux/store';
-import { login } from '../../features/auth/authSlice';
+import authSlice from '../../features/auth/authSlice';
 
-describe('Login component', () => {
-  test('renders form elements correctly', () => {
-    renderWithProvider(<Login />);
-
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
-    const submitButton = screen.getByRole('button', { name: /ok/i });
-
-    expect(emailInput).toBeInTheDocument();
-    expect(emailInput).toHaveAttribute('type', 'email');
-    expect(passwordInput).toBeInTheDocument();
-    expect(passwordInput).toHaveAttribute('type', 'password');
-    expect(submitButton).toBeInTheDocument();
-    expect(submitButton).toBeDisabled();
-  });
-
-  test('email input receives focus when label clicked', async () => {
-    renderWithProvider(<Login />);
-
-    const emailLabel = screen.getByText(/email/i);
-    userEvent.click(emailLabel);
-
-    const emailInput = screen.getByLabelText(/email/i);
-    await waitFor(() => expect(emailInput).toHaveFocus());
-  });
-
-  test('password input receives focus when label clicked', async () => {
-    renderWithProvider(<Login />);
-
-    const passwordLabel = screen.getByText(/password/i);
-    userEvent.click(passwordLabel);
-
-    const passwordInput = screen.getByLabelText(/password/i);
-    await waitFor(() => expect(passwordInput).toHaveFocus());
-  });
-
-  test('submit button is enabled with valid credentials', () => {
-    renderWithProvider(<Login />);
-
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
-    const submitButton = screen.getByRole('button', { name: /ok/i });
-
-    // Simulate input
-    fireEvent.change(emailInput, { target: { value: 'user@holberton.io' } });
-    fireEvent.change(passwordInput, { target: { value: '12345678' } });
-
-    expect(submitButton).toBeEnabled();
-  });
-
-  test('dispatches login action on valid submit', () => {
-    const spy = jest.spyOn(store, 'dispatch');
-
-    renderWithProvider(<Login />, { store });
-
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'test@holberton.io' },
-    });
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: 'holberton123' },
+describe('Login', () => {
+    let store;
+    beforeEach(() => {
+        store = configureStore({
+            reducer: {
+                auth: authSlice,
+            },
+        });
     });
 
-    const submitButton = screen.getByRole('button', { name: /ok/i });
-    fireEvent.click(submitButton);
+    it('Should render without crashing', () => {
+        render(
+            <Provider store={store}>
+                <Login />
+            </Provider>
+        );
+        expect(screen.getByText(/login to access the full dashboard/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+        expect(screen.getByText(/ok/i)).toBeInTheDocument();
+    });
 
-    expect(spy).toHaveBeenCalledWith(
-      login({ email: 'test@holberton.io', password: 'holberton123' })
-    );
-  });
+    it('Should dispatches login action on form submission with valid data', () => {
+        render(
+            <Provider store={store}>
+                <Login />
+            </Provider>
+        );
+        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } });
+        fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } });
+        fireEvent.click(screen.getByText(/ok/i));
+        const state = store.getState().auth;
+        expect(state.isLoggedIn).toBe(true);
+        expect(state.user.email).toBe('test@example.com');
+        expect(state.user.password).toBe('password123');
+        expect(screen.getByText(/ok/i)).not.toBeDisabled();
+    });
+
+    it('Should not dispatches login action on form submission with invalid data', () => {
+        render(
+            <Provider store={store}>
+                <Login />
+            </Provider>
+        );
+        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } });
+        fireEvent.change(screen.getByLabelText(/password/i), { target: { value: '123' } });
+        fireEvent.click(screen.getByText(/ok/i));
+        const state = store.getState().auth;
+        expect(state.isLoggedIn).toBe(false);
+        expect(state.user.email).toBe('');
+        expect(state.user.password).toBe('');
+        expect(screen.getByText(/ok/i)).toBeDisabled();
+    });
 });

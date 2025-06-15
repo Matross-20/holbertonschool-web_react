@@ -1,93 +1,97 @@
 import { render, screen } from '@testing-library/react';
-import CourseList from './CourseList';
-import { StyleSheetTestUtils } from 'aphrodite';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '../../features/auth/authSlice';
-import coursesReducer from '../../features/courses/coursesSlice';
-import notificationsReducer from '../../features/notifications/notificationsSlice';
-import * as courseSlice from '../../features/courses/coursesSlice';
+import CourseList from './CourseList';
+import coursesSlice from '../../features/courses/coursesSlice';
+import authSlice, { login, logout } from '../../features/auth/authSlice';
 
-// Bloquer Aphrodite dans les tests
-beforeEach(() => {
-  StyleSheetTestUtils.suppressStyleInjection();
-});
-afterEach(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
+describe('CourseList', () => {
+    let store;
+    beforeEach(() => {
+        store = configureStore({
+            reducer: {
+                courses: coursesSlice,
+                auth: authSlice,
+            },
+        });
+    });
 
-// Render custom avec provider
-function renderWithProvider(ui, preloadedState = {}) {
-  const store = configureStore({
-    reducer: {
-      auth: authReducer,
-      courses: coursesReducer,
-      notifications: notificationsReducer,
-    },
-    preloadedState,
-  });
+    it('Should render without crashing', () => {
+        render(
+            <Provider store={store}>
+                <CourseList />
+            </Provider>
+        );
+        expect(screen.getByText('No course available yet')).toBeInTheDocument();
+    });
 
-  return render(<Provider store={store}>{ui}</Provider>);
-}
+    it('Should displays the list of courses', () => {
+        store = configureStore({
+            reducer: {
+                courses: coursesSlice,
+                auth: authSlice,
+            },
+            preloadedState: {
+                courses: {
+                    courses: [
+                        { "id": 1, "name": "ES6", "credit": 60 },
+                        { "id": 2, "name": "Webpack", "credit": 20 },
+                        { "id": 3, "name": "React", "credit": 40 }
+                    ],
+                },
+            },
+        });
+        render(
+            <Provider store={store}>
+                <CourseList />
+            </Provider>
+        );
+        expect(screen.getByText('ES6')).toBeInTheDocument();
+        expect(screen.getByText('Webpack')).toBeInTheDocument();
+        expect(screen.getByText('React')).toBeInTheDocument();
+    });
 
-// Mock l'appel API
-jest.spyOn(courseSlice, 'fetchCourses').mockImplementation(() => () => {});
+    it('Should clear courses on logout', () => {
+        store = configureStore({
+            reducer: {
+                courses: coursesSlice,
+                auth: authSlice,
+            },
+            preloadedState: {
+                courses: {
+                    courses: [
+                        { "id": 1, "name": "ES6", "credit": 60 },
+                        { "id": 2, "name": "Webpack", "credit": 20 },
+                        { "id": 3, "name": "React", "credit": 40 }
+                    ],
+                },
+            },
+        });
+        render(
+            <Provider store={store}>
+                <CourseList />
+            </Provider>
+        );
+        store.dispatch(logout());
+        expect(store.getState().courses.courses).toHaveLength(0);
+    });
 
-describe('CourseList component', () => {
-  test('renders without crashing', async () => {
-    const preloadedState = {
-      auth: {
-        user: { email: 'test@example.com', password: '12345678' },
-        isLoggedIn: true,
-      },
-      courses: {
-        courses: [
-          { id: 1, name: 'ES6', credit: 60 },
-          { id: 2, name: 'WebPack', credit: 20 },
-          { id: 3, name: 'React', credit: 40 },
-        ],
-      },
-    };
-
-    renderWithProvider(<CourseList />, preloadedState);
-    const title = await screen.findByText(/Available courses/i);
-    expect(title).toBeInTheDocument();
-  });
-
-  test('renders correct number of rows when courses are available', () => {
-    const preloadedState = {
-      auth: {
-        user: { email: 'test@example.com', password: '12345678' },
-        isLoggedIn: true,
-      },
-      courses: {
-        courses: [
-          { id: 1, name: 'ES6', credit: 60 },
-          { id: 2, name: 'WebPack', credit: 20 },
-          { id: 3, name: 'React', credit: 40 },
-        ],
-      },
-    };
-
-    renderWithProvider(<CourseList />, preloadedState);
-    const rows = screen.getAllByRole('row');
-    // 2 headers + 3 courses = 5 rows
-    expect(rows).toHaveLength(5);
-  });
-
-  test('renders fallback when no courses available', () => {
-    const preloadedState = {
-      auth: {
-        user: { email: 'test@example.com', password: '12345678' },
-        isLoggedIn: true,
-      },
-      courses: {
-        courses: [],
-      },
-    };
-
-    renderWithProvider(<CourseList />, preloadedState);
-    const noCoursesRow = screen.getByText(/no course available yet/i);
-    expect(noCoursesRow).toBeInTheDocument();
-  });
+    it('Should load courses on login', () => {
+        store = configureStore({
+            reducer: {
+                courses: coursesSlice,
+                auth: authSlice,
+            },
+        });
+        render(
+            <Provider store={store}>
+                <CourseList />
+            </Provider>
+        );
+        store.dispatch(login({
+            email: 'test@example.com',
+            password: 'password123'
+        }));
+        expect(store.getState().courses.courses).toHaveLength(0);
+    });
 });

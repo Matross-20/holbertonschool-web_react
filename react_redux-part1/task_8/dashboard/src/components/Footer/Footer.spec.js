@@ -1,98 +1,50 @@
 import { render, screen } from '@testing-library/react';
-import Footer from './Footer';
-import { getCurrentYear, getFooterCopy } from '../../utils/utils';
-import { StyleSheetTestUtils } from 'aphrodite';
 import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
+import { configureStore } from '@reduxjs/toolkit';
+import Footer from './Footer';
+import authSlice, { login } from '../../features/auth/authSlice';
 
-const mockStore = configureStore([]);
-
-beforeEach(() => {
-  StyleSheetTestUtils.suppressStyleInjection();
-});
-
-afterEach(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
-
-describe('Footer Component', () => {
-  const getStore = (isLoggedIn) =>
-    mockStore({
-      auth: {
-        isLoggedIn,
-        user: isLoggedIn ? { email: 'test@example.com' } : {},
-      },
+describe('Footer', () => {
+    let store;
+    beforeEach(() => {
+        store = configureStore({
+            reducer: {
+                auth: authSlice,
+            },
+        });
     });
 
-  describe('Basic Rendering', () => {
-    test('Renders without crashing', () => {
-      render(
-        <Provider store={getStore(false)}>
-          <Footer />
-        </Provider>
-      );
-      const footerParagraph = screen.getByText(
-        `Copyright ${getCurrentYear()} - ${getFooterCopy(true)}`
-      );
-      expect(footerParagraph).toHaveTextContent(/copyright \d{4} - holberton school/i);
+    it('Should render without crashing', () => {
+        const currentYear = new Date().getFullYear();
+        const expectedText = `Copyright ${currentYear} - Holberton School`;
+        render(
+            <Provider store={store}>
+                <Footer />
+            </Provider>
+        );
+        const footerText = screen.getByText(expectedText);
+        expect(footerText).toBeTruthy();
     });
 
-    test('Does not render contact link when user is not logged in', () => {
-      render(
-        <Provider store={getStore(false)}>
-          <Footer />
-        </Provider>
-      );
-      const link = screen.queryByRole('link', { name: /contact us/i });
-      expect(link).not.toBeInTheDocument();
+    it('Should display "Contact us" link when logged in', () => {
+        store.dispatch(login({ email: 'test@example.com', password: 'password123' }));
+        render(
+            <Provider store={store}>
+                <Footer />
+            </Provider>
+        );
+        const contactUsLink = screen.getByText(/contact us/i);
+        expect(contactUsLink).toBeInTheDocument();
+        expect(contactUsLink).toBeInstanceOf(HTMLAnchorElement);
+        expect(contactUsLink).toHaveAttribute('href');
     });
 
-    test('Renders contact link when user is logged in', () => {
-      render(
-        <Provider store={getStore(true)}>
-          <Footer />
-        </Provider>
-      );
-      const link = screen.getByRole('link', { name: /contact us/i });
-      expect(link).toBeInTheDocument();
+    it('Should not display "Contact us" link when logged out', () => {
+        render(
+            <Provider store={store}>
+                <Footer />
+            </Provider>
+        );
+        expect(screen.queryByText(/contact us/i)).not.toBeInTheDocument();
     });
-  });
-
-  describe('Edge Scenarios', () => {
-    test('Renders contact link when isLoggedIn is true but no email', () => {
-      const store = mockStore({
-        auth: {
-          isLoggedIn: true,
-          user: {},
-        },
-      });
-      render(
-        <Provider store={store}>
-          <Footer />
-        </Provider>
-      );
-      const link = screen.queryByRole('link', { name: /contact us/i });
-      expect(link).toBeInTheDocument();
-    });
-
-    test('Does not render contact link when user isLoggedIn is false', () => {
-      const store = mockStore({
-        auth: {
-          isLoggedIn: false,
-          user: { email: 'test@example.com' },
-        },
-      });
-      render(
-        <Provider store={store}>
-          <Footer />
-        </Provider>
-      );
-      const link = screen.queryByRole('link', { name: /contact us/i });
-      expect(link).not.toBeInTheDocument();
-    });
-  });
-
-  test('Should confirm Footer is a functional component', () => {
-    expect(typeof Footer).toBe('function');
-  });
 });

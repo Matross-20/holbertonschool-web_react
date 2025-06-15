@@ -1,93 +1,116 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import App from '../App';
+import { act, render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import * as notificationAPI from '../redux/notificationSlice';
-import * as courseAPI from '../redux/courseSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import App from '../App';
+import authSlice, { logout, login } from '../features/auth/authSlice';
+import notificationsSlice from '../features/notifications/notificationsSlice';
+import coursesSlice, { clearCourses } from '../features/courses/coursesSlice';
 
-const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
+describe('App Component Integration Tests', () => {
+    let store;
+    let axiosMock;
+    beforeEach(() => {
+        store = configureStore({
+            reducer: {
+                auth: authSlice,
+                courses: coursesSlice,
+                notifications: notificationsSlice
+            },
+        });
+        axiosMock = new MockAdapter(axios);
+        axiosMock
+            .onGet('http://localhost:5173/courses.json')
+            .reply(200, {
+                courses: [
+                    { id: 1, name: 'ES6', credit: 60 },
+                    { id: 2, name: 'Webpack', credit: 20 },
+                    { id: 3, name: 'React', credit: 40 },
+                ],
+            });
+        axiosMock
+            .onGet('http://localhost:5173/notifications.json')
+            .reply(200, {
+                notifications: [
+                    { id: 1, type: 'default', value: 'New course available' },
+                    { id: 2, type: 'urgent', value: 'New resume available' },
+                    { id: 3, type: 'urgent', html: { __html: '' } },
+                ],
+            });
+    });
+    afterEach(() => {
+        axiosMock.restore();
+    });
+    const renderWithStore = () => {
+        return render(
+            <Provider store={store}>
+                <App />
+            </Provider>
+        );
+    };
 
-// Mock fetchNotifications and fetchCourses to avoid actual API calls
-jest.spyOn(notificationAPI, 'fetchNotifications').mockImplementation(() => ({
-  type: 'notifications/fetchNotifications',
-}));
-
-jest.spyOn(courseAPI, 'fetchCourses').mockImplementation(() => ({
-  type: 'courses/fetchCourses',
-}));
-
-describe('App Component', () => {
-  it('renders Login component when isLoggedIn is false', () => {
-    const store = mockStore({
-      auth: { isLoggedIn: false },
-      notifications: { list: [] },
-      courses: { courses: [] },
+    it('Should not populate courses when not logged in', async () => {
+        renderWithStore();
+        expect(store.getState().courses.courses).toHaveLength(0);
+        await waitFor(() => {
+            expect(store.getState().courses.courses).toHaveLength(0);
+            expect(store.getState().notifications).toEqual({
+                displayDrawer: true,
+                notifications: [
+                    { id: 1, type: 'default', value: 'New course available' },
+                    { id: 2, type: 'urgent', value: 'New resume available' },
+                    { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } },
+                ],
+            });
+        });
     });
 
-    render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    );
-
-    expect(screen.getByText(/Log in to continue/i)).toBeInTheDocument();
-  });
-
-  it('renders CourseList component when isLoggedIn is true', () => {
-    const store = mockStore({
-      auth: { isLoggedIn: true },
-      notifications: { list: [] },
-      courses: {
-        courses: [
-          { id: 1, name: 'ES6', credit: 60 },
-          { id: 2, name: 'Webpack', credit: 20 },
-        ],
-      },
+    it('Should populate courses WHEN logged in', async () => {
+        store.dispatch(login({
+            email: 'test@example.com',
+            password: 'password123'
+        }));
+        renderWithStore();
+        expect(store.getState().courses.courses).toHaveLength(0);
+        await waitFor(() => {
+            expect(store.getState().courses.courses).toEqual([
+                { id: 1, name: 'ES6', credit: 60 },
+                { id: 2, name: 'Webpack', credit: 20 },
+                { id: 3, name: 'React', credit: 40 },
+            ],
+            );
+            expect(store.getState().notifications).toEqual({
+                displayDrawer: true,
+                notifications: [
+                    { id: 1, type: 'default', value: 'New course available' },
+                    { id: 2, type: 'urgent', value: 'New resume available' },
+                    { id: 3, type: 'urgent', html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } },
+                ],
+            });
+        });
     });
 
-    render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    );
-
-    expect(screen.getByText(/Course list/i)).toBeInTheDocument();
-    expect(screen.getByText(/ES6/)).toBeInTheDocument();
-    expect(screen.getByText(/Webpack/)).toBeInTheDocument();
-  });
-
-  it('calls fetchNotifications on mount', () => {
-    const store = mockStore({
-      auth: { isLoggedIn: false },
-      notifications: { list: [] },
-      courses: { courses: [] },
+    it('Should CLEAR courses on logout', async () => {
+        store.dispatch(login({
+            email: 'test@example.com',
+            password: 'password123'
+        }));
+        renderWithStore();
+        await waitFor(() => {
+            expect(store.getState().courses.courses).toEqual([
+                { id: 1, name: 'ES6', credit: 60 },
+                { id: 2, name: 'Webpack', credit: 20 },
+                { id: 3, name: 'React', credit: 40 },
+            ],
+            );
+        });
+        act(() => {
+            store.dispatch(logout());
+            store.dispatch(clearCourses());
+        });
+        await waitFor(() => {
+            expect(store.getState().courses.courses).toHaveLength(0);
+        });
     });
-
-    render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    );
-
-    expect(notificationAPI.fetchNotifications).toHaveBeenCalled();
-  });
-
-  it('calls fetchCourses when isLoggedIn is true', () => {
-    const store = mockStore({
-      auth: { isLoggedIn: true },
-      notifications: { list: [] },
-      courses: { courses: [] },
-    });
-
-    render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    );
-
-    expect(courseAPI.fetchCourses).toHaveBeenCalled();
-  });
 });

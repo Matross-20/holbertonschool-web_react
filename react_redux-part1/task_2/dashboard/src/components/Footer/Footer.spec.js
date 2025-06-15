@@ -1,16 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import Footer from './Footer';
 import { getCurrentYear, getFooterCopy } from '../../utils/utils';
-import { StyleSheetTestUtils } from "aphrodite";
-
-beforeEach(() => {
-  StyleSheetTestUtils.suppressStyleInjection();
-});
-
-afterEach(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
-
 
 describe('Footer Component', () => {
     const defaultUser = { isLoggedIn: false, email: '', password: '' };
