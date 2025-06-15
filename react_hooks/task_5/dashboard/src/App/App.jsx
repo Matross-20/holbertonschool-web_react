@@ -1,37 +1,62 @@
-import React, { useReducer, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
+import Login from '../Login/Login';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
-import Login from '../Login/Login';
 import CourseList from '../CourseList/CourseList';
-import Footer from '../Footer/Footer';
-import PropTypes from 'prop-types';
 import { getLatestNotification } from '../utils/utils';
 import { StyleSheet, css } from 'aphrodite';
-import { appReducer, initialState, APP_ACTIONS } from './appReducer';
+import AppContext from '../Context/context';
 
 const App = () => {
-  const [state, dispatch] = useReducer(appReducer, initialState);
+  const [displayDrawer, setDisplayDrawer] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [coursesList, setCoursesList] = useState([]);
+  const [user, setUser] = useState({
+    email: '',
+    password: '',
+    isLoggedIn: false,
+  });
 
+  const logIn = useCallback((email, password) => {
+    setUser({
+      email,
+      password,
+      isLoggedIn: true,
+    });
+  }, []);
+
+  const logOut = useCallback(() => {
+    setUser({
+      email: '',
+      password: '',
+      isLoggedIn: false,
+    });
+  }, []);
+
+  const markNotificationAsRead = useCallback((id) => {
+    console.log(`Notification ${id} has been marked as read`);
+    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+  }, []);
+
+  const handleDisplayDrawer = () => setDisplayDrawer(true);
+  const handleHideDrawer = () => setDisplayDrawer(false);
+
+  // Fetch notifications on initial mount
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get('/notifications.json');
-        const notificationsData = response.data.map((notification) => {
-          if (notification.html) {
-            notification.html.__html = getLatestNotification();
-          }
-          return notification;
-        });
-        dispatch({
-          type: APP_ACTIONS.SET_NOTIFICATIONS,
-          payload: { notifications: notificationsData },
-        });
-      } catch (error) {
+        const res = await axios.get('/notifications.json');
+        const data = res.data.map((notif) =>
+          notif.id === 3 ? { ...notif, html: { __html: getLatestNotification() } } : notif
+        );
+        setNotifications(data);
+      } catch (err) {
         if (process.env.NODE_ENV === 'development') {
-          console.error('Error fetching notifications:', error);
+          console.error('Failed to fetch notifications:', err);
         }
       }
     };
@@ -39,145 +64,76 @@ const App = () => {
     fetchNotifications();
   }, []);
 
+  // Fetch courses when user logs in or logs out
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get('/courses.json');
-        dispatch({
-          type: APP_ACTIONS.SET_COURSES,
-          payload: { courses: response.data },
-        });
-      } catch (error) {
+        const res = await axios.get('/courses.json');
+        setCoursesList(res.data);
+      } catch (err) {
         if (process.env.NODE_ENV === 'development') {
-          console.error('Error fetching courses:', error);
+          console.error('Failed to fetch courses:', err);
         }
       }
     };
 
-    if (state.user.isLoggedIn) {
-      fetchCourses();
-    }
-  }, [state.user]);
-
-  const handleDisplayDrawer = useCallback(() => {
-    dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER });
-  }, []);
-
-  const handleHideDrawer = useCallback(() => {
-    dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER });
-  }, []);
-
-  const logIn = useCallback((email, password) => {
-    dispatch({
-      type: APP_ACTIONS.LOGIN,
-      payload: { email, password },
-    });
-  }, []);
-
-  const logOut = useCallback(() => {
-    dispatch({ type: APP_ACTIONS.LOGOUT });
-  }, []);
-
-  const markNotificationAsRead = useCallback((id) => {
-    console.log(`Notification ${id} has been marked as read`);
-    dispatch({
-      type: APP_ACTIONS.MARK_NOTIFICATION_READ,
-      payload: { id },
-    });
-  }, []);
+    fetchCourses();
+  }, [user]);
 
   return (
-    <>
-      <Notifications
-        listNotifications={state.notifications}
-        displayDrawer={state.displayDrawer}
-        handleDisplayDrawer={handleDisplayDrawer}
-        handleHideDrawer={handleHideDrawer}
-        markNotificationAsRead={markNotificationAsRead}
-      />
-
-      <div className={css(styles.container)}>
-        <div className={css(styles.app)}>
-          <Header user={state.user} logOut={logOut} />
+    <AppContext.Provider value={{ user, logOut }}>
+      <div className={css(styles.app)}>
+        <div className={css(styles.notifications)}>
+          <Notifications
+            notifications={notifications}
+            displayDrawer={displayDrawer}
+            handleDisplayDrawer={handleDisplayDrawer}
+            handleHideDrawer={handleHideDrawer}
+            markNotificationAsRead={markNotificationAsRead}
+          />
         </div>
-        <div className={css(styles.appBody)}>
-          {!state.user.isLoggedIn ? (
-            <BodySectionWithMarginBottom title="Log in to continue">
-              <Login logIn={logIn} />
+        <Header />
+        <div className={css(styles.body)}>
+          {user.isLoggedIn ? (
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList courses={coursesList} />
             </BodySectionWithMarginBottom>
           ) : (
-            <BodySectionWithMarginBottom title="Course list">
-              <CourseList listCourses={state.courses} />
+            <BodySectionWithMarginBottom title="Log in to continue">
+              <Login
+                logIn={logIn}
+                email={user.email}
+                password={user.password}
+              />
             </BodySectionWithMarginBottom>
           )}
+          <BodySection title="News from the School">
+            <p>Holberton School News goes here</p>
+          </BodySection>
         </div>
-        <BodySection title="News from the School">
-          <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with desktop publishing software like Aldus
-            PageMaker including versions of Lorem Ipsum.
-          </p>
-        </BodySection>
-
-        <div className={css(styles.footer)}>
-          <Footer user={state.user} />
-        </div>
+        <Footer />
       </div>
-    </>
+    </AppContext.Provider>
   );
 };
 
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {},
-};
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-};
-
-const cssVars = {
-  mainColor: '#e01d3f',
-};
-
-const screenSize = {
-  small: '@media screen and (max-width: 900px)',
-};
-
 const styles = StyleSheet.create({
-  container: {
-    width: 'calc(100% - 16px)',
-    marginLeft: '8px',
-    marginRight: '8px',
-  },
-
   app: {
-    borderBottom: `3px solid ${cssVars.mainColor}`,
-  },
-
-  appBody: {
+    margin: '0',
+    minHeight: '100vh',
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection: 'column',
   },
-
-  footer: {
-    borderTop: `3px solid ${cssVars.mainColor}`,
-    width: '100%',
+  body: {
+    flex: '1',
+  },
+  notifications: {
     display: 'flex',
-    justifyContent: 'center',
-    position: 'fixed',
-    bottom: 0,
-    fontStyle: 'italic',
-    [screenSize.small]: {
-      position: 'static',
-    },
+    position: 'absolute',
+    flexDirection: 'column',
+    right: '0',
+    paddingRight: '1rem',
+    minWidth: '30rem',
   },
 });
 

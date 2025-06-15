@@ -1,23 +1,74 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import Header from './Header';
+import AppContext from '../Context/context';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-  it('should render the logo and title', () => {
-    const { getByAltText, getByText } = render(<Header />);
-    
-    expect(getByAltText(/holberton logo/i)).toBeInTheDocument();
-    expect(getByText(/School dashboard/i)).toBeInTheDocument();
-  });
-  it('should render the Holberton logo', () => {
-    render(<Header />);
-    const logo = screen.getByAltText(/holberton logo/i);
-    expect(logo).toBeInTheDocument();
-  });
+beforeAll(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
 
-  it('should render a heading with the text "School Dashboard"', () => {
-    render(<Header />);
-    const heading = screen.getByRole('heading', { level: 1, name: /school dashboard/i });
-    expect(heading).toBeInTheDocument();
-  });
+afterAll(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-  
+test('h1 element with the text School Dashboard is rendered', () => {
+  render(<Header />);
+  const heading = screen.getByRole('heading', { name: /School Dashboard/i });
+  expect(heading).toBeInTheDocument();
+});
+
+test('an img element is rendered', () => {
+  render(<Header />);
+  const image = screen.getByAltText(/holberton logo/i);
+  expect(image).toBeInTheDocument();
+});
+
+test('does not render logout section if user is not logged in', () => {
+  const contextValue = {
+    user: { email: '', password: '', isLoggedIn: false },
+    logOut: jest.fn(),
+  };
+  render(
+    <AppContext.Provider value={contextValue}>
+      <Header />
+    </AppContext.Provider>
+  );
+  const logoutSection = screen.queryByTestId('logoutSection');
+  expect(logoutSection).not.toBeInTheDocument();
+});
+
+test('renders logout section if user is logged in', () => {
+  const contextValue = {
+    user: { email: 'user@mail.com', password: 'pass', isLoggedIn: true },
+    logOut: jest.fn(),
+  };
+  render(
+    <AppContext.Provider value={contextValue}>
+      <Header />
+    </AppContext.Provider>
+  );
+
+  const logoutSection = screen.getByTestId('logoutSection');
+  expect(logoutSection).toBeInTheDocument();
+  expect(logoutSection).toHaveTextContent('Welcome user@mail.com');
+  expect(within(logoutSection).getByText('(logout)')).toBeInTheDocument();
+});
+
+test('calls logOut function when logout link is clicked', () => {
+  const logOutMock = jest.fn();
+  const contextValue = {
+    user: { email: 'test@mail.com', password: '12345678', isLoggedIn: true },
+    logOut: logOutMock,
+  };
+
+  render(
+    <AppContext.Provider value={contextValue}>
+      <Header />
+    </AppContext.Provider>
+  );
+
+  const logoutLink = screen.getByText('(logout)');
+  fireEvent.click(logoutLink);
+  expect(logOutMock).toHaveBeenCalled();
+});

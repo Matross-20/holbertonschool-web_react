@@ -1,122 +1,124 @@
-// src/Login/Login.jsx
 import React, { useState } from 'react';
-import WithLogging from '../HOC/WithLogging';
 import { StyleSheet, css } from 'aphrodite';
+import PropTypes from 'prop-types';
+import WithLogging from '../HOC/WithLogging';
 
-const Login = (props) => {
-
+function Login({ logIn }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [enableSubmit, setEnableSubmit] = useState(false);
 
-  const handleLoginSubmit = (event) => {
-    event.preventDefault();
-    const { email, password } = formData;
-    props.logIn(email, password); // Use props directly
-  };
-  
-  const handleChangeEmail = (event) => {
-    const newEmail = event.target.value;
-    setFormData((prevData) => {
-      const updatedData = { ...prevData, email: newEmail };
-      validateForm(updatedData); // Use the updated formData
-      return updatedData;
-    });
+  const validateForm = (email, password) => {
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValidPassword = password.length >= 8;
+    return isValidEmail && isValidPassword;
   };
 
-  const handleChangePassword = (event) => {
-    const newPassword = event.target.value;
-    setFormData((prevData) => {
-      const updatedData = { ...prevData, password: newPassword };
-      validateForm(updatedData);
-      return updatedData;
-    });
+  const handleChangeEmail = (e) => {
+    const email = e.target.value;
+    const password = formData.password;
+    setFormData({ ...formData, email });
+    setEnableSubmit(validateForm(email, password));
   };
 
-
-  const validateForm = (data) => {
-    const { email, password } = data;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex for email validation
-    const isEmailValid = emailRegex.test(email);
-    const isPasswordValid = password.length >= 8;
-    setEnableSubmit(isEmailValid && isPasswordValid);
+  const handleChangePassword = (e) => {
+    const password = e.target.value;
+    const email = formData.email;
+    setFormData({ ...formData, password });
+    setEnableSubmit(validateForm(email, password));
   };
 
-    const { email, password } = formData;
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    logIn(formData.email, formData.password);
+  };
 
-
-    return (
-      <div className={css(styles.Appbody)}>
-        <div className={css(styles.longbr)}></div>
-        <p>Login to access the full dashboard</p>
-        <form
-          className={css(styles.Appbodyform)}
-          onSubmit={handleLoginSubmit}
-        >
-          <label htmlFor="email">Email:</label>
+  return (
+    <div className={css(styles.body)}>
+      <p>Login to access the full dashboard</p>
+      <form onSubmit={handleLoginSubmit}>
+        <div className={css(styles.inputGroup)}>
+          <label htmlFor="email">Email</label>
           <input
-            type="email"
             id="email"
-            name="email"
-            value={email}
+            type="email"
+            value={formData.email}
             onChange={handleChangeEmail}
+            className={css(styles.input)}
           />
-          <label htmlFor="password">Password:</label>
+        </div>
+        <div className={css(styles.inputGroup)}>
+          <label htmlFor="password">Password</label>
           <input
-            type="password"
             id="password"
-            name="password"
-            value={password}
+            type="password"
+            value={formData.password}
             onChange={handleChangePassword}
+            className={css(styles.input)}
           />
+        </div>
+        <div className={css(styles.buttonWrapper)}>
           <input
             type="submit"
             value="OK"
+            className={css(styles.button)}
             disabled={!enableSubmit}
-            className={css(styles.button, !enableSubmit && styles.disabled)}
           />
-        </form>
-      </div>
+        </div>
+      </form>
+    </div>
   );
+}
+
+Login.propTypes = {
+  logIn: PropTypes.func,
 };
 
+Login.defaultProps = {
+  logIn: () => {},
+};
 
 const styles = StyleSheet.create({
-  Appbody: {
-    marginTop: '20px',
-  },
-
-  longbr: {
-    borderTop: '1px solid red',
-    marginBottom: '20px',
-  },
-  
-  Appbodyform: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-    marginTop: '20px',
-  },
-  
-  button: {
-    marginTop: '15px',
-    padding: '10px',
-    fontSize: '16px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    cursor: 'pointer',
+  body: {
+    padding: '30px',
     '@media (max-width: 900px)': {
-      fontSize: '14px',
+      padding: '20px',
     },
-    ':hover': {
-      backgroundColor: '#0056b3',
+  },
+  inputGroup: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: '1em',
+    '@media (max-width: 900px)': {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
     },
-  }, 
-  disabled: {
-    backgroundColor: "#c0c0c0",
-    cursor: "not-allowed",
+  },
+  input: {
+    marginLeft: '10px',
+    '@media (max-width: 900px)': {
+      marginLeft: '0',
+      marginTop: '5px',
+      width: '100%',
+    },
+  },
+  buttonWrapper: {
+    '@media (max-width: 900px)': {
+      display: 'flex',
+      justifyContent: 'flex-start',
+    },
+  },
+  button: {
+    marginLeft: '10px',
+    '@media (max-width: 900px)': {
+      marginLeft: '0',
+    },
   },
 });
 
+// ✅ Exporter le composant nommé (optionnel mais recommandé pour les tests)
+export { Login };
 
-export default WithLogging(Login);
+// ✅ Export par défaut : composant avec le HOC
+const LoginWithLogging = WithLogging(Login);
+export default LoginWithLogging;

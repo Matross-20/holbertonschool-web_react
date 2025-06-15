@@ -1,21 +1,28 @@
-// src/Footer/Footer.spec.js
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import Footer from './Footer';
+import AppContext from '../Context/context';
 import { getCurrentYear, getFooterCopy } from '../utils/utils';
 
-  it('should render the copyright text', () => {
-    const { getByText } = render(<Footer />);
-    
-    // Check if the copyright text is rendered
-    expect(getByText(/Copyright/i)).toBeInTheDocument();
+describe('Footer component', () => {
+  test('renders copyright with default context (not logged in)', () => {
+    render(
+      <AppContext.Provider
+        value={{
+          user: { email: '', password: '', isLoggedIn: false },
+          logOut: jest.fn(),
+        }}
+      >
+        <Footer />
+      </AppContext.Provider>
+    );
+
+    const year = getCurrentYear();
+    const copy = getFooterCopy(true);
+    const expectedText = `Copyright ${year} - ${copy}`;
+    expect(screen.getByText(expectedText, { exact: false })).toBeInTheDocument();
+
+    // Le message de logout ne doit pas s'afficher
+    expect(screen.queryByText(/Welcome/i)).not.toBeInTheDocument();
   });
-
-
-  it('should render the footer message based on isIndex argument in getFooterCopy', () => {
-    const isIndex = true;
-    const footerMessage = getFooterCopy(isIndex); // Test the utility function directly
-
-    expect(footerMessage).toBe('Holberton School'); // Replace with expected value based on your implementation
-  });
-
+});

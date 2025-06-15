@@ -1,123 +1,130 @@
-// src/Login/Login.jsx
-import React, { Component, useState } from 'react';
-import WithLogging from '../HOC/WithLogging';
+import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
+import PropTypes from 'prop-types';
 
-class Login extends Component{
-
+class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: props.email || "",
-      password: props.password || "",
+      email: '',
+      password: '',
       enableSubmit: false,
     };
 
-
+    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
+    this.handleChangeEmail = this.handleChangeEmail.bind(this);
+    this.handleChangePassword = this.handleChangePassword.bind(this);
   }
 
-  handleLoginSubmit = (event) => {
-    event.preventDefault();
+  handleLoginSubmit(e) {
+    e.preventDefault();
     const { email, password } = this.state;
-    this.props.logIn(email, password);
+    this.props.logIn(email, password); // ✅ Login déclenché avec les valeurs de l'état
   }
-  
-  handleChangeEmail = (event) => {
-    this.setState({ email: event.target.value }, this.validateForm);
-  };
 
-  handleChangePassword = (event) => {
-    this.setState({ password: event.target.value }, this.validateForm);
-  };
+  handleChangeEmail(e) {
+    const email = e.target.value;
+    this.setState({ email }, this.validateForm);
+  }
 
+  handleChangePassword(e) {
+    const password = e.target.value;
+    this.setState({ password }, this.validateForm);
+  }
 
   validateForm = () => {
     const { email, password } = this.state;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex for email validation
-    const isEmailValid = emailRegex.test(email);
-    const isPasswordValid = password.length >= 8;
-
-    this.setState({ enableSubmit: isEmailValid && isPasswordValid });
-  }
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValidPassword = password.length >= 8;
+    this.setState({ enableSubmit: isValidEmail && isValidPassword });
+  };
 
   render() {
-    
     const { email, password, enableSubmit } = this.state;
 
     return (
-      <div className={css(styles.Appbody)}>
-        <div className={css(styles.longbr)}></div>
+      <div className={css(styles.body)}>
         <p>Login to access the full dashboard</p>
-        <form
-          className={css(styles.Appbodyform)}
-          onSubmit={this.handleLoginSubmit}
-        >
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={this.handleChangeEmail}
-          />
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={this.handleChangePassword}
-          />
-          <input
-            type="submit"
-            value="OK"
-            disabled={!enableSubmit}
-            className={css(styles.button, !enableSubmit && styles.disabled)}
-          />
+        <form onSubmit={this.handleLoginSubmit}>
+          <div className={css(styles.inputGroup)}>
+            <label htmlFor="email">Email:</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={this.handleChangeEmail}
+              className={css(styles.input)}
+            />
+          </div>
+          <div className={css(styles.inputGroup)}>
+            <label htmlFor="password">Password:</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={this.handleChangePassword}
+              className={css(styles.input)}
+            />
+          </div>
+          <div className={css(styles.buttonWrapper)}>
+            <input
+              type="submit"
+              value="OK"
+              className={css(styles.button)}
+              disabled={!enableSubmit}
+            />
+          </div>
         </form>
       </div>
     );
   }
 }
 
+Login.propTypes = {
+  logIn: PropTypes.func,
+};
+
+Login.defaultProps = {
+  logIn: () => {},
+};
 
 const styles = StyleSheet.create({
-  Appbody: {
-    marginTop: '20px',
-  },
-
-  longbr: {
-    borderTop: '1px solid red',
-    marginBottom: '20px',
-  },
-  
-  Appbodyform: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-    marginTop: '20px',
-  },
-  
-  button: {
-    marginTop: '15px',
-    padding: '10px',
-    fontSize: '16px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    cursor: 'pointer',
+  body: {
+    padding: '30px',
     '@media (max-width: 900px)': {
-      fontSize: '14px',
+      padding: '20px',
     },
-    ':hover': {
-      backgroundColor: '#0056b3',
+  },
+  inputGroup: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: '1em',
+    '@media (max-width: 900px)': {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
     },
-  }, 
-  disabled: {
-    backgroundColor: "#c0c0c0",
-    cursor: "not-allowed",
+  },
+  input: {
+    marginLeft: '10px',
+    '@media (max-width: 900px)': {
+      marginLeft: '0',
+      marginTop: '5px',
+      width: '100%',
+    },
+  },
+  buttonWrapper: {
+    '@media (max-width: 900px)': {
+      display: 'flex',
+      justifyContent: 'flex-start',
+    },
+  },
+  button: {
+    marginLeft: '10px',
+    '@media (max-width: 900px)': {
+      marginLeft: '0',
+    },
   },
 });
 
-
-export default WithLogging(Login);
+export default Login;

@@ -1,65 +1,45 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
-import holbertonLogo from "../assets/holberton-logo.jpg";
-import AppContext from '../Context/context';
+import holbertonLogo from '../assets/holberton-logo.jpg';
 
-const Header = ({ user, onLogout }) => {
-  const handleLogout = (e) => {
-    e.prevetDefault();
-    onLogout();
-  };
-
+const Header = ({ user, logOut }) => {
   return (
-    <header>
-      <div className={css(styles.header, styles.responsive)}>
-        <img className={css(styles.img)} src={holbertonLogo} alt="Holberton logo" />
-        <h1 className={css(styles.h1)}>School dashboard</h1>
-      </div>
-      <div className={css(styles.line)}></div>
-        {user.isLoggedIn && (
-        <div id="logoutSection" data-testid="logoutSection">
-          Welcome {user.email} (<a href="#logout" onClick={handleLogout}>logout</a>)
-        </div>
-      )}
-    </header>
-  );
-};
+    <div className={css(styles.header)}>
+      <img src={holbertonLogo} className={css(styles.logo)} alt="holberton logo" />
+      <h1 className={css(styles.title)}>School dashboard</h1>
 
-Header.prototype = {
-  user: PropTypes.object,
-  onLogout: PropTypes.func,
+      {user.isLoggedIn && (
+        <section id="logoutSection" className={css(styles.logoutSection)} data-testid="logoutSection">
+          <p>
+            Welcome <strong>{user.email}</strong>{' '}
+            <a href="#" onClick={logOut}>(logout)</a>
+          </p>
+        </section>
+      )}
+    </div>
+  );
 };
 
 const styles = StyleSheet.create({
   header: {
     display: 'flex',
-    flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: '60px',
-    marginTop: '50px'
+    justifyContent: 'space-between',
+    borderBottom: '3px solid #e1003c',
+    padding: '20px',
   },
-  img: {
-    width: '150px',
+  logo: {
     height: '150px',
-    marginTop: '5px'
+    marginRight: '20px',
   },
-  h1: {
+  title: {
     color: '#e1003c',
-    fontFamily: 'Roboto, sans-serif',
-    marginLeft: '5px'
+    fontSize: '2rem',
   },
-  line: {
-    backgroundColor: 'red',
-    width: '100%',
-    height: '4px'
+  logoutSection: {
+    fontStyle: 'italic',
+    fontSize: '1rem',
   },
-  responsive: {
-    '@media (max-width: 899px)': {
-      display: 'flex',
-      justifyContent: 'center',
-      margin: 0
-    }
-  }
 });
 
 export default Header;

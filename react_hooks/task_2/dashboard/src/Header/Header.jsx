@@ -1,41 +1,47 @@
-import React, { useContext } from 'react';
-import logo from '../assets/holberton-logo.jpg';
+import { useContext } from 'react';
 import { StyleSheet, css } from 'aphrodite';
-import newContext from '../Context/context';
+import holbertonLogo from '../assets/holberton-logo.jpg';
+import AppContext from '../Context/context';
 
 const Header = () => {
-  const { user, logOut } = useContext(newContext);
+  const { user, logOut } = useContext(AppContext);
 
   return (
-    <header className={css(styles.Appheader)}>
-      <img src={logo} alt="Holberton logo" />
-      <h1 className={css(styles.headerh1)}>School dashboard</h1>
-      {user?.isLoggedIn && (
-        <section id="logoutSection">
+    <div className={css(styles.header)}>
+      <img src={holbertonLogo} className={css(styles.logo)} alt="holberton logo" />
+      <h1 className={css(styles.title)}>School dashboard</h1>
+
+      {user.isLoggedIn && (
+        <section id="logoutSection" className={css(styles.logoutSection)} data-testid="logoutSection">
           <p>
-            Welcome {user.email} <button onClick={logOut}>Logout</button>
+            Welcome <strong>{user.email}</strong>{' '}
+            <a href="#" onClick={logOut}>(logout)</a>
           </p>
         </section>
       )}
-    </header>
+    </div>
   );
 };
 
 const styles = StyleSheet.create({
-  Appheader: {
+  header: {
     display: 'flex',
     alignItems: 'center',
-    padding: '10px 0',
-    backgroundColor: '#f5f5f5',
+    justifyContent: 'space-between',
+    borderBottom: '3px solid #e1003c',
+    padding: '20px',
   },
-  headerimg: {
-    marginRight: '10px',
-    height: '60px',
+  logo: {
+    height: '150px',
+    marginRight: '20px',
   },
-  headerh1: {
+  title: {
     color: '#e1003c',
-    fontSize: '24px',
-    margin: 0,
+    fontSize: '2rem',
+  },
+  logoutSection: {
+    fontStyle: 'italic',
+    fontSize: '1rem',
   },
 });
 

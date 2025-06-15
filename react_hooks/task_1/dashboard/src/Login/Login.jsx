@@ -1,96 +1,124 @@
-import React from "react";
+import React, { useState } from 'react';
 import { StyleSheet, css } from 'aphrodite';
-import WithLogging from "../HOC/WithLogging";
+import PropTypes from 'prop-types';
+import WithLogging from '../HOC/WithLogging';
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      password: '',
-      enableSubmit: false,
-    };
-    this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    this.handleChangePassword = this.handleChangePassword.bind(this);
-    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
-  }
+function Login({ logIn }) {
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [enableSubmit, setEnableSubmit] = useState(false);
 
-  handleLoginSubmit = (e) => {
+  const validateForm = (email, password) => {
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValidPassword = password.length >= 8;
+    return isValidEmail && isValidPassword;
+  };
+
+  const handleChangeEmail = (e) => {
+    const email = e.target.value;
+    const password = formData.password;
+    setFormData({ ...formData, email });
+    setEnableSubmit(validateForm(email, password));
+  };
+
+  const handleChangePassword = (e) => {
+    const password = e.target.value;
+    const email = formData.email;
+    setFormData({ ...formData, password });
+    setEnableSubmit(validateForm(email, password));
+  };
+
+  const handleLoginSubmit = (e) => {
     e.preventDefault();
-    this.setState({ isLoggedIn: true });
+    logIn(formData.email, formData.password);
   };
 
-  handleChangeEmail = (e) => {
-    this.setState({ email: e.target.value }, this.checkFormValidity);
-  };
-
-  handleChangePassword = (e) => {
-    this.setState({ password: e.target.value }, this.checkFormValidity);
-  };
-
-  checkFormValidity = () => {
-    const { email, password } = this.state;
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const passwordValid = password.length >= 8;
-    this.setState({ enableSubmit: emailValid && passwordValid });
-  };
-
-  render() {
-    return (
-      <main className={css(styles.appLogin)}>
-        <div className={css(styles.responsive)}>
-          <form onSubmit={this.handleLoginSubmit}>
-            <p>Login to access the full dashboard</p>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              autoComplete="email"
-              value={this.state.email}
-              onChange={this.handleChangeEmail}
-            />
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              autoComplete="current-password"
-              value={this.state.password}
-              onChange={this.handleChangePassword}
-            />
-            <input
-              type="submit"
-              value="OK"
-              className={css(styles.button)}
-              disabled={!this.state.enableSubmit}
-            />
-          </form>
+  return (
+    <div className={css(styles.body)}>
+      <p>Login to access the full dashboard</p>
+      <form onSubmit={handleLoginSubmit}>
+        <div className={css(styles.inputGroup)}>
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChangeEmail}
+            className={css(styles.input)}
+          />
         </div>
-      </main>
-    );
-  }
+        <div className={css(styles.inputGroup)}>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChangePassword}
+            className={css(styles.input)}
+          />
+        </div>
+        <div className={css(styles.buttonWrapper)}>
+          <input
+            type="submit"
+            value="OK"
+            className={css(styles.button)}
+            disabled={!enableSubmit}
+          />
+        </div>
+      </form>
+    </div>
+  );
 }
 
+Login.propTypes = {
+  logIn: PropTypes.func,
+};
+
+Login.defaultProps = {
+  logIn: () => {},
+};
+
 const styles = StyleSheet.create({
-  appLogin: {
-    flexDirection: 'column',
-    gap: '20px',
+  body: {
+    padding: '30px',
+    '@media (max-width: 900px)': {
+      padding: '20px',
+    },
+  },
+  inputGroup: {
     display: 'flex',
-    justifyContent: 'space-around',
-  },
-
-  button: {
-    alignSelf: 'flex-start',
-    marginTop: '10px'
-  },
-
-  responsive: {
-    '@media (max-width: 899px)': {
-      display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: '1em',
+    '@media (max-width: 900px)': {
       flexDirection: 'column',
-    }
-  }
+      alignItems: 'flex-start',
+    },
+  },
+  input: {
+    marginLeft: '10px',
+    '@media (max-width: 900px)': {
+      marginLeft: '0',
+      marginTop: '5px',
+      width: '100%',
+    },
+  },
+  buttonWrapper: {
+    '@media (max-width: 900px)': {
+      display: 'flex',
+      justifyContent: 'flex-start',
+    },
+  },
+  button: {
+    marginLeft: '10px',
+    '@media (max-width: 900px)': {
+      marginLeft: '0',
+    },
+  },
 });
 
-export default WithLogging(Login);
+// ✅ Exporter le composant nommé (optionnel mais recommandé pour les tests)
+export { Login };
+
+// ✅ Export par défaut : composant avec le HOC
+const LoginWithLogging = WithLogging(Login);
+export default LoginWithLogging;

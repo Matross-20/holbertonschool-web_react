@@ -1,71 +1,72 @@
-import React, { PureComponent } from "react";
-import NotificationItem from "./NotificationItem";
-import PropTypes from "prop-types";
-import closeIcon from "../assets/close-button.png";
-import { StyleSheet, css } from "aphrodite";
+import { Component } from 'react';
+import { StyleSheet, css } from 'aphrodite';
+import closebtn from '../assets/close-button.png';
+import NotificationItem from './NotificationItem';
+import PropTypes from 'prop-types';
 
-class Notifications extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.markAsRead = this.markAsRead.bind(this);
-  }
+class Notifications extends Component {
+  shouldComponentUpdate(nextProps) {
+    if (this.props.notifications.length !== nextProps.notifications.length) {
+      return true;
+    }
 
+    if (this.props.displayDrawer !== nextProps.displayDrawer) {
+      return true;
+    }
 
-  markAsRead(id) {
-    console.log(`Notification ${id} has been marked as read`);
-    this.props.markNotificationAsRead(id);
+    return false;
   }
 
   render() {
-    const { displayDrawer, listNotifications,  handleDisplayDrawer,
-      handleHideDrawer } = this.props;
-
-    const menuPStyle = css(
-      displayDrawer ? styles.menuItemPNoShow : styles.menuItemPShow
-    );
+    const {
+      notifications,
+      displayDrawer,
+      handleDisplayDrawer,
+      handleHideDrawer,
+      markNotificationAsRead,
+    } = this.props;
 
     return (
       <>
-        <div className={css(styles.menuItem)} id="menuItem">
-          <p onClick={handleDisplayDrawer} className={menuPStyle}>Your notifications</p>
-        </div>
+        {!displayDrawer && (
+          <div className={css(styles.menuItem)} onClick={handleDisplayDrawer}>
+            <p className={css(styles.menuText)}>Your notifications</p>
+          </div>
+        )}
+
         {displayDrawer && (
-          <div className={css(styles.notifications)} id="Notifications">
+          <div className={css(styles.panel)}>
             <button
-              style={{
-                background: "transparent",
-                border: "none",
-                position: "absolute",
-                right: 20,
-              }}
+              className={css(styles.closeBtn)}
               onClick={handleHideDrawer}
-              aria-label="close"
+              aria-label="Close"
             >
               <img
-                src={closeIcon}
-                alt="close-icon"
-                className={css(styles.notificationsButtonImage)}
+                src={closebtn}
+                alt="Close"
+                className={css(styles.closeIcon)}
               />
             </button>
-            <p className={css(styles.notificationsP)}>
-              Here is the list of notifications
-            </p>
-            <ul className={css(styles.notificationsUL)}>
-              {listNotifications.length === 0 && (
-                <NotificationItem value="No new notification for now" />
-              )}
 
-              {listNotifications.map((notification) => (
-                <NotificationItem
-                  key={notification.id}
-                  id={notification.id}
-                  type={notification.type}
-                  value={notification.value}
-                  html={notification.html}
-                  markAsRead={this.markAsRead}
-                />
-              ))}
-            </ul>
+            {notifications.length > 0 ? (
+              <>
+                <p className={css(styles.panelText)}>Here is the list of notifications</p>
+                <ul className={css(styles.ul)}>
+                  {notifications.map((notification) => (
+                    <NotificationItem
+                      key={notification.id}
+                      id={notification.id}
+                      type={notification.type}
+                      value={notification.value}
+                      html={notification.html}
+                      markAsRead={() => markNotificationAsRead(notification.id)}
+                    />
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <p>No new notification for now</p>
+            )}
           </div>
         )}
       </>
@@ -73,12 +74,93 @@ class Notifications extends PureComponent {
   }
 }
 
+const fade = {
+  from: { opacity: 0.5 },
+  to: { opacity: 1 },
+};
+
+const bounce = {
+  '0%': { transform: 'translateY(0px)' },
+  '50%': { transform: 'translateY(-5px)' },
+  '100%': { transform: 'translateY(5px)' },
+};
+
+const styles = StyleSheet.create({
+  '@keyframes fade': fade,
+  '@keyframes bounce': bounce,
+  menuItem: {
+    position: 'fixed',
+    top: 0,
+    right: 0,
+    backgroundColor: '#fff8f8',
+    padding: '10px',
+    cursor: 'pointer',
+    zIndex: 1000,
+    ':hover': {
+      animationName: ['fade', 'bounce'],
+      animationDuration: '1s, 0.5s',
+      animationIterationCount: '3',
+    },
+  },
+  menuText: {
+    margin: 0,
+  },
+  panel: {
+    border: '2px dashed red',
+    padding: '10px',
+    width: '400px',
+    backgroundColor: '#fff8f8',
+    position: 'absolute',
+    right: 0,
+    top: '2.5rem',
+    zIndex: 1001,
+    '@media (max-width: 900px)': {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'white',
+      fontSize: '20px',
+      padding: '20px',
+      border: 'none',
+    },
+  },
+  panelText: {
+    fontSize: '16px',
+    '@media (max-width: 900px)': {
+      fontSize: '20px',
+      margin: '10px',
+    },
+  },
+  ul: {
+    listStyle: 'none',
+    padding: 0,
+    margin: 0,
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    border: 'none',
+    background: 'transparent',
+    cursor: 'pointer',
+    zIndex: 1002,
+  },
+  closeIcon: {
+    width: '10px',
+    height: '10px',
+  },
+});
+
 Notifications.propTypes = {
   displayDrawer: PropTypes.bool,
-  listNotifications: PropTypes.arrayOf(
+  notifications: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      type: PropTypes.string.isRequired,
+      type: PropTypes.string,
       value: PropTypes.string,
       html: PropTypes.shape({
         __html: PropTypes.string,
@@ -87,128 +169,15 @@ Notifications.propTypes = {
   ),
   handleDisplayDrawer: PropTypes.func,
   handleHideDrawer: PropTypes.func,
-  markNotificationAsRead: PropTypes.func.isRequired,
+  markNotificationAsRead: PropTypes.func,
 };
 
 Notifications.defaultProps = {
-  displayDrawer: false,
-  listNotifications: [],
+  displayDrawer: true,
+  notifications: [],
   handleDisplayDrawer: () => {},
   handleHideDrawer: () => {},
+  markNotificationAsRead: () => {},
 };
-
-
-const cssVars = {
-  mainColor: "#e01d3f",
-};
-
-const screenSize = {
-  small: "@media screen and (max-width: 900px)",
-};
-
-const opacityKeyframes = {
-  from: {
-    opacity: 0.5,
-  },
-
-  to: {
-    opacity: 1,
-  },
-};
-
-const translateYKeyframes = {
-  "0%": {
-    transform: "translateY(0)",
-  },
-
-  "50%": {
-    transform: "translateY(-5px)",
-  },
-
-  "75%": {
-    transform: "translateY(5px)",
-  },
-
-  "100%": {
-    transform: "translateY(0)",
-  },
-};
-
-const borderKeyframes = {
-  "0%": {
-    border: `3px dashed deepSkyBlue`,
-  },
-
-  "100%": {
-    border: `3px dashed ${cssVars.mainColor}`,
-  },
-};
-
-const styles = StyleSheet.create({
-  menuItem: {
-    float: "right",
-    backgroundColor: "#fff8f8",
-    ":hover": {
-      cursor: "pointer",
-      animationName: [opacityKeyframes, translateYKeyframes],
-      animationDuration: "1s, 0.5s",
-      animationIterationCount: 3,
-    },
-  },
-
-  menuItemPNoShow: {
-    marginRight: "8px",
-    display: "none",
-  },
-
-  menuItemPShow: {
-    marginRight: "8px",
-  },
-
-  notifications: {
-    float: "right",
-    // border: `3px dashed ${cssVars.mainColor}`,
-    padding: "10px",
-    marginBottom: "20px",
-    animationName: [borderKeyframes],
-    animationDuration: "0.8s",
-    animationIterationCount: 1,
-    animationFillMode: "forwards",
-    ":hover": {
-      border: `3px dashed deepSkyBlue`,
-      // animationFillMode: "forwards",
-    },
-    [screenSize.small]: {
-      float: "none",
-      border: "none",
-      listStyle: "none",
-      padding: 0,
-      fontSize: "20px",
-      ":hover": {
-        border: "none",
-        // animationFillMode: "forwards",
-      },
-      position: "absolute",
-      background: "white",
-      height: "110vh",
-      width: "100vw",
-    },
-  },
-
-  notificationsButtonImage: {
-    width: "10px",
-  },
-
-  notificationsP: {
-    margin: 0,
-    marginTop: "15px",
-  },
-
-  notificationsUL: {
-    [screenSize.small]: {
-      padding: 0,
-    },
-  },
-});
 
 export default Notifications;

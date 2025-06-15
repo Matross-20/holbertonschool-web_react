@@ -1,15 +1,28 @@
-import { render, screen , fireEvent} from '@testing-library/react';
-import '@testing-library/jest-dom';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
 import BodySection from './BodySection';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-test('Test that the BodySection component renders a heading with the title prop value."', () => {
-    const { container } = render(<BodySection title="Test Title"><p>Test Content</p></BodySection>);
-    console.log(container.innertText);
-    expect(screen.getByText('Test Content')).toBeInTheDocument();
-
+beforeAll(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
 });
 
-test('Test that the BodySection component renders any number of children passed to it."', () => {
-    render(<BodySection title="Test Title"><p>Test Content</p></BodySection>);
-    expect(screen.getByText('Test Content')).toBeInTheDocument();
+afterAll(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
+
+describe('<BodySection />', () => {
+  test('renders a heading and children', () => {
+    render(
+      <BodySection title="test title">
+        <p>test children node</p>
+      </BodySection>
+    );
+
+    const heading = screen.getByRole('heading', { name: /test title/i });
+    const paragraph = screen.getByText(/test children node/i);
+
+    expect(heading).toBeInTheDocument();
+    expect(paragraph).toBeInTheDocument();
+  });
 });

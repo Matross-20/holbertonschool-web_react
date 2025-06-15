@@ -1,107 +1,140 @@
-import React, { useState, useCallback,useEffect } from "react";
-import ReactDOM from "react-dom/client";
-import PropTypes from "prop-types";
-import axios from "axios";
-import Header from "../Header/Header.jsx";
-import Footer from "../Footer/Footer.jsx";
-import Notifications from "../Notifications/Notifications.jsx";
-import CourseList from "../CourseList/CourseList.jsx";
-import Login from "../Login/Login.jsx";
-import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom.jsx";
-import BodySection from "../BodySection/BodySection.jsx";
-import { StyleSheet, css } from "aphrodite";
-import AppContext from "../Context/context.js";
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import axios from 'axios';
+import Notifications from '../Notifications/Notifications';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
+import Login from '../Login/Login';
+import BodySection from '../BodySection/BodySection';
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
+import CourseList from '../CourseList/CourseList';
+import { getLatestNotification } from '../utils/utils';
+import { StyleSheet, css } from 'aphrodite';
+import AppContext from '../Context/context';
 
-const App = () => { 
+const App = () => {
   const [displayDrawer, setDisplayDrawer] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [coursesList, setCoursesList] = useState([]);
   const [user, setUser] = useState({
     email: '',
     password: '',
-    isLoggedIn: false
+    isLoggedIn: false,
   });
-  const [notifications, setNotifications] = useState([]);
-  const [courses, setCourses] = useState([]);
 
-  useEffect(() => {
-    const fetchNOtifications = async () => {
-      try {
-        const response = await axios.get("/notifications.json");
-        setNotifications(response.data);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
-    };
-    fetchNOtifications();
+  const logIn = useCallback((email, password) => {
+    setUser({
+      email,
+      password,
+      isLoggedIn: true,
+    });
   }, []);
 
+  const logOut = useCallback(() => {
+    setUser({
+      email: '',
+      password: '',
+      isLoggedIn: false,
+    });
+  }, []);
+
+  const markNotificationAsRead = useCallback((id) => {
+    console.log(`Notification ${id} has been marked as read`);
+    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+  }, []);
+
+  const handleDisplayDrawer = () => setDisplayDrawer(true);
+  const handleHideDrawer = () => setDisplayDrawer(false);
+
+  // Fetch notifications on initial mount
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await axios.get('/notifications.json');
+        const data = res.data.map((notif) =>
+          notif.id === 3 ? { ...notif, html: { __html: getLatestNotification() } } : notif
+        );
+        setNotifications(data);
+      } catch (err) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Failed to fetch notifications:', err);
+        }
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  // Fetch courses when user logs in or logs out
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("/courses.json");
-        setCourses(response.data);
-      } catch (error) {
-        console.error("Error fetching courses:", error);
+        const res = await axios.get('/courses.json');
+        setCoursesList(res.data);
+      } catch (err) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Failed to fetch courses:', err);
+        }
       }
     };
+
     fetchCourses();
-  }, [user.isLoggedIn]);
+  }, [user]);
 
   return (
     <AppContext.Provider value={{ user, logOut }}>
-      <Notifications
-        notifications={notifications}
-        displayDrawer={displayDrawer}
-        handleDisplayDrawer={handleDisplayDrawer}
-        handleHideDrawer={handleHideDrawer}
-        markNotificationAsRead={markNotificationAsRead}
-      />
-      <Header />
-      {user.isLoggedIn ? (
-        <BodySectionWithMarginBottom className={css(styles.responsive)} title="Course list">
-          <CourseList courses={courses} />
-        </BodySectionWithMarginBottom>
-      ) : (
-        <BodySectionWithMarginBottom title="Log in to continue">
-          <Login logIn={logIn} />
-        </BodySectionWithMarginBottom>
-      )}
-      <BodySection title="News from the School">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur
-          adipiscing elit, sed do eiusmod tempor
-          incididunt ut labore et dolore magna
-          aliqua. Ut enim ad minim veniam, quis
-          nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis
-          aute irure dolor in reprehenderit in
-          voluptate velit esse cillum dolore eu fugiat
-          nulla pariatur. Excepteur sint occaecat
-          cupidatat non proident, sunt in culpa qui
-          officia deserunt mollit anim id est laborum.
-        </p>
-      </BodySection>
-      <Footer />
+      <div className={css(styles.app)}>
+        <div className={css(styles.notifications)}>
+          <Notifications
+            notifications={notifications}
+            displayDrawer={displayDrawer}
+            handleDisplayDrawer={handleDisplayDrawer}
+            handleHideDrawer={handleHideDrawer}
+            markNotificationAsRead={markNotificationAsRead}
+          />
+        </div>
+        <Header />
+        <div className={css(styles.body)}>
+          {user.isLoggedIn ? (
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList courses={coursesList} />
+            </BodySectionWithMarginBottom>
+          ) : (
+            <BodySectionWithMarginBottom title="Log in to continue">
+              <Login
+                logIn={logIn}
+                email={user.email}
+                password={user.password}
+              />
+            </BodySectionWithMarginBottom>
+          )}
+          <BodySection title="News from the School">
+            <p>Holberton School News goes here</p>
+          </BodySection>
+        </div>
+        <Footer />
+      </div>
     </AppContext.Provider>
   );
 };
 
 const styles = StyleSheet.create({
-  responsive: {
-    '@media (max-width: 899px)': {
-      display: 'flex',
-      flexWrap: 'nowrap',
-      flexDirection: 'column'
-    }
-  }
+  app: {
+    margin: '0',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  body: {
+    flex: '1',
+  },
+  notifications: {
+    display: 'flex',
+    position: 'absolute',
+    flexDirection: 'column',
+    right: '0',
+    paddingRight: '1rem',
+    minWidth: '30rem',
+  },
 });
-
-if (document.getElementById("root")) {
-  const root = ReactDOM.createRoot(document.getElementById("root"));
-  root.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  );
-}
 
 export default App;

@@ -1,67 +1,50 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import CourseListRow from './CourseListRow';
-import WithLogging from '../HOC/WithLogging';
 import { StyleSheet, css } from 'aphrodite';
+import CourseListRow from './CourseListRow';
 
+class CourseList extends React.Component {
+  static defaultProps = {
+    courses: [],
+  };
 
-const CourseList = ({ courses }) => {
-    return ( 
-        <table id= "CourseList" className={css(styles.CourseList)}>
+  render() {
+    const { courses } = this.props;
+
+    return (
+      <table className={css(styles.courseList)}>
+        {courses.length > 0 ? (
+          <>
             <thead>
-                <CourseListRow textFirstCell="Available courses"  isHeader={true} />
-                <CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader={true}/>
+              <CourseListRow isHeader={true} textFirstCell="Available courses" />
+              <CourseListRow isHeader={true} textFirstCell="Course name" textSecondCell="Credit" />
             </thead>
             <tbody>
-            {courses.length === 0 ? (
-          <CourseListRow textFirstCell="No course available yet" isHeader={false} />
-            ) : (
-          courses.map((course) => (
-            <CourseListRow
-              key={course.id}
-              textFirstCell={course.name}
-              textSecondCell={String(course.credit)}
-              isHeader={false}
-            />
-          ))
+              {courses.map((course) => (
+                <CourseListRow
+                  key={course.id}
+                  textFirstCell={course.name}
+                  textSecondCell={course.credit}
+                />
+              ))}
+            </tbody>
+          </>
+        ) : (
+          <tbody>
+            <CourseListRow isHeader={true} textFirstCell="No course available yet" />
+          </tbody>
         )}
-      </tbody>
-    </table>
-  );
-};
-
-CourseList.propTypes = {
-    courses: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-        credit: PropTypes.number.isRequired,
-      })
-    ),
-  };
-  
-CourseList.defaultProps = {
-courses: [],
-};
+      </table>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
-  CourseList: {
+  courseList: {
     width: '100%',
     border: '1px solid #ddd',
-    margin: '20px 0',
-    textAlign: 'left',
+    marginTop: '30px',
     borderCollapse: 'collapse',
-  },
-
-  CourseListThTd: {
-    border: '1px solid #ddd',
-    padding: '8px',
-  },
-
-  CourseListHeader: {
-    backgroundColor: '#f4f4f4',
   },
 });
 
-
-export default WithLogging(CourseList);
+export default CourseList;

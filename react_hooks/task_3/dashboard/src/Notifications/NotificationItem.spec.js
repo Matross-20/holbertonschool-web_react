@@ -1,34 +1,55 @@
-import { render, screen } from '@testing-library/react';
-import NotificationItem from './NotificationItem';  // Adjust path if necessary
+import NotificationItem from "./NotificationItem";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { StyleSheetTestUtils } from 'aphrodite';
 
-describe('NotificationItem component', () => {
-  
-  test('should have color blue and data-notification-type set to "default" when type is "default"', () => {
-    // Render NotificationItem with type 'default'
-    render(<NotificationItem type="default" value="Test notification" />);
+beforeAll(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
 
-    // Select the li element
-    const listItem = screen.getByRole('listitem');
+afterAll(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-    // Check if the li element has the correct color
-    expect(listItem).toHaveStyle('color: blue');
+test('li has attribute data-notification-type="default"', () => {
+  render(<NotificationItem type="default" value="Test notification" />);
+  const li = screen.getByText('Test notification');
 
-    // Check if the data-notification-type attribute is set to "default"
-    expect(listItem).toHaveAttribute('data-notification-type', 'default');
-  });
+  expect(li).toBeInTheDocument();
+  expect(li).toHaveAttribute('data-notification-type', 'default');
+});
 
-  test('should have color red and data-notification-type set to "urgent" when type is "urgent"', () => {
-    // Render NotificationItem with type 'urgent'
-    render(<NotificationItem type="urgent" value="Test urgent notification" />);
+test('li has attribute data-notification-type="urgent"', () => {
+  render(<NotificationItem type="urgent" value="Test urgent notification" />);
+  const li = screen.getByText('Test urgent notification');
 
-    // Select the li element
-    const listItem = screen.getByRole('listitem');
+  expect(li).toBeInTheDocument();
+  expect(li).toHaveAttribute('data-notification-type', 'urgent');
+});
 
-    // Check if the li element has the correct color
-    expect(listItem).toHaveStyle('color: red');
+test('renders correctly with html prop', () => {
+  const htmlContent = { __html: '<strong>Test HTML notification</strong>' };
+  render(<NotificationItem type="default" html={htmlContent} />);
 
-    // Check if the data-notification-type attribute is set to "urgent"
-    expect(listItem).toHaveAttribute('data-notification-type', 'urgent');
-  });
+  // Ici, on recherche le texte HTML injecté dans la balise <strong>
+  const li = screen.getByText('Test HTML notification').closest('li');
 
+  expect(li).toBeInTheDocument();
+  expect(li).toHaveAttribute('data-notification-type', 'default');
+});
+
+test('calls markAsRead with correct id on click', () => {
+  const mockMarkAsRead = jest.fn();
+  render(
+    <NotificationItem
+      id={42}
+      type="default"
+      value="Clickable notification"
+      markAsRead={mockMarkAsRead}
+    />
+  );
+
+  const li = screen.getByText('Clickable notification');
+  fireEvent.click(li);
+
+  expect(mockMarkAsRead).toHaveBeenCalledWith(42);
 });

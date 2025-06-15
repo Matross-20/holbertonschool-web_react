@@ -1,6 +1,39 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
-import { css, StyleSheet } from "aphrodite";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { StyleSheet, css } from 'aphrodite';
+
+const NotificationItem = ({ type, html, value, id, markAsRead }) => {
+  const styleClass = css(
+    type === 'urgent' ? styles.urgent : styles.default,
+    styles.responsive
+  );
+
+  const handleClick = () => markAsRead(id);
+
+  if (html) {
+    return (
+      <li
+        data-notification-type={type}
+        className={styleClass}
+        dangerouslySetInnerHTML={html}
+        onClick={handleClick}
+      />
+    );
+  }
+
+  return (
+    <li
+      data-notification-type={type}
+      className={styleClass}
+      onClick={handleClick}
+    >
+      {value}
+    </li>
+  );
+};
+
+// Performance optimization (memoization)
+export default React.memo(NotificationItem);
 
 const styles = StyleSheet.create({
   default: {
@@ -9,60 +42,27 @@ const styles = StyleSheet.create({
   urgent: {
     color: 'red',
   },
-
   responsive: {
-    '@media (max-width: 899px)': {
-      default: {
-        color: 'blue',
-        fontSize: '20px',
-        padding: '10px 8px',
-        width: '100%',
-        borderBottom: '1px solid black',
-      },
-  
-      urgent: {
-        color: 'red',
-        fontSize: '20px',
-        fontWeight: 'bold',
-        padding: '10px 8px',
-        width: '100%',
-        borderBottom: '1px solid black',
-      }
-    }
-  }
+    '@media (max-width: 900px)': {
+      width: '100%',
+      borderBottom: '1px solid black',
+      fontSize: '20px',
+      padding: '10px 8px',
+    },
+  },
 });
-
-const NotificationItem = (props) => {
-  const { type, value, html, markAsRead } = props;
-
-  return (
-    <li
-      className={css(
-        type === 'urgent' ? styles.urgent : styles.default,
-        styles.responsive
-      )}
-      data-notification-type={type}
-      onClick={() => markAsRead(id)}
-    >
-      {html ? <span dangerouslySetInnerHTML={html}></span> : value}
-    </li>
-  );
-};
-
-
-
 
 NotificationItem.propTypes = {
   type: PropTypes.string.isRequired,
   value: PropTypes.string,
   html: PropTypes.shape({
-  __html: PropTypes.string,
+    __html: PropTypes.string,
   }),
+  id: PropTypes.number,
+  markAsRead: PropTypes.func,
 };
 
 NotificationItem.defaultProps = {
-  value: "",
-  html: null,
+  type: 'default',
+  markAsRead: () => {},
 };
-
-export default NotificationItem;

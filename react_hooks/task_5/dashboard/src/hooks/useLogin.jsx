@@ -1,16 +1,19 @@
-import { use } from "react";
-import { useState, useEffect } from "react";
+// src/hooks/useLogin.jsx
+import { useState, useEffect } from 'react';
 
-const useLogin = (onLogin) => {
+export default function useLogin(onLogin) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [enableSubmit, setEnableSubmit] = useState(false);
 
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const validatePassword = (password) => password.length >= 8;
+  const validateForm = (email, password) => {
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValidPassword = password.length >= 8;
+    return isValidEmail && isValidPassword;
+  };
 
   useEffect(() => {
-    setEnableSubmit(validateEmail(email) && validatePassword(password));
+    setEnableSubmit(validateForm(email, password));
   }, [email, password]);
 
   const handleEmailChange = (e) => setEmail(e.target.value);
@@ -27,8 +30,6 @@ const useLogin = (onLogin) => {
     enableSubmit,
     handleEmailChange,
     handlePasswordChange,
-    handleSubmit
+    handleSubmit,
   };
-};
-
-export default useLogin;
+}

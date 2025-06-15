@@ -1,45 +1,78 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import axios from 'axios';
+import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
 import { StyleSheetTestUtils } from 'aphrodite';
 
-jest.mock('axios');
+beforeAll(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
 
-describe('App Component', () => {
-  beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-    axios.get.mockResolvedValue({
-      data: [
-        { id: 1, type: "default", value: "New course available" },
-        { id: 2, type: "urgent", value: "New resume available" },
-        { id: 3, type: "urgent", value: "Urgent requirement - complete by EOD" }
-      ]
-    });
+afterAll(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
+
+describe('App component', () => {
+  test('renders header, login and footer components', () => {
+    render(<App />);
+    expect(screen.getByText(/School dashboard/i)).toBeInTheDocument();
+    expect(screen.getByText(/Login to access the full dashboard/i)).toBeInTheDocument();
+    expect(screen.getByText(/Copyright/i)).toBeInTheDocument();
   });
 
-  afterEach(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-    jest.clearAllMocks();
+  test('displays News from the School and its paragraph', () => {
+    render(<App />);
+    expect(screen.getByText(/News from the School/i)).toBeInTheDocument();
+    expect(screen.getByText(/Holberton School News goes here/i)).toBeInTheDocument();
   });
 
-  test('markNotificationAsRead removes the notification from the UI', async () => {
-    const consoleSpy = jest.spyOn(console, 'log');
-    
+  test('displays CourseList instead of Login after logIn is called', () => {
+    render(<App />);
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+    const submitBtn = screen.getByRole('button', { name: /ok/i });
+
+    fireEvent.change(emailInput, { target: { value: 'test@mail.com' } });
+    fireEvent.change(passwordInput, { target: { value: '12345678' } });
+    fireEvent.click(submitBtn);
+
+    expect(screen.queryByText(/Login to access the full dashboard/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Course list/i)).toBeInTheDocument();
+  });
+});
+
+describe('App notification drawer behavior', () => {
+  test('displays drawer when clicking on "Your notifications"', () => {
+    render(<App />);
+    fireEvent.click(screen.getByText(/your notifications/i));
+    expect(screen.getByText(/Here is the list of notifications/i)).toBeInTheDocument();
+  });
+
+  test('hides drawer when clicking on close button', () => {
+    render(<App />);
+    fireEvent.click(screen.getByText(/your notifications/i));
+    const closeBtn = screen.getByRole('button', { name: /close/i });
+    fireEvent.click(closeBtn);
+    expect(screen.queryByText(/Here is the list of notifications/i)).not.toBeInTheDocument();
+  });
+
+  test('markNotificationAsRead removes the notification and logs it', () => {
+    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
     render(<App />);
 
-    await waitFor(() => {
-      fireEvent.click(screen.getByText('Your Notifications'));
-    });
+    fireEvent.click(screen.getByText(/your notifications/i));
 
-    await waitFor(() => {
-      const notifications = screen.getAllByRole('listitem');
-      expect(notifications).toHaveLength(3);
-      
-      fireEvent.click(notifications[0].querySelector('button'));
-      
-      expect(consoleSpy).toHaveBeenCalledWith('Notification 1 has been marked as read');
-      expect(screen.getAllByRole('listitem')).toHaveLength(2);
-    });
+    // Vérifie que la notification 1 est bien là
+    const notif = screen.getByText(/New course available/i);
+    expect(notif).toBeInTheDocument();
+
+    // Simule un clic sur le li pour marquer comme lu (selon implémentation réelle)
+    fireEvent.click(notif);
+
+    // Doit disparaître
+    expect(screen.queryByText(/New course available/i)).not.toBeInTheDocument();
+
+    // Vérifie le console.log
+    expect(logSpy).toHaveBeenCalledWith('Notification 1 has been marked as read');
+    logSpy.mockRestore();
   });
 });

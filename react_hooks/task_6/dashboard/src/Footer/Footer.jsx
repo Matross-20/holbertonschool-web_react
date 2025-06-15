@@ -1,29 +1,30 @@
-import React, { useContext } from 'react';
-import './Footer.css'
-import { getCurrentYear, getFooterCopy } from '../utils/utils.js';
+import React from 'react';
+import { StyleSheet, css } from 'aphrodite';
+import { getCurrentYear, getFooterCopy } from '../utils/utils';
 
-function Footer() {
-  const isIndex = window.location.pathname === '/';
-
+export default function Footer({ user }) {
   return (
-    <footer>
-      <div className='line'></div>
-      <div className='App-footer'>
-        <p>
-          Copyright {getCurrentYear()} - {getFooterCopy(isIndex)}
+    <div className={css(styles.footer)}>
+      <p>
+        Copyright {getCurrentYear()} - {getFooterCopy(true)}
+      </p>
+      {user.isLoggedIn && (
+        <p id="logoutSection">
+          <a href="#">Contact us</a>
         </p>
-        {user && user.isLoggedIn && (
-          <p>
-            <a href='#'>Contact us</a>
-          </p>
-        )}
-      </div>
-    </footer>
+      )}
+    </div>
   );
 }
 
-Footer.propTypes = {
-  user: propTypes.object,
-};
-
-export default Footer;
+const styles = StyleSheet.create({
+  footer: {
+    position: 'fixed',
+    bottom: 0,
+    width: '100%',
+    textAlign: 'center',
+    fontStyle: 'italic',
+    borderTop: '3px solid #e11d3f',
+    padding: '1rem 0',
+  },
+});

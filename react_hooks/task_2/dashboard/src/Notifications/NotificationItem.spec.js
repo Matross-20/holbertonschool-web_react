@@ -1,37 +1,55 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import NotificationItem from './NotificationItem';
+import NotificationItem from "./NotificationItem";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { StyleSheetTestUtils } from 'aphrodite';
 
-describe('<NotificationItem />', () => {
-  it('renders without errors', () => {
-    render(<NotificationItem type="default" value="test" />);
-    expect(screen.getByRole('listitem')).toBeInTheDocument();
-  });
-
-  it('renders correct type and value props', () => {
-    render(<NotificationItem type="default" value="test" />);
-    const li = screen.getByRole('listitem');
-    expect(li).toHaveTextContent('test');
-    expect(li).toHaveAttribute('data-notification-type', 'default');
-  });
-
-  it('renders html prop correctly', () => {
-    render(<NotificationItem html={{ __html: '<u>test</u>' }} />);
-    expect(screen.getByRole('listitem')).toContainHTML('<u>test</u>');
-  });
-
-  it('calls markAsRead when clicked', () => {
-    const markAsReadMock = jest.fn();
-    const wrapper = shallow(
-      <NotificationItem id={1} markAsRead={markAsReadMock} />
-    );
-    wrapper.find('li').simulate('click');
-    expect(markAsReadMock).toHaveBeenCalledWith(1);
-  });
-});
-beforeEach(() => {
+beforeAll(() => {
   StyleSheetTestUtils.suppressStyleInjection();
 });
-afterEach(() => {
+
+afterAll(() => {
   StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
+
+test('li has attribute data-notification-type="default"', () => {
+  render(<NotificationItem type="default" value="Test notification" />);
+  const li = screen.getByText('Test notification');
+
+  expect(li).toBeInTheDocument();
+  expect(li).toHaveAttribute('data-notification-type', 'default');
+});
+
+test('li has attribute data-notification-type="urgent"', () => {
+  render(<NotificationItem type="urgent" value="Test urgent notification" />);
+  const li = screen.getByText('Test urgent notification');
+
+  expect(li).toBeInTheDocument();
+  expect(li).toHaveAttribute('data-notification-type', 'urgent');
+});
+
+test('renders correctly with html prop', () => {
+  const htmlContent = { __html: '<strong>Test HTML notification</strong>' };
+  render(<NotificationItem type="default" html={htmlContent} />);
+
+  // Ici, on recherche le texte HTML injecté dans la balise <strong>
+  const li = screen.getByText('Test HTML notification').closest('li');
+
+  expect(li).toBeInTheDocument();
+  expect(li).toHaveAttribute('data-notification-type', 'default');
+});
+
+test('calls markAsRead with correct id on click', () => {
+  const mockMarkAsRead = jest.fn();
+  render(
+    <NotificationItem
+      id={42}
+      type="default"
+      value="Clickable notification"
+      markAsRead={mockMarkAsRead}
+    />
+  );
+
+  const li = screen.getByText('Clickable notification');
+  fireEvent.click(li);
+
+  expect(mockMarkAsRead).toHaveBeenCalledWith(42);
 });
