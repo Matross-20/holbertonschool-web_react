@@ -1,4 +1,3 @@
-.bodySectionWithMargin {
-    margin-bottom: 40px;
-  }
-  
+.bodySection {
+  padding: 10px;
+}

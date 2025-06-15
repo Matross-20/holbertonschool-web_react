@@ -1,27 +1,23 @@
 .Notifications {
-    width: 300px;
-    background-color: white;
-    border: 1px solid #e1003c;
-    padding: 20px;
-    font-size: 14px;
-    position: relative;
-  }
-  
-  .Notifications ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .Notifications li {
-    margin-bottom: 10px;
-  }
-  
-  .Notifications li[data-priority="default"] {
-    color: black;
-  }
-  
-  .Notifications li[data-priority="urgent"] {
-    color: #e1003c;
-    font-weight: bold;
-  }
-  
+  position: absolute;
+    border:dashed #cf4550 2px;
+    padding: 10px;
+    width: 30%;
+    right: 1rem;
+    top: 4rem;
+}
+
+.menuItem {
+  display: flex;
+  justify-content: right;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.Notifications li[data-notification-type="default"] {
+  color: #180C5F;
+}
+
+.Notifications li[data-notification-type="urgent"] {
+  color: red;
+}
