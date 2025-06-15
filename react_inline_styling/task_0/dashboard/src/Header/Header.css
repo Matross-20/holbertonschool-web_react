@@ -1,16 +1,14 @@
+/* src/Header/Header.css */
 .App-header {
-  border-bottom: 3px solid #E0434C;
-  display: flex;
-  align-items: center;
-  height: 162px;
-  width: 100%;
-}
-.App-header img {
-  height: 159px;
-  width: 159px;
-}
-.App-header h1 {
-  color: #E0434C;
-  font-weight: 900;
-  font-size: 2rem;
-}
+    display: flex;
+    align-items: center;
+  }
+  
+  .App-header img {
+    margin-right: 10px;
+  }
+  
+  .App-header h1 {
+    color: #e1003c;
+  }
+  
