@@ -1,50 +1,44 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const rowStyle = {
-    backgroundColor: "#f5f5f5ab"
-}
+function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
+  let cell;
+  const style = { 
+    headerStyle: { backgroundColor: '#deb5b545' },
+    bodyStyle: { backgroundColor: '#f5f5f5ab' },
+  };
 
-const headerRowStyle = {
-    backgroundColor: "#deb5b545"
-}
-
-export default function CourseListRow({isHeader, textFirstCell, textSecondCell}) {
-    if (isHeader) {
-        if (textSecondCell === null) {
-            return (
-                <tr style={headerRowStyle}>
-                    <th colSpan="2">{textFirstCell}</th>
-                </tr>
-            )
-        } else {
-            return (
-                <tr style={headerRowStyle}>
-                    <th>{textFirstCell}</th>
-                    <th>{textSecondCell}</th>
-                </tr>
-            )
-        }
-    } else {
-        return (
-            <tr style={rowStyle}>
-                <td>{textFirstCell}</td>
-                <td>{textSecondCell}</td>
-            </tr>
-        )
+  if (!isHeader) {
+    cell = (
+      <>
+      <td>{textFirstCell}</td>
+      <td>{textSecondCell}</td>
+      </>
+    );
+  }
+  else {
+    if (textSecondCell) {
+      cell = (
+        <>
+        <th>{textFirstCell}</th>
+        <th>{textSecondCell}</th>
+        </>
+      );
     }
+    else cell = (<th colSpan='2'>{textFirstCell}</th>);
+  }
+  return(<tr style={ isHeader ? style.headerStyle : style.bodyStyle }>{cell}</tr>);
 }
 
 CourseListRow.propTypes = {
-    isHeader: PropTypes.bool,
-    textFirstCell: PropTypes.string.isRequired,
-    textSecondCell: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-      ]),
-}
+  isHeader: PropTypes.bool,
+  textFirstCell: PropTypes.string.isRequired,
+  textSecondCell: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+};
 
 CourseListRow.defaultProps = {
-    isHeader: false,
-    textSecondCell: null
-}
+  isHeader: false,
+  textSecondCell: null,
+};
+
+export default CourseListRow;

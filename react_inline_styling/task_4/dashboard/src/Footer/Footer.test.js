@@ -1,25 +1,33 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
+import { expect } from 'chai';
+import App from '../App/App';
 import Footer from './Footer';
-import { StyleSheetTestUtils } from 'aphrodite';
+import { StyleSheetTestUtils } from "aphrodite";
 
-StyleSheetTestUtils.suppressStyleInjection();
+describe('Test Footer.js', () => {
+  beforeAll(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
 
-describe("Testing the <Footer /> Component", () => {
-	
-	let wrapper;
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
 
-	beforeEach(() => {
-		wrapper = shallow(<Footer shouldRender />);
-	});
+  it('Footer without crashing', (done) => {
+    expect(shallow(<Footer />).exists());
+    done();
+  });
 
-	it("<Footer /> is rendered without crashing", () => {
-		expect(wrapper).to.not.be.an('undefined');
-    });
-    
-    it("<Footer /> renders at least the text: Copyright", () => {
-		expect(wrapper.children('p').html()).to.include('Copyright');
-	});
+  it('div with the class App-footer', (done) => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.contains(<footer className='App-footer' />))
+    done();
+  });
 
+  it('renders Copyright text', (done) => {
+    const wrapper = shallow(<Footer />);
+    expect(wrapper.text('Copyright')).contain('Copyright');
+    done();
+  });
 });

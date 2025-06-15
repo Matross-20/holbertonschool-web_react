@@ -1,57 +1,42 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import { StyleSheet, css} from 'aphrodite'
+import React from 'react'
+import PropTypes from 'prop-types'; // ES6
+import { StyleSheet, css } from 'aphrodite';
 
-class NotificationItem extends PureComponent {
-    render() {
-        const {type, html, value, markAsRead, idx} = this.props;
-        return html ? (
-            <li 
-                dangerouslySetInnerHTML={{__html: html.__html}}
-                data-priority={type}
-                className={type === "default" ? css(styles.list, styles.liDefault) : css(styles.list, styles.liUrgent)}
-                onClick={() => {markAsRead(idx)}}>
-            </li>
-        ) : (
-            <li 
-                data-priority={type}
-                className={type === "default" ? css(styles.list, styles.liDefault) : css(styles.list, styles.liUrgent)}
-                onClick={() => {markAsRead(idx)}}>
-                {value}
-            </li>
-        );
-    }
+class NotificationItem extends React.PureComponent {
+  render() {
+    if (this.props.value) return (<li data-notification-type={this.props.type} onClick={() => { this.props.markAsRead(this.props.id) }} className={css(this.props.type === 'urgent' ? style.urgent : style.default, style.mediumItemNotification)}>{this.props.value}</li>);
+    else return (<li data-notification-type={this.props.type} dangerouslySetInnerHTML={this.props.html} onClick={() => { this.props.markAsRead(this.props.id) }} className={css(this.props.type === 'urgent' ? style.urgent : style.default, style.mediumItemNotification)}></li>);
+  }
 }
 
 NotificationItem.propTypes = {
-    type: PropTypes.string.isRequired,
-    value: PropTypes.string,
-    html: PropTypes.shape({
-        __html: PropTypes.string,
-    }),
-    markAsRead: PropTypes.func,
-    idx: PropTypes.number.isRequired
-}
-  
-NotificationItem.defaultProps = {
-    type: "default",
+  id: PropTypes.number.isRequired,
+  type: PropTypes.string,
+  html: PropTypes.shape({ __html: PropTypes.string }),
+  value: PropTypes.string,
+  markAsRead: PropTypes.func
 }
 
-const styles = StyleSheet.create({
-    list: {
-        '@media (max-width: 900px)': {
-            width: "100%",
-            borderBottom: "2px solid #000000",
-            padding: "10px 8px"
-        }
-    },
-    liDefault: {
-        color: "blue",
-    },
-    
-    liUrgent: {
-        color: "red",
-    },
-})
+NotificationItem.defaultProps = {
+  type: 'default',
+  value: '',
+  html: {},
+  markAsRead: () => void(0)
+}
+
+const style = StyleSheet.create({
+  default: {
+    color: '#0000ff',
+  },
+  urgent: {
+    color: '#ff0000',
+  },
+  mediumItemNotification: {
+    '@media (max-width: 900px)': {
+      borderBottom: '1px solid black',
+      padding: '10px 8px'
+    }
+  }
+});
 
 export default NotificationItem;

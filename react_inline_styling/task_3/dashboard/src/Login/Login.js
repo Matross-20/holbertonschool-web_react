@@ -1,42 +1,39 @@
-import React from "react";
-import { StyleSheet, css} from 'aphrodite'
+import React from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
-export default function Login() {
-    return (
-        <React.Fragment>
-            <div className={css(styles.appBody)}> 
-                <p>Login to access the full dashboard</p>
-                <div className={css(styles.seperator)}>
-                    <label htmlFor="email">Email: </label>
-                    <input type="email" name="email" id="email"></input>
-                </div>
-                <div className={css(styles.seperator)}>
-                    <label htmlFor="password">Password: </label>
-                    <input type="password" name="password"></input>
-                </div>
-                <div className={css(styles.seperator)}>
-                    <button>OK</button>
-                </div>
-            </div>
-        </React.Fragment>
-    );
+function Login(){
+  return (
+    <React.Fragment>
+      <div className={css(style.mediumContainer)}>
+        <p>Login to access the full dashboard</p>
+        <label htmlFor="email">Email</label>
+        <input type="email" id="email" name="email" className={css(style.loginContainerInput, style.mediumLogin)}/>
+        <label htmlFor="password">Password</label>
+        <input type="password" id="password" name="password" className={css(style.loginContainerInput, style.mediumLogin)}/>
+        <button className={css(style.mediumLogin)}>OK</button>
+      </div>
+    </React.Fragment>
+  )
 }
 
-const styles = StyleSheet.create({
-    appBody: {
-        height: "70%",
-        padding: "1rem",
-        fontSize: "1.2rem",
-        fontWeight: "500",
-        '@media (max-width: 900px)': {
-            flexDirection: "row"
-        }
-    },
-    seperator: {
-        display: 'inline',
-		'@media (max-width: 900px)': {
-			display: 'block',
-		},
+const style = StyleSheet.create({
+  loginContainerInput: {
+    marginRight: '9px',
+    marginLeft: '9px',
+  },
+  mediumContainer: {
+    '@media (max-width: 900px)': {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
     }
-})
-    
+  },
+  mediumLogin: {
+    '@media (max-width: 900px)': {
+      width: '30%',
+      margin: '9px 0',
+  }
+  }
+});
+
+export default Login;

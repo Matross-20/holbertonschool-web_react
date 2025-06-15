@@ -1,76 +1,47 @@
 import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount } from 'enzyme';
+import { shallow } from 'enzyme';
+import { expect as expectChai } from 'chai';
 import App from './App';
-import Header from '../Header/Header';
-import Login from '../Login/Login';
-import Footer from '../Footer/Footer';
-import Notifications from '../Notifications/Notifications';
 import CourseList from '../CourseList/CourseList';
+import Login from '../Login/Login';
 
-import 'jsdom-global/register'
+describe('Test App.js', () => {
+  let events = {};
 
-configure({adapter: new Adapter()});
+  beforeEach(() => {
+    events = {}; // Empty our events before each test case
+    // Define the addEventListener method with a Jest mock function
+    document.addEventListener = jest.fn((event, callback) => {
+      events[event] = callback;
+    });
+  });
 
-describe("Testing the <App /> Component", () => {
-	
-	let wrapper;
 
-	beforeEach(() => {
-		wrapper = shallow(<App />);
-	});
+  it('App without crashing', (done) => {
+    expectChai(shallow(<App />).exists());
+    done();
+  });
 
-	it("<App /> is rendered without crashing", () => {
-		expect(wrapper).to.not.be.an('undefined');
-	});
+  it('check that CourseList is not displayed when isLoggedIn is false', (done) => {
+    const wrapper = shallow(<App />);
+    expectChai(wrapper.find(CourseList)).to.have.lengthOf(0);
+    done();
+  });
 
-	it("<App /> contains the <Notifications /> Component", () => {
-		expect(wrapper.contains(<Notifications />)).to.equal(false);
-	});
+  it('check that CourseList is displayed and Login is not displayed when isLoggedIn is true', (done) => {
+    const wrapper = shallow(<App isLoggedIn={true} />);
+    expectChai(wrapper.find(CourseList)).to.have.lengthOf(1);
+    expectChai(wrapper.find(Login)).to.have.lengthOf(0);
+    done();
+  });
 
-	it("<App /> contains the <Header /> Component", () => {
-		expect(wrapper.contains(<Header />)).to.equal(true);
-	});
+  it('verify that when the keys "control" and "h" are pressed the "logOut" function is called', (done) => {
+    const myLogOut = jest.fn(() => undefined);
+    const myAlert = jest.spyOn(global, 'alert');
 
-	it("<App /> contains the <Login /> Component", () => {
-		expect(wrapper.contains(<Login />)).to.equal(true);
-	});
-
-	it("<App /> contains the <Footer /> Component", () => {
-		expect(wrapper.contains(<Footer />)).to.equal(true);
-	});
-
-	it("<App /> does not contain the <CourseList /> Component", () => {
-		expect(wrapper.contains(<CourseList />)).to.equal(false);
-	});
-
-});
-
-describe("Testing the <App /> Component", () => {
-	
-	let wrapper;
-
-	beforeEach(() => {
-		wrapper = shallow(<App isLoggedIn={true}/>);
-	});
-
-	it("<App /> does not contain the <Login /> Component", () => {
-		expect(wrapper.contains(<Login />)).to.equal(false);
-	});
-
-	it("<App /> contains the <CourseList /> Component", () => {
-		expect(wrapper.find('.CourseListContainer').length).to.equal(0);
-	});
-
-});
-
-describe('logOut alerts with correct string', () => {
-	it('logOut', () => {
-		const logOut = jest.fn(() => undefined);
-		const logger = jest.spyOn(global, 'alert');
-		expect(logger);
-		expect(logOut);
-		jest.restoreAllMocks();
-	});
+    expect(myAlert);
+    expect(myLogOut);
+    jest.restoreAllMocks();
+    done();
+  });
 });

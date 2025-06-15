@@ -1,13 +1,11 @@
 .App-footer {
-    height: 5%;
-    border-top: 3px solid #e0354b;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem;
-    font-weight: 500;
-  }
-  
-  .App-footer p {
-    margin: 0;
-  }
+  border-top: 3px solid #E0434C;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-style: italic;
+  height: 3rem;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+}
