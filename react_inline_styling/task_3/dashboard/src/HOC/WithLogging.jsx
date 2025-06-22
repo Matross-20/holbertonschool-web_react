@@ -1,15 +1,15 @@
-import React, { Fragment , Component } from 'react';
+import React from 'react';
 
 const WithLogging = (WrappedComponent) => {
-  class WithLoggingComponent extends Component {
+  class WithLogging extends React.Component {
     componentDidMount() {
-      const componentName = WrappedComponent.name || 'Component';
-      console.log(`Component ${componentName} is mounted`);
+      const name = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+      console.log(`Component ${name} is mounted`);
     }
 
     componentWillUnmount() {
-      const componentName = WrappedComponent.name || 'Component';
-      console.log(`Component ${componentName} is going to unmount`);
+      const name = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+      console.log(`Component ${name} is going to unmount`);
     }
 
     render() {
@@ -17,8 +17,10 @@ const WithLogging = (WrappedComponent) => {
     }
   }
 
-  WithLoggingComponent.displayName = `WithLogging(${WrappedComponent.name || 'Component'})`;
-  return WithLoggingComponent;
+  const name = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+  WithLogging.displayName = `WithLogging(${name})`;
+
+  return WithLogging;
 };
 
 export default WithLogging;

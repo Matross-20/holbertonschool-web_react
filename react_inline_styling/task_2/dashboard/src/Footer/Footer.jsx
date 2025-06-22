@@ -1,15 +1,23 @@
-// src/Footer/Footer.jsx
 import React from 'react';
-import './Footer.css';
+import { StyleSheet, css } from 'aphrodite';
 import { getCurrentYear, getFooterCopy } from '../utils/utils';
 
-const Footer = () => {
+export default function Footer() {
   return (
-    <footer className="App-footer">
-      <div className="long-br"></div>
-      <p>Copyright {getCurrentYear()} {getFooterCopy(true)}</p>
-    </footer>
+    <div className={css(styles.footer)}>
+      <p>Copyright {getCurrentYear()} - {getFooterCopy(true)}</p>
+    </div>
   );
-};
+}
 
-export default Footer;
+const styles = StyleSheet.create({
+  footer: {
+    position: 'fixed',
+    bottom: 0,
+    width: '100%',
+    textAlign: 'center',
+    fontStyle: 'italic',
+    borderTop: '3px solid #e11d3f',
+    padding: '1rem 0',
+  },
+});

@@ -1,46 +1,43 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import { StyleSheet, css } from "aphrodite";
 
-const headerStyle = { backgroundColor: '#deb5b545' };
-const rowStyle = { backgroundColor: '#f5f5f5ab' };
+export default function CourseListRow({ isHeader = false, textFirstCell = "", textSecondCell = null }) {
+  const rowClass = isHeader ? css(styles.headerRow) : css(styles.row);
 
-const CourseListRow = ({ isHeader, textFirstCell, textSecondCell }) => {
+  return (
+    <tr className={rowClass}>
+      {isHeader ? (
+        textSecondCell === null ? (
+          <th colSpan="2" className={css(styles.headerCell)}>{textFirstCell}</th>
+        ) : (
+          <>
+            <th className={css(styles.headerCell, styles.thLeft)}>{textFirstCell}</th>
+            <th className={css(styles.headerCell)}>{textSecondCell}</th>
+          </>
+        )
+      ) : (
+        <>
+          <td>{textFirstCell}</td>
+          <td>{textSecondCell}</td>
+        </>
+      )}
+    </tr>
+  );
+}
 
-  const style = isHeader ? headerStyle : rowStyle;
-
-    return (
-      <tr style={style}>
-          {isHeader ? (
-            textSecondCell === null ? (
-              <th colSpan="2">{textFirstCell}</th>
-            ) : (
-              <>
-                <th>{textFirstCell}</th>
-                <th>{textSecondCell}</th>
-              </>
-            )
-          ) : (
-            <>
-              <td>{textFirstCell}</td>
-              <td>{textSecondCell}</td>
-            </>
-          )}
-        </tr>
-      );
-    };
-
-
-
-CourseListRow.propTypes = {
-isHeader: PropTypes.bool,
-textFirstCell: PropTypes.string,
-textSecondCell: PropTypes.string,
-};
-
-CourseListRow.defaultProps = {
-isHeader: false,
-textFirstCell: '',
-textSecondCell: null,
-};
-
-export default CourseListRow;
+const styles = StyleSheet.create({
+  row: {
+    backgroundColor: "rgba(245, 245, 245, 0.67)"
+  },
+  headerRow: {
+    backgroundColor: "rgba(222, 181, 181, 0.27)"
+  },
+  headerCell: {
+    fontWeight: "bold",
+    textAlign: "left",
+    borderBottom: "1px solid #ccc"
+  },
+  thLeft: {
+    width: "70%"
+  }
+});

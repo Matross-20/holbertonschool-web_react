@@ -1,34 +1,37 @@
-import { render, screen } from '@testing-library/react';
-import NotificationItem from './NotificationItem';  // Adjust path if necessary
+import NotificationItem from "./NotificationItem";
+import { render, screen, fireEvent } from "@testing-library/react";
 
-describe('NotificationItem component', () => {
-  
-  test('should have color blue and data-notification-type set to "default" when type is "default"', () => {
-    // Render NotificationItem with type 'default'
-    render(<NotificationItem type="default" value="Test notification" />);
+test('Check whether the li element has the color blue, and the the attribute data-notification-type set to default', () => {
+  render(<NotificationItem type="default" value="Test notification" />);
+  const li = screen.getByText('Test notification');
 
-    // Select the li element
-    const listItem = screen.getByRole('listitem');
+  expect(li).toBeInTheDocument();
+  expect(li).toHaveAttribute('data-notification-type', 'default');
+  expect(li).toHaveStyle('color: blue');
+});
 
-    // Check if the li element has the correct color
-    expect(listItem).toHaveStyle('color: blue');
+test('Check whether the li element has the color red, and the the attribute data-notification-type set to urgent', () => {
+  render(<NotificationItem type="urgent" value="Test urgent notification" />);
+  const li = screen.getByText('Test urgent notification');
 
-    // Check if the data-notification-type attribute is set to "default"
-    expect(listItem).toHaveAttribute('data-notification-type', 'default');
-  });
+  expect(li).toBeInTheDocument();
+  expect(li).toHaveAttribute('data-notification-type', 'urgent');
+  expect(li).toHaveStyle('color: red');
+});
 
-  test('should have color red and data-notification-type set to "urgent" when type is "urgent"', () => {
-    // Render NotificationItem with type 'urgent'
-    render(<NotificationItem type="urgent" value="Test urgent notification" />);
+test('calls markAsRead with correct id on click', () => {
+  const mockMarkAsRead = jest.fn();
+  render(
+    <NotificationItem
+      id={42}
+      type="default"
+      value="Clickable notification"
+      markAsRead={mockMarkAsRead}
+    />
+  );
 
-    // Select the li element
-    const listItem = screen.getByRole('listitem');
+  const li = screen.getByText('Clickable notification');
+  fireEvent.click(li);
 
-    // Check if the li element has the correct color
-    expect(listItem).toHaveStyle('color: red');
-
-    // Check if the data-notification-type attribute is set to "urgent"
-    expect(listItem).toHaveAttribute('data-notification-type', 'urgent');
-  });
-
+  expect(mockMarkAsRead).toHaveBeenCalledWith(42);
 });

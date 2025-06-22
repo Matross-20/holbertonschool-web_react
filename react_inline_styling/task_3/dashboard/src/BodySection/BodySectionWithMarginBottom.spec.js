@@ -1,18 +1,25 @@
-// src/App.spec.js
-import { render, screen , fireEvent} from '@testing-library/react';
-import '@testing-library/jest-dom';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
 import BodySectionWithMarginBottom from './BodySectionWithMarginBottom';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-test('Test that the BodySectionWithMarginBottom component contains a div with the class bodySectionWithMargin.', () => {
-    const { container } = render(<BodySectionWithMarginBottom title="Test Title"><p>Test Content</p></BodySectionWithMarginBottom>);
-    console.log(container.innertText);
-    expect(container.querySelector('.bodySectionWithMargin')).toBeInTheDocument();
-
+beforeAll(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
 });
 
-test('Test that the BodySectionWithMarginBottom component renders the BodySection component..', () => {
-    const { container } = render(<BodySectionWithMarginBottom title="Test Title"><p>Test Content</p></BodySectionWithMarginBottom>);
-    console.log(container.innertText);
-    expect(screen.getByText('Test Title')).toBeInTheDocument();
-    expect(screen.getByText('Test Content')).toBeInTheDocument();
+afterAll(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
+
+describe('<BodySectionWithMarginBottom />', () => {
+  test('renders the correct title and content', () => {
+    render(
+      <BodySectionWithMarginBottom title="test title">
+        <p>test children node</p>
+      </BodySectionWithMarginBottom>
+    );
+
+    expect(screen.getByText(/test title/i)).toBeInTheDocument();
+    expect(screen.getByText(/test children node/i)).toBeInTheDocument();
+  });
 });

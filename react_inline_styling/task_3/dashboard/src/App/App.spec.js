@@ -1,63 +1,55 @@
-// src/App.spec.js
-import { render, screen , fireEvent} from '@testing-library/react';
-import '@testing-library/jest-dom';
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-test('renders h1 element with text "School Dashboard"', () => {
-    render(<App />);
-    const h1Element = screen.getByRole('heading', { level: 1, name: /School Dashboard/i });
-    expect(h1Element).toBeInTheDocument();
+beforeAll(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
+
+afterAll(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
 });
 
 
+describe('App component', () => {
+  test('renders header, login and footer components', () => {
+    render(<App isLoggedIn={false} />);
+    expect(screen.getByText(/School dashboard/i)).toBeInTheDocument();
+    expect(screen.getByText(/Login to access the full dashboard/i)).toBeInTheDocument();
+    expect(screen.getByText(/Copyright/i)).toBeInTheDocument();
+  });
 
-test('checks if an img element with alt text "holberton logo" is rendered', () => {
-    render(<App />);
-    const image = screen.getByAltText("holberton logo");
-    expect(image).toBeInTheDocument();
-});
-
-test('renders two input elements (email and password)', () => {
-    render(<App />);
-    const emailInput = screen.getByRole('textbox', { name: /email/i });
-    expect(emailInput).toBeInTheDocument();
-    const passwordInput = screen.getByLabelText(/password/i);
-    expect(passwordInput).toBeInTheDocument();
-});
-
-test('renders two label elements (Email and Password)', () => {
-    render(<App />);
-    const emailLabel = screen.getByLabelText(/email/i);
-    const passwordLabel = screen.getByLabelText(/password/i);
-    expect(emailLabel).toBeInTheDocument();
-    expect(passwordLabel).toBeInTheDocument();
-});
-
-test('renders a button with text "OK"', () => {
-    render(<App />);
-    const button = screen.getByRole('button', { name: /ok/i });
-    expect(button).toBeInTheDocument();
-});
-
-
-beforeEach(() => {
-  window.alert = jest.fn();
-});
-
-test('calls logOut when ctrl + h is pressed', () => {
+  test('calls logOut and alerts when Ctrl + H is pressed', () => {
     const logOutMock = jest.fn();
-    const { container } = render(<App logOut={logOutMock} />);
+    const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
 
-    fireEvent.keyDown(container, { ctrlKey: true, key: 'h' });
+    render(<App logOut={logOutMock} />);
 
+    fireEvent.keyDown(document, {
+      key: 'h',
+      ctrlKey: true,
+    });
+
+    expect(alertMock).toHaveBeenCalledWith('Logging you out');
     expect(logOutMock).toHaveBeenCalledTimes(1);
+
+    alertMock.mockRestore(); // nettoyage
   });
 
-  test('displays alert when ctrl + h is pressed', () => {
-    const logOutMock = jest.fn();
-    const { container } = render(<App logOut={logOutMock} />);
-
-    fireEvent.keyDown(container, { ctrlKey: true, key: 'h' });
-
-    expect(window.alert).toHaveBeenCalledWith('Logging you out');
+  test('displays "Course list" title when isLoggedIn is true', () => {
+    render(<App isLoggedIn={true} />);
+    expect(screen.getByText(/Course list/i)).toBeInTheDocument();
   });
+
+  test('displays "Log in to continue" title when isLoggedIn is false', () => {
+    render(<App isLoggedIn={false} />);
+    expect(screen.getByText(/Log in to continue/i)).toBeInTheDocument();
+  });
+
+  test('displays News from the School and its paragraph', () => {
+    render(<App />);
+    expect(screen.getByText(/News from the School/i)).toBeInTheDocument();
+    expect(screen.getByText(/Holberton School News goes here/i)).toBeInTheDocument();
+  });
+});
