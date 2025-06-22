@@ -1,37 +1,51 @@
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 
 class NotificationItem extends PureComponent {
-    render() {
-        const {type, html, value, markAsRead, idx} = this.props;
-        return html ? (
-            <li 
-                dangerouslySetInnerHTML={{__html: html.__html}}
-                data-priority={type}
-                onClick={() => {markAsRead(idx)}}>
-            </li>
-        ) : (
-            <li 
-                data-priority={type}
-                onClick={() => {markAsRead(idx)}}>
-                {value}
-            </li>
-        );
-    }
-}
+	render() {
+		let {
+			id,
+			type,
+			value,
+			html,
+			markAsRead
+		} = this.props;
+
+		return (
+			<Fragment>
+				{
+					html !== undefined &&
+					<li
+						onClick={() => markAsRead(id)}
+						data-priority-type={type}
+						dangerouslySetInnerHTML={html}
+					/>
+				}
+				{
+					html === undefined &&
+					<li
+						onClick={() => markAsRead(id)}
+						data-priority-type={type}
+					>
+						{value}
+					</li>
+				}
+			</Fragment>
+		);
+	};
+};
 
 NotificationItem.propTypes = {
-    type: PropTypes.string.isRequired,
-    value: PropTypes.string,
-    html: PropTypes.shape({
-        __html: PropTypes.string,
-    }),
-    markAsRead: PropTypes.func,
-    idx: PropTypes.number.isRequired
-}
-  
+	html: PropTypes.shape({
+		__html: PropTypes.string,
+	}),
+	type: PropTypes.string.isRequired,
+	value: PropTypes.string,
+	markAsRead: PropTypes.func,
+};
+
 NotificationItem.defaultProps = {
-    type: "default",
-}
+	type: "default",
+};
 
 export default NotificationItem;

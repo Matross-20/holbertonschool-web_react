@@ -1,50 +1,65 @@
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import { StyleSheet, css} from 'aphrodite'
+import { StyleSheet, css } from 'aphrodite';
 
 class NotificationItem extends PureComponent {
-    render() {
-        const {type, html, value, markAsRead, idx} = this.props;
-        return html ? (
-            <li 
-                dangerouslySetInnerHTML={{__html: html.__html}}
-                data-priority={type}
-                className={type === "default" ? css(styles.liDefault) : css(styles.liUrgent)}
-                onClick={() => {markAsRead(idx)}}>
-            </li>
-        ) : (
-            <li 
-                data-priority={type}
-                className={type === "default" ? css(styles.liDefault) : css(styles.liUrgent)}
-                onClick={() => {markAsRead(idx)}}>
-                {value}
-            </li>
-        );
-    }
-}
+	render() {
+		let {
+			id,
+			type,
+			value,
+			html,
+			markAsRead
+		} = this.props;
 
-NotificationItem.propTypes = {
-    type: PropTypes.string.isRequired,
-    value: PropTypes.string,
-    html: PropTypes.shape({
-        __html: PropTypes.string,
-    }),
-    markAsRead: PropTypes.func,
-    idx: PropTypes.number.isRequired
-}
-  
-NotificationItem.defaultProps = {
-    type: "default",
-}
+		let liStyle = (type === 'urgent') ? styles.urgentNotif : styles.defaultNotif;
+
+		return (
+			<Fragment>
+				{
+					html !== undefined &&
+					<li
+						className={css(liStyle)}
+						onClick={() => markAsRead(id)}
+						data-priority-type={type}
+						dangerouslySetInnerHTML={html}
+					/>
+				}
+				{
+					html === undefined &&
+					<li
+						className={css(liStyle)}
+						onClick={() => markAsRead(id)}
+						data-priority-type={type}
+					>
+						{value}
+					</li>
+				}
+			</Fragment>
+		);
+	};
+};
 
 const styles = StyleSheet.create({
-    liDefault: {
-        color: "blue",
-    },
-    
-    liUrgent: {
-        color: "red",
-    },
-})
+	defaultNotif: {
+		color: 'blue',
+	},
+	urgentNotif: {
+		color: 'red',
+	},
+});
+
+NotificationItem.propTypes = {
+	html: PropTypes.shape({
+		__html: PropTypes.string,
+	}),
+	type: PropTypes.string.isRequired,
+	value: PropTypes.string,
+	markAsRead: PropTypes.func,
+};
+
+NotificationItem.defaultProps = {
+	type: "default",
+};
 
 export default NotificationItem;

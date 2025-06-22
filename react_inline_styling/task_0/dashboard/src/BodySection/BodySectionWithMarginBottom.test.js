@@ -9,19 +9,23 @@ configure({
 	adapter: new Adapter()
 });
 
-describe("Testing the BodySectionWithMarginBottom", () => {
+describe("Testing the <BodySectionWithMarginBottom /> Component", () => {
 
-	it("Renders BodySection Component correctly", () => {
-		const props = {
+	it("Renders the 'BodySection' Component correctly", () => {
+		let props = {
 			title: 'title',
 			children: React.createElement('p', 'test child'),
 		};
 
-		const wrapper = shallow(
+		let wrapper = shallow(
 			<BodySectionWithMarginBottom {...props} />
 		);
-		
-		expect(wrapper.html()).to.equal('<div class="bodySectionWithMargin"><div class="bodySection"><h2>title</h2><p></p></div></div>');
+
+		expect(wrapper.containsAllMatchingElements([
+			<div className="BodySectionWithMargin">
+				<BodySection {...props} />
+			</div>
+		])).to.equal(true);
 	});
 
 });

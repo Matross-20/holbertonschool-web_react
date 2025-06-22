@@ -9,8 +9,6 @@ import Footer from '../Footer/Footer';
 import Notifications from '../Notifications/Notifications';
 import CourseList from '../CourseList/CourseList';
 
-import 'jsdom-global/register'
-
 configure({adapter: new Adapter()});
 
 describe("Testing the <App /> Component", () => {
@@ -26,7 +24,7 @@ describe("Testing the <App /> Component", () => {
 	});
 
 	it("<App /> contains the <Notifications /> Component", () => {
-		expect(wrapper.contains(<Notifications />)).to.equal(false);
+		expect(wrapper.find(Notifications)).to.have.lengthOf(1);
 	});
 
 	it("<App /> contains the <Header /> Component", () => {
@@ -41,36 +39,32 @@ describe("Testing the <App /> Component", () => {
 		expect(wrapper.contains(<Footer />)).to.equal(true);
 	});
 
-	it("<App /> does not contain the <CourseList /> Component", () => {
-		expect(wrapper.contains(<CourseList />)).to.equal(false);
+	it("<App /> doesn't contain <CourseList />", () => {
+		expect(wrapper.find(CourseList)).to.have.lengthOf(0);
 	});
 
 });
 
-describe("Testing the <App /> Component", () => {
-	
-	let wrapper;
+describe("Testing the <App /> when isLoggedIn is true", () => {
 
-	beforeEach(() => {
-		wrapper = shallow(<App isLoggedIn={true}/>);
-	});
+	let props = {
+		isLoggedIn: true,
+	};
 
-	it("<App /> does not contain the <Login /> Component", () => {
-		expect(wrapper.contains(<Login />)).to.equal(false);
-	});
+	let component = shallow(<App {...props} />);
 
-	it("<App /> contains the <CourseList /> Component", () => {
-		expect(wrapper.find('.CourseListContainer').length).to.equal(0);
-	});
-
+	expect(component.contains(<Login />)).to.equal(false);
+	expect(component.find(CourseList)).to.have.lengthOf(1);
 });
 
 describe('logOut alerts with correct string', () => {
-	it('logOut', () => {
-		const logOut = jest.fn(() => undefined);
-		const logger = jest.spyOn(global, 'alert');
-		expect(logger);
-		expect(logOut);
-		jest.restoreAllMocks();
-	});
+	const myLogOut = jest.fn(() => undefined);
+	const appComp = mount(<App logOut={myLogOut} />);
+	const log = jest.spyOn(console, 'log');
+
+	expect(appComp.props.logOut);
+	expect(log);
+
+	jest.restoreAllMocks();
+
 });

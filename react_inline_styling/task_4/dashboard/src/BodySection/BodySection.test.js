@@ -9,12 +9,18 @@ configure({
 	adapter: new Adapter()
 });
 
-StyleSheetTestUtils.suppressStyleInjection();
+describe("Testing the <BodySection /> Component", () => {
 
-describe("Testing the BodySection", () => {
+	beforeEach(() => {
+		StyleSheetTestUtils.suppressStyleInjection();
+	});
 
-	it("Renders children correctly", () => {
-		const wrapper = shallow(
+	afterEach(() => {
+		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+	});
+
+	it("Renders the correct children", () => {
+		let wrapper = shallow(
 			<BodySection title="test title">
 				<p>test children node</p>
 			</BodySection>

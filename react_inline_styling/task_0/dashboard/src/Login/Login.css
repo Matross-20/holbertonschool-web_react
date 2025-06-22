@@ -1,10 +1,7 @@
-.App-body {
-    height: 70%;
-    padding: 1rem;
-    font-size: 1.2rem;
-    font-weight: 500;
+.Login-body {
+  padding: 36px 24px;
 }
-  
-#password {
-    margin-left: 5px;
+
+.Login-body input {
+  margin: 0 16px 0 8px;
 }

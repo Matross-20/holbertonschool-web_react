@@ -1,7 +1,10 @@
 import React from 'react';
 import { expect } from 'chai';
-import { shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+import { shallow, configure } from 'enzyme';
 import Header from './Header';
+
+configure({adapter: new Adapter()});
 
 describe("Testing the <Header /> Component", () => {
 	
@@ -12,14 +15,14 @@ describe("Testing the <Header /> Component", () => {
 	});
 
 	it("<Header /> is rendered without crashing", () => {
-		expect(wrapper).to.not.be.an('undefined');
-    });
-    
-    it("the <Header /> component render img", () => {
+		expect(wrapper.render()).to.not.be.an('undefined');
+	});
+
+	it("<Header /> render img tag", () => {
 		expect(wrapper.find('img')).to.have.lengthOf(1);
-    });
-    
-    it("the <Header /> component render h1", () => {
+	});
+
+	it("<Header /> render h1 tag", () => {
 		expect(wrapper.find('h1')).to.have.lengthOf(1);
 	});
 

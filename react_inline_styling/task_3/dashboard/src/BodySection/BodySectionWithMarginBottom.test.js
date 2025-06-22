@@ -3,27 +3,38 @@ import { expect } from 'chai';
 import Adapter from 'enzyme-adapter-react-16';
 import { shallow, configure, mount, } from 'enzyme';
 import BodySectionWithMarginBottom from './BodySectionWithMarginBottom.js';
-import { StyleSheetTestUtils } from 'aphrodite';
+import BodySection from './BodySection.js';
+import { StyleSheetTestUtils, } from 'aphrodite';
 
 configure({
 	adapter: new Adapter()
 });
 
-StyleSheetTestUtils.suppressStyleInjection();
+describe("Testing the <BodySectionWithMarginBottom /> Component", () => {
 
-describe("Testing the BodySectionWithMarginBottom", () => {
+	beforeEach(() => {
+		StyleSheetTestUtils.suppressStyleInjection();
+	});
 
-	it("Renders BodySection Component correctly", () => {
-		const props = {
+	afterEach(() => {
+		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+	});
+
+	it("Renders the 'BodySection' Component correctly", () => {
+		let props = {
 			title: 'title',
 			children: React.createElement('p', 'test child'),
 		};
 
-		const wrapper = shallow(
+		let wrapper = shallow(
 			<BodySectionWithMarginBottom {...props} />
 		);
-		
-		expect(wrapper.html()).to.equal('<div class="margin_13jnc9w"><div class="bodySection"><h2>title</h2><p></p></div></div>');
+
+		expect(wrapper.containsAllMatchingElements([
+			<div>
+				<BodySection {...props} />
+			</div>
+		])).to.equal(true);
 	});
 
 });

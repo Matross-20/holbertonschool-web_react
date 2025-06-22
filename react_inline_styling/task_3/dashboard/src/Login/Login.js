@@ -1,42 +1,53 @@
-import React from "react";
-import { StyleSheet, css} from 'aphrodite'
+import React, { Component, Fragment} from 'react';
+import { StyleSheet, css, } from 'aphrodite';
 
-export default function Login() {
-    return (
-        <React.Fragment>
-            <div className={css(styles.appBody)}> 
-                <p>Login to access the full dashboard</p>
-                <div className={css(styles.seperator)}>
-                    <label htmlFor="email">Email: </label>
-                    <input type="email" name="email" id="email"></input>
-                </div>
-                <div className={css(styles.seperator)}>
-                    <label htmlFor="password">Password: </label>
-                    <input type="password" name="password"></input>
-                </div>
-                <div className={css(styles.seperator)}>
-                    <button>OK</button>
-                </div>
-            </div>
-        </React.Fragment>
-    );
-}
+class Login extends Component {
+	render() {
+		return (
+			<Fragment>
+				<div className={css(styles.loginBody)}>
+					<p>
+						Login to access the full dashboard
+					</p>
+					<div className={css(styles.inputContainer)}>
+						<label htmlFor="email">Email: </label>
+						<input className={css(styles.input)} type="email" id="email" name="email" />
+					</div>
+					<div className={css(styles.inputContainer)}>
+						<label htmlFor="password">Password: </label>
+						<input className={css(styles.input)} type="password" id="password" name="password" />
+					</div>
+					<div className={css(styles.inputContainer)}>
+						<button>OK</button>
+					</div>
+				</div>
+			</Fragment>
+		);
+	}
+};
 
 const styles = StyleSheet.create({
-    appBody: {
-        height: "70%",
-        padding: "1rem",
-        fontSize: "1.2rem",
-        fontWeight: "500",
-        '@media (max-width: 900px)': {
-            flexDirection: "row"
-        }
-    },
-    seperator: {
-        display: 'inline',
+	loginBody: {
+		padding: '36px 24px',
+	},
+	input: {
+		margin: '0 16px 0 8px',
+	},
+	inputContainer: {
+		display: 'inline',
 		'@media (max-width: 900px)': {
 			display: 'block',
 		},
-    }
-})
-    
+	},
+});
+
+// const styles = StyleSheet.create({
+// 	loginBody: {
+// 		padding: '36px 24px',
+// 	},
+// 	input: {
+// 		margin: '0 16px 0 8px',
+// 	},
+// });
+
+export default Login;
