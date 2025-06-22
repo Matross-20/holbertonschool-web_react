@@ -1,15 +1,25 @@
-#CourseList {
-  width: 100%;
-  border: 1px lightgrey solid;
-
-  text-align: left;
+:root {
+  --border-table-color: rgb(170, 170, 170);
 }
 
-#CourseList thead tr:first-child {
+#CourseList {
+  margin-top: 40px;
+  border: 1px solid var(--border-table-color);
+  border-collapse: collapse;
+  width: 95%;
+}
+
+#CourseList th {
+  border-top: 1px solid var(--border-table-color);
+  border-bottom: 1px solid var(--border-table-color);
+  text-align: left;
+  font-size: 18px;
+}
+
+#CourseList th[colspan="2"] {
   text-align: center;
 }
-#CourseList th {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  border-bottom: 3px lightgrey solid;
+
+#CourseList td {
+  text-align: left;
 }

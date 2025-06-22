@@ -1,31 +1,29 @@
-import { getFullYear, getFooterCopy, getLatestNotification } from './utils';
+import { getFullYear, getFooterCopy, getLatestNotification } from "./utils";
 
-describe('getFullYear', () => {
-  it('returns the current year', () => {
-    const fakeYear = 2024;
-    const fakeNow = new Date();
-    fakeNow.setFullYear(fakeYear);
-
-    jest.useFakeTimers({});
-    jest.setSystemTime(fakeNow);
-
-    // console.log(fakeYear, fakeNow.getFullYear());
-
-    expect(getFullYear()).toBe(fakeYear);
+describe("utils_tests", function () {
+  describe("getFullYear", function () {
+    it("should return current year", function () {
+      const year = getFullYear();
+      expect(year).toEqual(new Date().getFullYear());
+    });
   });
-});
+  describe("getFooterCopy", function () {
+    const trueMsg = "Holberton School";
+    const falseMsg = "Holberton School main dashboard";
 
-describe('getFooterCopy', () => {
-  it("returns 'Holberton School main dashboard' when called with false", () => {
-    expect(getFooterCopy(false)).toEqual('Holberton School main dashboard');
+    it("Should return true message", function () {
+      const msg = getFooterCopy(true);
+      expect(msg).toEqual(trueMsg);
+    });
+    it("Should return false message", function () {
+      const msg = getFooterCopy(false);
+      expect(msg).toEqual(falseMsg);
+    });
   });
-  it("returns 'Holberton School' when called with true", () => {
-    expect(getFooterCopy(true)).toEqual('Holberton School');
-  });
-});
-
-describe('getLatestNotification', () => {
-  it('returns "<strong>Urgent requirement</strong> - complete by EOD"', () => {
-    expect(getLatestNotification()).toEqual('<strong>Urgent requirement</strong> - complete by EOD');
+  describe("getLatestNotification", function () {
+    it("shold return correct string element", function () {
+      const element = "<strong>Urgent requirement</strong> - complete by EOD";
+      expect(getLatestNotification()).toEqual(element);
+    });
   });
 });
