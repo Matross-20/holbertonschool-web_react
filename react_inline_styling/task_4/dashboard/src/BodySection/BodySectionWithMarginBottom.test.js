@@ -1,40 +1,36 @@
 import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount, } from 'enzyme';
-import BodySectionWithMarginBottom from './BodySectionWithMarginBottom.js';
-import BodySection from './BodySection.js';
-import { StyleSheetTestUtils, } from 'aphrodite';
+import { shallow } from 'enzyme';
+import BodySectionWithMarginBottom from './BodySectionWithMarginBottom';
+import BodySection from './BodySection';
+import { StyleSheetTestUtils, StyleSheet, css } from 'aphrodite';
 
-configure({
-	adapter: new Adapter()
+StyleSheetTestUtils.suppressStyleInjection();
+
+afterAll(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
 });
 
-describe("Testing the <BodySectionWithMarginBottom /> Component", () => {
+describe('BodySectionWithMarginBottom Component', () => {
+  it('renders correctly a BodySection component and passes props correctly', () => {
+    const wrapper = shallow(
+      <BodySectionWithMarginBottom title='test title'>
+        <p>test children node</p>
+      </BodySectionWithMarginBottom>
+    );
 
-	beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
+    const bodySection = wrapper.find(BodySection);
+    expect(bodySection).toHaveLength(1);
 
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
+    expect(bodySection.props().title).toEqual('test title');
 
-	it("Renders the 'BodySection' Component correctly", () => {
-		let props = {
-			title: 'title',
-			children: React.createElement('p', 'test child'),
-		};
+    expect(bodySection.dive().find('p').text()).toEqual('test children node');
 
-		let wrapper = shallow(
-			<BodySectionWithMarginBottom {...props} />
-		);
-
-		expect(wrapper.containsAllMatchingElements([
-			<div>
-				<BodySection {...props} />
-			</div>
-		])).to.equal(true);
-	});
-
+    const div = wrapper.find('div');
+    const expectedClassName = css(StyleSheet.create({
+      bodySectionWithMargin: {
+        marginBottom: '40px',
+      },
+    }).bodySectionWithMargin);
+    expect(div.hasClass(expectedClassName)).toBe(true);
+  });
 });

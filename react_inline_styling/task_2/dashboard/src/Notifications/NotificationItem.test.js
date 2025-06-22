@@ -1,61 +1,77 @@
-import { shallow } from "enzyme";
-import React from "react";
-import NotificationItem from "./NotificationItem";
-import { StyleSheetTestUtils } from "aphrodite";
+import React from 'react';
+import { shallow } from 'enzyme';
+import NotificationItem from './NotificationItem';
+import { StyleSheetTestUtils, css, StyleSheet } from 'aphrodite';
 
-describe("<Notifications />", () => {
+const styles = StyleSheet.create({
+  default: {
+    color: '#180C5F',
+  },
+  urgent: {
+    color: 'red',
+  },
+});
+
+const defaultClassName = css(styles.default);
+const urgentClassName = css(styles.urgent);
+
+describe('NotificationItem Component', () => {
   beforeAll(() => {
     StyleSheetTestUtils.suppressStyleInjection();
   });
+
   afterAll(() => {
     StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
   });
 
-  it("NotificationItem renders without crashing", () => {
-    const wrapper = shallow(<NotificationItem />);
-    expect(wrapper.exists()).toEqual(true);
+  it('renders without crashing', () => {
+    shallow(<NotificationItem type="default" value="test" />);
   });
-  it("Verify that by passing dummy type and value props, it renders the correct html", () => {
+
+  it('renders correct HTML with type and value props', () => {
     const wrapper = shallow(<NotificationItem type="default" value="test" />);
-    wrapper.update();
-    const listItem = wrapper.find("li");
-
-    expect(listItem).toHaveLength(1);
-    expect(listItem.text()).toEqual("test");
-    expect(listItem.prop("data-notification-type")).toEqual("default");
+    const li = wrapper.find('li');
+    expect(li.prop('data-notification-type')).toEqual('default');
+    expect(li.text()).toEqual('test');
   });
-  it("Passing a dummy html prop, it renders the correct html (for example", () => {
-    const text = "Here is the list of notifications";
-    const wrapper = shallow(
-      <NotificationItem html={{ __html: "<u>test</u>" }} />
-    );
-    wrapper.update();
-    const listItem = wrapper.find("li");
-    // expect(listItem.html()).toEqual(
-    //   '<li data-notification-type="default"><u>test</u></li>'
-    // );
 
-    expect(listItem.props()["data-notification-type"]).toEqual("default");
-    expect(listItem.html()).toContain("<u>test</u>");
+  it('renders correct HTML with html prop', () => {
+    const htmlProp = { __html: '<p>test</p>' };
+    const wrapper = shallow(<NotificationItem html={htmlProp} />);
+    expect(wrapper.find('li').prop('dangerouslySetInnerHTML')).toEqual(htmlProp);
   });
-  it("when calling the function markAsRead on an instance of the component, the spy is being called with the right message", () => {
-    const id = 27;
 
-    const wrapper = shallow(
-      <NotificationItem type="default" value="test" id={id} />
-    );
+  describe('<NotificationItem /> interaction', () => {
+    it('calls markAsRead with the correct ID when clicked', () => {
+      const markAsReadSpy = jest.fn();
+      const wrapper = shallow(
+        <NotificationItem
+          type="default"
+          value="Test notification"
+          markAsRead={markAsReadSpy}
+          id={1}
+        />
+      );
 
-    const instance = wrapper;
+      wrapper.find('li').simulate('click');
 
-    instance.markAsRead = jest.fn();
+      expect(markAsReadSpy).toHaveBeenCalledWith(1);
+    });
+  });
 
-    const listItem = wrapper.find("li").first();
+  describe('Style Tests', () => {
+    it('applies the correct style for "default" type', () => {
+      const wrapper = shallow(<NotificationItem type="default" value="Test" />);
+      const li = wrapper.find('li');
+      expect(li.hasClass(defaultClassName)).toBe(true);
+      expect(li.hasClass(urgentClassName)).toBe(false);
+    });
 
-    listItem.simulate("click");
-
-    instance.markAsRead(id);
-
-    expect(instance.markAsRead).toHaveBeenCalledWith(27);
-    jest.restoreAllMocks();
+    it('applies the correct style for "urgent" type', () => {
+      const wrapper = shallow(<NotificationItem type="urgent" value="Test" />);
+      const li = wrapper.find('li');
+      expect(li.hasClass(defaultClassName)).toBe(false);
+      expect(li.hasClass(urgentClassName)).toBe(true);
+    });
   });
 });

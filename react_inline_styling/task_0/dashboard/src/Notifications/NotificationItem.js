@@ -1,51 +1,50 @@
-import React, { PureComponent, Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-class NotificationItem extends PureComponent {
-	render() {
-		let {
-			id,
-			type,
-			value,
-			html,
-			markAsRead
-		} = this.props;
+class NotificationItem extends React.PureComponent {
+  static propTypes = {
+    type: PropTypes.string.isRequired,
+    value: PropTypes.string,
+    html: PropTypes.shape({
+      __html: PropTypes.string
+    }),
+    markAsRead: PropTypes.func,
+    id: PropTypes.number
+  };
 
-		return (
-			<Fragment>
-				{
-					html !== undefined &&
-					<li
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-						dangerouslySetInnerHTML={html}
-					/>
-				}
-				{
-					html === undefined &&
-					<li
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-					>
-						{value}
-					</li>
-				}
-			</Fragment>
-		);
-	};
-};
+  static defaultProps = {
+    type: 'default',
+    value: '',
+    html: null,
+    markAsRead: () => {},
+    id: null
+  };
 
-NotificationItem.propTypes = {
-	html: PropTypes.shape({
-		__html: PropTypes.string,
-	}),
-	type: PropTypes.string.isRequired,
-	value: PropTypes.string,
-	markAsRead: PropTypes.func,
-};
+  handleClick = () => {
+    const { markAsRead, id } = this.props
+    if (markAsRead && id !== null) {
+      markAsRead(id)
+    }
+  };
 
-NotificationItem.defaultProps = {
-	type: "default",
-};
+  render() {
+    const { type, value, html } = this.props
+    if (html) {
+      return (
+        <li
+          data-notification-type={type}
+          onClick={this.handleClick}
+          dangerouslySetInnerHTML={html}
+        ></li>
+      )
+    } else {
+      return (
+        <li data-notification-type={type} onClick={this.handleClick}>
+          {value}
+        </li>
+      )
+    }
+  }
+}
 
-export default NotificationItem;
+export default NotificationItem

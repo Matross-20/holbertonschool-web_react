@@ -1,31 +1,24 @@
-import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount, } from 'enzyme';
-import BodySectionWithMarginBottom from './BodySectionWithMarginBottom.js';
-import BodySection from './BodySection.js';
+import React from 'react'
+import { shallow } from 'enzyme'
+import BodySectionWithMarginBottom from './BodySectionWithMarginBottom'
+import BodySection from './BodySection'
 
-configure({
-	adapter: new Adapter()
-});
+describe('BodySectionWithMarginBottom Component', () => {
+  it('should render correctly and pass props to BodySection', () => {
+    const wrapper = shallow(
+      <BodySectionWithMarginBottom title="test title">
+        <p>test children node</p>
+      </BodySectionWithMarginBottom>
+    )
 
-describe("Testing the <BodySectionWithMarginBottom /> Component", () => {
+    expect(wrapper.find(BodySection).length).toBe(1)
 
-	it("Renders the 'BodySection' Component correctly", () => {
-		let props = {
-			title: 'title',
-			children: React.createElement('p', 'test child'),
-		};
+    expect(wrapper.find(BodySection).prop('title')).toBe('test title')
 
-		let wrapper = shallow(
-			<BodySectionWithMarginBottom {...props} />
-		);
+    expect(wrapper.find(BodySection).dive().find('p').text()).toBe(
+      'test children node'
+    )
 
-		expect(wrapper.containsAllMatchingElements([
-			<div className="BodySectionWithMargin">
-				<BodySection {...props} />
-			</div>
-		])).to.equal(true);
-	});
-
-});
+    expect(wrapper.find('div.bodySectionWithMargin').length).toBe(1)
+  })
+})

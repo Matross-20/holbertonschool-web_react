@@ -1,51 +1,45 @@
-import React from 'react';
-import chai, { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { configure, mount } from 'enzyme';
-import WithLogging from './WithLogging.js';
-import sinonChai from 'sinon-chai';
-import { spy } from 'sinon';
-import Login from '../Login/Login.js';
-import { StyleSheetTestUtils, } from 'aphrodite';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import TestRenderer from 'react-test-renderer'
+import WithLogging from './WithLogging'
+import Login from '../Login/Login'
+import { StyleSheetTestUtils } from 'aphrodite';
 
-chai.use(sinonChai);
+StyleSheetTestUtils.suppressStyleInjection();
 
-configure({
-	adapter: new Adapter()
-});
+describe('WithLogging HOC', () => {
+  let consoleSpy
 
-let log = spy(console, 'log');
+  beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { })
+  })
 
-describe("Testing the <WithLogging /> Component", () => {
+  afterEach(() => {
+    consoleSpy.mockRestore()
+  })
 
-	beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
+  it('logs "Component" on mount and unmount for pure HTML elements', () => {
+    const WrappedComponent = WithLogging(() => <p>Hello World</p>)
 
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
+    const div = document.createElement('div')
+    ReactDOM.render(<WrappedComponent />, div)
+    expect(consoleSpy).toHaveBeenCalledWith('Component Component is mounted')
 
-	it("Renders the correct children with pure html as a child", () => {
-		let wrapper = mount(
-			<WithLogging>
-				<p>simple phrase</p>
-			</WithLogging>
-		);
-		expect(log).to.have.been.calledWith('Component Component is mounted');
-		wrapper.unmount();
-		expect(log).to.have.been.calledWith('Component Component is going to unmount');
-	});
+    ReactDOM.unmountComponentAtNode(div)
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Component Component is going to unmount'
+    )
+  })
 
-	it("Renders the correct children with <Login /> Component as a child", () => {
-		let wrapper = mount(
-			<WithLogging>
-				<Login />
-			</WithLogging>
-		);
-		expect(log).to.have.been.calledWith('Component Login is mounted');
-		wrapper.unmount();
-		expect(log).to.have.been.calledWith('Component Login is going to unmount');
-	});
+  it('logs "Component Login is mounted" and "Component Login is going to unmount" when wrapping the Login component', () => {
+    const WrappedLogin = WithLogging(Login)
 
-});
+    const testInstance = TestRenderer.create(<WrappedLogin />)
+    expect(consoleSpy).toHaveBeenCalledWith('Component Login is mounted')
+
+    testInstance.unmount()
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Component Login is going to unmount'
+    )
+  })
+})

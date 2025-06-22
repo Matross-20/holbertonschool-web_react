@@ -1,35 +1,19 @@
-import { shallow, mount } from "enzyme";
-import React from "react";
-import BodySection from "./BodySection";
-import { StyleSheetTestUtils } from "aphrodite";
+import React from 'react'
+import { shallow } from 'enzyme'
+import BodySection from './BodySection'
 
-describe("<BodySection />", () => {
-  beforeAll(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
-  afterAll(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
-
-  it("BodySection renders without crashing", () => {
-    const wrapper = shallow(<BodySection />);
-    expect(wrapper.exists()).toEqual(true);
-  });
-
-  it("BodySection renders without crashing", () => {
+describe('BodySection Component', () => {
+  it('should render correctly with the given title and children', () => {
     const wrapper = shallow(
       <BodySection title="test title">
         <p>test children node</p>
       </BodySection>
-    );
+    )
 
-    const h2 = wrapper.find("h2");
-    const p = wrapper.find("p");
+    expect(wrapper.find('h2').length).toBe(1)
+    expect(wrapper.find('h2').text()).toBe('test title')
 
-    expect(h2).toHaveLength(1);
-    expect(h2.text()).toEqual("test title");
-
-    expect(p).toHaveLength(1);
-    expect(p.text()).toEqual("test children node");
-  });
-});
+    expect(wrapper.find('p').length).toBe(1)
+    expect(wrapper.find('p').text()).toBe('test children node')
+  })
+})

@@ -1,77 +1,70 @@
-import React, { PureComponent, Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
 import { StyleSheet, css } from 'aphrodite';
+import PropTypes from 'prop-types'
 
-class NotificationItem extends PureComponent {
-	render() {
-		let {
-			id,
-			type,
-			value,
-			html,
-			markAsRead
-		} = this.props;
+class NotificationItem extends React.PureComponent {
+  static propTypes = {
+    type: PropTypes.string.isRequired,
+    value: PropTypes.string,
+    html: PropTypes.shape({
+      __html: PropTypes.string
+    }),
+    markAsRead: PropTypes.func,
+    id: PropTypes.number
+  };
 
-		let liStyle = (type === 'urgent') ? styles.urgentNotif : styles.defaultNotif;
+  static defaultProps = {
+    type: 'default',
+    value: '',
+    html: null,
+    markAsRead: () => { },
+    id: null
+  };
 
-		return (
-			<Fragment>
-				{
-					html !== undefined &&
-					<li
-						className={css(liStyle)}
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-						dangerouslySetInnerHTML={html}
-					/>
-				}
-				{
-					html === undefined &&
-					<li
-						className={css(liStyle)}
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-					>
-						{value}
-					</li>
-				}
-			</Fragment>
-		);
-	};
-};
+  handleClick = () => {
+    const { markAsRead, id } = this.props
+    if (markAsRead && id !== null) {
+      markAsRead(id)
+    }
+  };
+
+  render() {
+    const { type, value, html } = this.props
+    const style = type === 'urgent' ? styles.urgent : styles.default;
+
+    if (html) {
+      return (
+        <li
+          className={css(style, styles.media)}
+          data-notification-type={type}
+          onClick={this.handleClick}
+          dangerouslySetInnerHTML={html}
+        ></li>
+      )
+    } else {
+      return (
+        <li className={css(style, styles.media)} data-notification-type={type} onClick={this.handleClick}>
+          {value}
+        </li>
+      )
+    }
+  }
+}
 
 const styles = StyleSheet.create({
-	defaultNotif: {
-		color: 'blue',
-		padding: '10px 8px',
-		'@media (max-width: 900px)': {
-			width: '100%',
-			fontSize: '20px',
-			borderBottom: '1px solid black',
-		},
-	},
-	urgentNotif: {
-		color: 'red',
-		padding: '10px 8px',
-		'@media (max-width: 900px)': {
-			width: '100%',
-			fontSize: '20px',
-			borderBottom: '1px solid black',
-		},
-	},
+  media: {
+    '@media (max-width: 900px)': {
+      borderBottom: '1px solid black',
+      fontSize: '20px',
+      padding: '10px 8px'
+    }
+  },
+  default: {
+    color: '#180C5F',
+  },
+  urgent: {
+    color: 'red',
+  }
 });
 
-NotificationItem.propTypes = {
-	html: PropTypes.shape({
-		__html: PropTypes.string,
-	}),
-	type: PropTypes.string.isRequired,
-	value: PropTypes.string,
-	markAsRead: PropTypes.func,
-};
-
-NotificationItem.defaultProps = {
-	type: "default",
-};
-
-export default NotificationItem;
+export default NotificationItem

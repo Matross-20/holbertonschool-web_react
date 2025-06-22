@@ -1,76 +1,92 @@
 import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import App from './App';
 import Header from '../Header/Header';
-import Login from '../Login/Login';
 import Footer from '../Footer/Footer';
-import Notifications from '../Notifications/Notifications';
+import Login from '../Login/Login';
 import CourseList from '../CourseList/CourseList';
-import { StyleSheetTestUtils, } from 'aphrodite';
+import { StyleSheetTestUtils, css } from 'aphrodite';
+import { StyleSheet } from 'aphrodite';
 
-configure({adapter: new Adapter()});
+describe('<App />', () => {
+  StyleSheetTestUtils.suppressStyleInjection();
 
-describe("Testing the <App /> Component", () => {
-	
-	let wrapper;
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
 
-	beforeEach(() => {
-		wrapper = shallow(<App />);
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
+  it('renders without crashing', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.exists()).toBe(true);
+  });
 
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
+  it('contains the Header component', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.find(Header).length).toBe(1);
+  });
 
-	it("<App /> is rendered without crashing", () => {
-		expect(wrapper).to.not.be.an('undefined');
-	});
+  it('contains the Footer component', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.find(Footer).length).toBe(1);
+  });
 
-	it("<App /> contains the <Notifications /> Component", () => {
-		expect(wrapper.find(Notifications)).to.have.lengthOf(1);
-	});
+  it('should not display CourseList when isLoggedIn is false', () => {
+    const wrapper = shallow(<App isLoggedIn={false} />);
+    expect(wrapper.find(CourseList).length).toBe(0);
+  });
 
-	it("<App /> contains the <Header /> Component", () => {
-		expect(wrapper.contains(<Header />)).to.equal(true);
-	});
+  it('should display CourseList when isLoggedIn is true', () => {
+    const wrapper = shallow(<App isLoggedIn={true} />);
+    expect(wrapper.find(CourseList).length).toBe(1);
+  });
 
-	it("<App /> contains the <Login /> Component", () => {
-		expect(wrapper.contains(<Login />)).to.equal(true);
-	});
+  it('should not display the Login component when isLoggedIn is true', () => {
+    const wrapper = shallow(<App isLoggedIn={true} />);
+    expect(wrapper.find(Login).length).toBe(0);
+  });
 
-	it("<App /> contains the <Footer /> Component", () => {
-		expect(wrapper.contains(<Footer />)).to.equal(true);
-	});
+  it('calls logOut function and displays alert when Ctrl+H is pressed', () => {
+    const mockLogOut = jest.fn();
+    const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => { });
 
-	it("<App /> doesn't contain <CourseList />", () => {
-		expect(wrapper.find(CourseList)).to.have.lengthOf(0);
-	});
+    const wrapper = shallow(<App logOut={mockLogOut} />);
+    const instance = wrapper.instance();
+    instance.componentDidMount();
 
-});
+    const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 'h' });
+    document.dispatchEvent(event);
 
-describe("Testing the <App /> when isLoggedIn is true", () => {
+    expect(alertMock).toHaveBeenCalledWith('Logging you out');
+    expect(mockLogOut).toHaveBeenCalled();
 
-	let props = {
-		isLoggedIn: true,
-	};
+    alertMock.mockRestore();
+  });
 
-	let component = shallow(<App {...props} />);
+  it('applies the correct footer styles', () => {
+    const wrapper = shallow(<App />);
+    const footer = wrapper.find('div').last();
 
-	expect(component.contains(<Login />)).to.equal(false);
-	expect(component.find(CourseList)).to.have.lengthOf(1);
-});
+    expect(footer.hasClass(css(StyleSheet.create({
+      footer: {
+        borderTop: '4px solid #cf4550',
+        width: '100%',
+        bottom: '0',
+        left: '0',
+        textAlign: 'center',
+        fontSize: '20px',
+        fontStyle: 'italic',
+        fontFamily: 'Arial, sans-serif',
+      }
+    }).footer))).toBe(true);
+  });
 
-describe('logOut alerts with correct string', () => {
-	const myLogOut = jest.fn(() => undefined);
-	const appComp = mount(<App logOut={myLogOut} />);
-	const log = jest.spyOn(console, 'log');
+  it('applies the correct app styles', () => {
+    const wrapper = shallow(<App />);
+    const appDiv = wrapper.find('div').first();
 
-	expect(appComp.props.logOut);
-	expect(log);
-
-	jest.restoreAllMocks();
+    expect(appDiv.hasClass(css(StyleSheet.create({
+      app: {}
+    }).app))).toBe(true);
+  });
 
 });

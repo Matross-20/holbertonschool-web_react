@@ -1,29 +1,25 @@
-import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure } from 'enzyme';
-import Header from './Header';
+import React from 'react'
+import { shallow } from 'enzyme'
+import Header from '../Header/Header'
+import logo from '../assets/holberton-logo.jpg'
 
-configure({adapter: new Adapter()});
+describe('<Header />', () => {
+  it('renders without crashing', () => {
+    shallow(<Header />)
+  })
 
-describe("Testing the <Header /> Component", () => {
-	
-	let wrapper;
+  it('renders an <img> tag with correct src and alt attributes', () => {
+    const wrapper = shallow(<Header />)
+    const img = wrapper.find('img')
+    expect(img).toHaveLength(1)
+    expect(img.prop('src')).toEqual(logo)
+    expect(img.prop('alt')).toEqual('logo')
+  })
 
-	beforeEach(() => {
-		wrapper = shallow(<Header shouldRender />);
-	});
-
-	it("<Header /> is rendered without crashing", () => {
-		expect(wrapper.render()).to.not.be.an('undefined');
-	});
-
-	it("<Header /> render img tag", () => {
-		expect(wrapper.find('img')).to.have.lengthOf(1);
-	});
-
-	it("<Header /> render h1 tag", () => {
-		expect(wrapper.find('h1')).to.have.lengthOf(1);
-	});
-
-});
+  it('renders an <h1> tag with correct text', () => {
+    const wrapper = shallow(<Header />)
+    const h1 = wrapper.find('h1')
+    expect(h1).toHaveLength(1)
+    expect(h1.text()).toEqual('School dashboard')
+  })
+})

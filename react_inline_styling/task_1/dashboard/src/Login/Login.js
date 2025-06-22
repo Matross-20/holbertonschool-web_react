@@ -1,29 +1,39 @@
-import React from "react";
-import { StyleSheet, css } from "aphrodite";
+import React from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
 function Login() {
   return (
-    <div className={css(styles.login)}>
-      <p>Login to access the full dashboard</p>
-      <label htmlFor="email">Email:</label>
-      <input type="email" id="email" className={css(styles.loginInput)} />
-      <label htmlFor="password">Password:</label>
-      <input type="password" id="password" className={css(styles.loginInput)} />
-      <button>OK</button>
-    </div>
+      <div className={css(styles.body)}>
+        <p>Login to access the full dashboard</p>
+        <form>
+          <label className={css(styles.form)} htmlFor="email">Email:</label>
+          <input className={css(styles.form, styles.border)} type="email" id="email" name="email" />
+          <label className={css(styles.form)} htmlFor="password">Password:</label>
+          <input className={css(styles.form, styles.border)} type="password" id="password" name="password" />
+          <button className={css(styles.button)} type="submit">OK</button>
+        </form>
+      </div>
   );
 }
 
 const styles = StyleSheet.create({
-  login: {
-    margin: "50px",
-    flexGrow: 1,
+  body: {
+    padding: '40px',
+    fontSize: '20px',
+    fontFamily: 'Arial, sans-serif',
   },
-
-  loginInput: {
-    marginLeft: "10px",
-    marginRight: "20px",
+  button: {
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+    backgroundColor: 'white',
   },
-});
-
+  form: {
+    fontWeight: 'bold',
+    display: 'inline-block',
+    marginRight: '10px',
+  },
+  border: {
+    border: '1px solid #ccc',
+  }
+})
 export default Login;
