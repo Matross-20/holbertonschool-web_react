@@ -1,128 +1,114 @@
-import React from "react";
-import PropTypes from "prop-types";
-import NotificationItem from "./NotificationItem";
-import NotificationItemShape from "./NotificationItemShape";
-import { StyleSheet, css } from "aphrodite";
-
-class Notifications extends React.Component {
-  static propTypes = {
-    displayDrawer: PropTypes.bool,
-    listNotifications: PropTypes.arrayOf(
-      PropTypes.shape(NotificationItemShape)
-    ),
-  };
-
-  static defaultProps = {
-    displayDrawer: false,
-    listNotifications: [],
-  };
-
-  shouldComponentUpdate(nextProps) {
-    return (
-      nextProps.listNotifications.length > this.props.listNotifications.length
-    );
-  }
-
-  markAsRead(id) {
-    console.log(`Notification ${id} has been marked as read`);
-  }
-
-  render() {
-    const notificationItems = this.props.listNotifications.map((item) => (
-      <NotificationItem
-        type={item.type}
-        value={item.value}
-        html={item.html}
-        key={item.id}
-        markAsRead={this.markAsRead.bind(this, item.id)}
-      />
-    ));
-
-    return (
-      <>
-        {this.props.displayDrawer ? (
-          <div className={css(styles.notifications)}>
-            <button
-              type="button"
-              aria-label="Close"
-              className={css(styles.closeBtn)}
-              onClick={() => console.log("Close button has been clicked")}
-            >
-              x
-            </button>
-            <ul className={css(styles.ul)}>
-              {notificationItems.length ? (
-                <></>
-              ) : (
-                <NotificationItem
-                  type="default"
-                  value="No new notification for now"
-                />
-              )}
-            </ul>
-          </div>
-        ) : (
-          <div className={css(styles.menuItem)}>Your notifications</div>
-        )}
-      </>
-    );
-  }
-}
-
-const opacityAnimation = {
-  from: {
-    opacity: 0.5,
-  },
-  to: {
-    opacity: 1,
-  },
-};
-
-const bouncingAnimation = {
-  "0%": {
-    transform: "translateY(0px)",
-  },
-  "15%": {
-    transform: "translateY(-5px)",
-  },
-  "45%": {
-    transform: "translateY(5px)",
-  },
-  "60%": {
-    transform: "translateY(0px)",
-  },
-};
+import React, { Component } from 'react';
+import close from '../assets/close-icon.png';
+import NotificationItem from './NotificationItem';
+import PropTypes from 'prop-types';
+import { StyleSheet, css } from 'aphrodite';
 
 const styles = StyleSheet.create({
-  menuItem: {
-    position: "absolute",
-    right: "1rem",
-    backgroundColor: "#fff8f8",
-    cursor: "pointer",
-    ":hover": {
-      animationName: [opacityAnimation, bouncingAnimation],
-      animationDuration: "1s, .5s",
-      animationIterationCount: "3",
+    contentNotifications:{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
     },
-  },
-  notifications: {
-    border: "2px dotted #e0354b",
-    padding: "1rem .5rem",
-    position: "absolute",
-    right: "1rem",
-    top: "2rem",
-    minwWdth: "33vw",
-  },
-  closeBtn: {
-    position: "absolute",
-    right: 0,
-    background: "none",
-    border: "none",
-    fontWeight: "bold",
-    fontSize: "15pt",
-    marginTop: "-1rem",
-    cursor: "pointer",
-  },
+    menuItem:{
+        marginRight: '10px',
+    },
+    notifications: {
+        display: 'none',
+        height: '150px',
+        width: '400px',
+        border: '2px dashed rgb(224, 32, 80)',
+        marginRight: '10px',
+        paddingLeft: '18px',
+        marginTop: '30px',
+        fontSize: '18px',
+        backgroundColor: '#ffffff',
+    },
+    show: {
+        display: 'block',
+    },
+    hide: {
+        display: 'none',
+    },
+    button: {
+        backgroundColor: 'transparent',
+        border: 'none',
+        cursor: 'pointer',
+    },
+    buttonImg: {
+        width: '8px',
+        position: 'absolute',
+        right: '4%',
+    },
+    paragraph: {
+        marginTop: '-4px',
+    },
+    'li[data-notification-type="default"]':{
+        color: 'blue',
+    },
+    'li[data-notification-type="urgent"]':{
+        color: 'var(--red)',
+    },
+    '.Notifications .notification-item[data-notification-type="urgent"]':{
+        color: 'var(--red)',
+    },
+    '.Notifications .notification-item[data-notification-type="default"]':{
+      color: 'blue',
+    }
 });
+
+class Notifications extends Component {
+    markAsRead = (id) => {
+        console.log(`Notification ${id} has been marked as read`);
+    };
+
+    shouldComponentUpdate(nextProps) {
+        return nextProps.listNotifications.length > this.props.listNotifications.length;
+    }
+
+    render(){
+        const { displayDrawer, listNotifications } = this.props;
+
+        return(
+            <div className={css(styles.contentNotifications)}>
+                <div className={css(styles.menuItem)}>Your notifications</div>
+                <div className={css(styles.notifications, displayDrawer ? styles.show : styles.hide)}>
+                    <button className={css(styles.button)} onClick={() => { console.log('Close button has been clicked') }}>
+                        <img className={css(styles.buttonImg)} src={close} alt='icon close' />
+                    </button>
+                    <p className={css(styles.paragraph)}>Here is the list of notifications</p>
+                    <div>
+                        {listNotifications.map(notification => (
+                            <NotificationItem
+                                key={notification.id}
+                                type={notification.type}
+                                value={notification.value || 'default'}
+                                html={notification.html}
+                                markAsRead={() => this.markAsRead(notification.id)}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+Notifications.propTypes = {
+    displayDrawer: PropTypes.bool,
+    listNotifications: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        html: PropTypes.shape({
+            __html: PropTypes.string.isRequired,
+        }),
+        type: PropTypes.string,
+        value: PropTypes.string,
+    })),
+};
+
+Notifications.defaultProps = {
+    displayDrawer: true,
+    listNotifications: [],
+};
 
 export default Notifications;

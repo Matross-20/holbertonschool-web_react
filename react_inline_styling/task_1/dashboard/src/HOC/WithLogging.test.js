@@ -1,25 +1,34 @@
-import { shallow } from "enzyme";
-import WithLogging from "./WithLogging";
-import Login from "../Login/Login";
-import { StyleSheetTestUtils } from "aphrodite";
-StyleSheetTestUtils.suppressStyleInjection();
+jest.mock('console');
 
-describe("HOC WithLogging", () => {
-  it("logs correctly on mount and mount with pure HTML", () => {
-    const logMock = jest.spyOn(console, "log").mockImplementation(() => {});
-    const Component = WithLogging(() => <p></p>);
-    shallow(<Component />).unmount();
+import WithLogging from './WithLogging';
 
-    expect(logMock).toBeCalledWith("Component Component is mounted");
-    expect(logMock).toBeCalledWith("Component Component is going to unmount");
-  });
+describe('WithLogging HOC', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
-  it("logs correctly on mount and mount with pure HTML", () => {
-    const logMock = jest.spyOn(console, "log").mockImplementation(() => {});
-    const Component = WithLogging(Login);
-    shallow(<Component />).unmount();
+    it('should log on mount and unmount with "Component" for pure HTML', () => {
+        const element = <p>Hola!</p>;
+        const WithLoggingElement = WithLogging(() => element);
 
-    expect(logMock).toBeCalledWith("Component Login is mounted");
-    expect(logMock).toBeCalledWith("Component Login is going to unmount");
-  });
+        WithLoggingElement();
+        WithLoggingElement().forceUpdate();
+
+        expect(console.log).toHaveBeenCalledTimes(2);
+        expect(console.log).toHaveBeenNthCallWith(1, 'Componente montado');
+        expect(console.log).toHaveBeenNthCallWith(2, 'Componente se va a desmontar');
+    });
+
+    it('should log on mount and unmount with component name for Login component', () => {
+        const Login = () => <div>Login</div>;
+
+        const WithLoggingLogin = WithLogging(Login);
+
+        WithLoggingLogin();
+        WithLoggingLogin().forceUpdate();
+
+        expect(console.log).toHaveBeenCalledTimes(2);
+        expect(console.log).toHaveBeenNthCallWith(1, 'Componente Login is mounted');
+        expect(console.log).toHaveBeenNthCallWith(2, 'Componente Login is going to unmount');
+    });
 });

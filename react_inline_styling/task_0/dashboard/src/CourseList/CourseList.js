@@ -1,51 +1,31 @@
 import React from "react";
-import PropTypes from "prop-types";
+import './CourseList.css'
+import PropTypes from 'prop-types';
 import CourseListRow from "./CourseListRow";
-import CourseShape from "./CourseShape";
-import "./CourseList.css";
 
-class CourseList extends React.Component {
-  render() {
-    const courseItems = this.props.listCourses.map((course) => (
-      <CourseListRow
-        textFirstCell={course.name}
-        textSecondCell={course.credit}
-        isHeader={false}
-        key={course.id}
-      />
-    ));
-
+const CourseList = ({ listCourses }) => {
     return (
-      <table id="CourseList">
-        <thead>
-          <CourseListRow
-            textFirstCell="Available courses"
-            isHeader={true}
-          ></CourseListRow>
-          <CourseListRow
-            textFirstCell="Course name"
-            textSecondCell="Credit"
-            isHeader={true}
-          ></CourseListRow>
-        </thead>
-        <tbody>
-          {courseItems.length ? (
-            courseItems
-          ) : (
-            <CourseListRow textFirstCell="No course available yet" />
-          )}
-        </tbody>
-      </table>
+        <table id="CourseList">
+            <caption><CourseListRow textFirstCell="Available courses"/></caption>
+            <thead><tr id="head-table"><CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader={true} /></tr></thead>
+            <tbody>
+                {listCourses.length === 0 ? (
+                    <tr><CourseListRow textFirstCell="No course available yet"/></tr>
+                ) : (
+                    listCourses.map(course => ( <tr key={course.id}> <CourseListRow textFirstCell={course.name} textSecondCell={course.credit} /></tr>
+                    ))
+                )}
+            </tbody>
+        </table>
     );
-  }
-}
-
-CourseList.propTypes = {
-  listCourses: PropTypes.arrayOf(PropTypes.shape(CourseShape)),
 };
 
-CourseList.defaultProps = {
-  listCourses: [],
+CourseList.propTypes = {
+    listCourses: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        credit: PropTypes.number.isRequired,
+    })),
 };
 
 export default CourseList;

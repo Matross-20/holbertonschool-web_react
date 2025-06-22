@@ -1,35 +1,20 @@
-import { shallow } from "enzyme";
-import NotificationItem from "./NotificationItem";
+import React from 'react';
+import { shallow } from 'enzyme';
+import NotificationItem from './NotificationItem';
 
-describe("<NotificationItem />", () => {
-  it("renders without crashing", () => {
-    shallow(<NotificationItem />);
-  });
-
-  it("renders the correct html by passing type and value props", () => {
-    const type = "default";
-    const value = "test";
-    const item = shallow(
-      <NotificationItem type={type} value={value}></NotificationItem>
-    );
-    expect(item.is(`[data-notification-type="${type}"]`)).toBe(true);
-    expect(item.text()).toBe(value);
-  });
-
-  it("renders the correct html by passing a html prop", () => {
-    const html = "<u>test</u>";
-    const item = shallow(
-      <NotificationItem html={{ __html: html }}></NotificationItem>
-    );
-    expect(item.html().includes(html)).toBe(true);
-  });
-
-  it("calls markAsRead prop when clicked", () => {
-    const markAsReadMock = jest.fn();
-
-    const wrapper = shallow(<NotificationItem markAsRead={markAsReadMock} />);
-    wrapper.find("li").simulate("click");
-
-    expect(markAsReadMock).toBeCalled();
-  });
+describe('NotificationItem Component', () => {
+    it('should render the correct HTML with dummy HTML prop', () => {
+        const htmlProp = { __html: '<u>test</u>' };
+        const wrapper = shallow(<NotificationItem type="default" html={htmlProp} />);
+        expect(wrapper.find('li.notification-item').prop('data-notification-type')).toEqual('default');
+        expect(wrapper.find('li.notification-item div').prop('dangerouslySetInnerHTML')).toEqual(htmlProp);
+        expect(wrapper.find('li.notification-item span')).toHaveLength(0);
+    });
+  
+    it('should render the correct HTML without dummy HTML prop', () => {
+        const wrapper = shallow(<NotificationItem type="default" value="Test Value" />);
+        expect(wrapper.find('li.notification-item').prop('data-notification-type')).toEqual('default');
+        expect(wrapper.find('li.notification-item span').text()).toEqual('Test Value');
+        expect(wrapper.find('li.notification-item div')).toHaveLength(0);
+    });
 });

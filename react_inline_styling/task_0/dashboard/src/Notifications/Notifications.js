@@ -1,83 +1,61 @@
-import React from "react";
-import PropTypes from "prop-types";
-import NotificationItem from "./NotificationItem";
-import NotificationItemShape from "./NotificationItemShape";
-import "./Notifications.css";
+import React, { Component } from 'react';
+import './Notifications.css';
+import close from '../assets/close-icon.png';
+import NotificationItem from './NotificationItem';
+import PropTypes from 'prop-types';
 
-class Notifications extends React.Component {
-  shouldComponentUpdate(nextProps) {
-    return (
-      nextProps.listNotifications.length > this.props.listNotifications.length
-    );
-  }
-
-  markAsRead(id) {
-    console.log(`Notification ${id} has been marked as read`);
-  }
-
-  render() {
-    const notificationItems = this.props.listNotifications.map((item) => (
-      <NotificationItem
-        type={item.type}
-        value={item.value}
-        html={item.html}
-        key={item.id}
-        markAsRead={this.markAsRead.bind(this, item.id)}
-      />
-    ));
-
-    const closeBtnStyle = {
-      position: "absolute",
-      right: 0,
-      background: "none",
-      border: "none",
-      fontWeight: "bold",
-      fontSize: "15pt",
-      marginTop: "-1rem",
-      cursor: "pointer",
+class Notifications extends Component {
+    markAsRead = (id) => {
+        console.log(`Notification ${id} has been marked as read`);
     };
 
-    return (
-      <>
-        <div className="menuItem">Your notifications</div>
-        {this.props.displayDrawer && (
-          <div className="Notifications">
-            <button
-              type="button"
-              aria-label="Close"
-              style={closeBtnStyle}
-              onClick={() => console.log("Close button has been clicked")}
-            >
-              x
-            </button>
-            <ul>
-              {notificationItems.length ? (
-                <>
-                  <p>Here is the list of notifications</p>
-                  {notificationItems}
-                </>
-              ) : (
-                <NotificationItem
-                  type="default"
-                  value="No new notification for now"
-                />
-              )}
-            </ul>
-          </div>
-        )}
-      </>
-    );
-  }
+    shouldComponentUpdate(nextProps) {
+        return nextProps.listNotifications.length > this.props.listNotifications.length;
+    }
+
+    render() {
+        const { displayDrawer, listNotifications } = this.props;
+
+        return (
+            <div className='content-notifications'>
+                <div className='menuItem'>Your notifications</div>
+                <div className={`Notifications ${displayDrawer ? 'show' : 'hide'}`}>
+                    <button onClick={() => { console.log('Close button has been clicked') }}>
+                        <img src={close} alt='icon close' />
+                    </button>
+                    <p>Here is the list of notifications</p>
+                    <div>
+                        {listNotifications.map(notification => (
+                            <NotificationItem
+                                key={notification.id}
+                                type={notification.type}
+                                value={notification.value || 'default'}
+                                html={notification.html}
+                                markAsRead={() => this.markAsRead(notification.id)}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
 
 Notifications.propTypes = {
-  displayDrawer: PropTypes.bool,
-  listNotifications: PropTypes.arrayOf(PropTypes.shape(NotificationItemShape)),
+    displayDrawer: PropTypes.bool,
+    listNotifications: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        html: PropTypes.shape({
+        __html: PropTypes.string.isRequired,
+        }),
+        type: PropTypes.string,
+        value: PropTypes.string,
+    })),
 };
 
 Notifications.defaultProps = {
-  displayDrawer: false,
-  listNotifications: [],
+    displayDrawer: true,
+    listNotifications: [],
 };
 
 export default Notifications;

@@ -1,12 +1,3 @@
-.Login {
-  display: flex;
-}
-
-.Login label {
-  display: inline-flex;
-  align-items: center;
-}
-
-.Login label input {
-  margin: 0 0.5rem;
+.App-body p{
+    font-weight: 500;
 }

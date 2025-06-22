@@ -1,27 +1,32 @@
-import * as utils from "./utils";
-import { StyleSheetTestUtils } from "aphrodite";
-StyleSheetTestUtils.suppressStyleInjection();
+import { getFullYear, getFooterCopy, getLatestNotification } from "./utils";
+import '@testing-library/jest-dom';
 
-describe("getFullYear()", () => {
-  it("returns the correct year", () => {
-    expect(utils.getFullYear()).toEqual(new Date().getFullYear());
-  });
-});
+describe("utils_tests", function () {
+    describe("getFullYear", function () {
+        it("should return current year", function () {
+        const year = getFullYear();
+        expect(year).toEqual(new Date().getFullYear());
+        });
+    });
 
-describe("getFooterCopy()", () => {
-  it("returns the correct string when isIndex = true", () => {
-    expect(utils.getFooterCopy(true)).toEqual("Holberton School");
-  });
+    describe("getFooterCopy", function () {
+        const trueMsg = "Holberton School";
+        const falseMsg = "Holberton School main dashboard";
 
-  it("returns the correct string when isIndex = false", () => {
-    expect(utils.getFooterCopy(false)).toEqual("Holberton School main");
-  });
-});
+        it("Should return true message", function () {
+            const msg = getFooterCopy(true);
+            expect(msg).toEqual(trueMsg);
+        });
+        it("Should return false message", function () {
+            const msg = getFooterCopy(false);
+            expect(msg).toEqual(falseMsg);
+        });
+    });
 
-describe("getLatestNotification()", () => {
-  it("returns the correct string", () => {
-    expect(utils.getLatestNotification()).toEqual(
-      "<strong>Urgent requirement</strong> - complete by EOD"
-    );
-  });
+    describe("getLatestNotification", function () {
+        it("shold return correct string element", function () {
+            const element = "<strong>Urgent requirement</strong> - complete by EOD";
+            expect(getLatestNotification()).toEqual(element);
+        });
+    });
 });

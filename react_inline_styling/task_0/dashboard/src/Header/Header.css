@@ -1,12 +1,17 @@
-.Header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  border-bottom: 3px solid #e0354b;
-  font-weight: bold;
-  color: #e0354b;
+.App-header{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    border-bottom: 3px solid var(--red);
 }
 
-.Header-logo {
-  height: 200px;
+.App-header_logo{
+    width: auto;
+    height: 200px;
+}
+
+h1{
+    font-size: 35px;
+    color: var(--red);
 }

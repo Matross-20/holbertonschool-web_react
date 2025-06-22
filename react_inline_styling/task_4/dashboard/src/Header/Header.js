@@ -1,27 +1,41 @@
-import logo from "../assets/holberton-logo.jpg";
-import { StyleSheet, css } from "aphrodite";
-
-function Header() {
-  return (
-    <div className={css(styles.header)}>
-      <img src={logo} className={css(styles.logo)} alt="logo" />
-      <h1>School dashboard</h1>
-    </div>
-  );
-}
+import React from 'react';
+import Logo from '../assets/holberton-logo.jpg';
+import { StyleSheet, css } from 'aphrodite';
 
 const styles = StyleSheet.create({
-  header: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottom: "3px solid #e0354b",
-    fontWeight: "bold",
-    color: "#e0354b",
-  },
-  logo: {
-    height: "200px",
-  },
-});
+    appHeader: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    appHeaderImg: {
+        width: 'auto',
+        height: '200px',
+    },
+    appHeaderH1: {
+        fontSize: '40px',
+        color: 'var(--red)',
+    },
+    smallHeaderTitle: {
+        '@media (max-width: 900px)':{
+            fontSize: '25px'
+        }
+    },
+    smallImage: {
+        '@media (max-width: 900px)':{
+            width: '120px',
+            height: 'auto',
+            'object-fit': 'cover',
+        }
+    },
+})
 
-export default Header;
+export default function Header(){
+    return (
+        <>
+            <div className={css(styles.appHeader, styles.smallContentHeader)}>
+                <img className={css(styles.appHeaderImg, styles.smallImage)} src={Logo} alt='holberton logo' />
+                <h1 className={css(styles.appHeaderH1, styles.smallHeaderTitle)}>School dashboard</h1>
+            </div>
+        </>
+    )
+}

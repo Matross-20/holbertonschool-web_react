@@ -1,21 +1,18 @@
-import "./Login.css";
+import React from 'react'
 
-function Login() {
-  return (
-    <>
-      <form className="Login">
-        <label>
-          Email:
-          <input type="email" autoComplete="email" />
-        </label>
-        <label>
-          Password:
-          <input type="password" />
-        </label>
-        <button type="button">Ok</button>
-      </form>
-    </>
-  );
+export default function Login() {
+    return (
+        <>
+            <p>Login to access the full dashboard</p>
+            <div className="form">
+                <label htmlFor="email">Email:</label>
+                <input type="email" id="email" placeholder="Email"/>
+
+                <label htmlFor="password">Password:</label>
+                <input type="password" id="password" placeholder="Password"/>
+
+                <button type='submir'>OK</button>
+            </div>
+        </>
+    )
 }
-
-export default Login;
