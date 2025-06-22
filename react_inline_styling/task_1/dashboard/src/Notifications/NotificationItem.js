@@ -1,63 +1,33 @@
-import React from 'react'
-import { StyleSheet, css } from 'aphrodite';
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
-class NotificationItem extends React.PureComponent {
-  static propTypes = {
-    type: PropTypes.string.isRequired,
-    value: PropTypes.string,
-    html: PropTypes.shape({
-      __html: PropTypes.string
-    }),
-    markAsRead: PropTypes.func,
-    id: PropTypes.number
-  };
-
-  static defaultProps = {
-    type: 'default',
-    value: '',
-    html: null,
-    markAsRead: () => {},
-    id: null
-  };
-
-  handleClick = () => {
-    const { markAsRead, id } = this.props
-    if (markAsRead && id !== null) {
-      markAsRead(id)
+const NotificationItem = ({ type = 'default', html, value, markAsRead }) => {
+  const handleClick = () => {
+    if (markAsRead) {
+      markAsRead();
     }
   };
 
-  render() {
-    const { type, value, html } = this.props
-    const style = type === 'urgent' ? styles.urgent : styles.default;
+  return (
+    <li data-notification-type={type} onClick={handleClick} dangerouslySetInnerHTML={html ? { __html: html.__html } : null}>
+      {value}
+    </li>
+  );
+};
 
-    if (html) {
-      return (
-        <li
-          className={css(style)}
-          data-notification-type={type}
-          onClick={this.handleClick}
-          dangerouslySetInnerHTML={html}
-        ></li>
-      )
-    } else {
-      return (
-        <li  className={css(style)} data-notification-type={type} onClick={this.handleClick}>
-          {value}
-        </li>
-      )
-    }
-  }
-}
+NotificationItem.propTypes = {
+  type: PropTypes.string,
+  html: PropTypes.shape({
+    __html: PropTypes.string,
+  }),
+  value: PropTypes.string.isRequired,
+  markAsRead: PropTypes.func,
+};
 
-const styles = StyleSheet.create({
-  default: {
-    color: '#180C5F',
-  },
-  urgent: {
-    color: 'red',
-  }
-});
+NotificationItem.defaultProps = {
+  type: 'default',
+  html: null,
+  markAsRead: () => {},
+};
 
-export default NotificationItem
+export default React.memo(NotificationItem);

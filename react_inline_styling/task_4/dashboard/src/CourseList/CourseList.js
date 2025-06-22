@@ -1,28 +1,38 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
+import CourseListRow from './CourseListRow';
+import CourseShape from './CourseShape';
 import { StyleSheet, css } from 'aphrodite';
-import CourseShape from './CourseShape'
-import CourseListRow from './CourseListRow'
 
-const CourseList = ({ listCourses }) => {
+const styles = StyleSheet.create({
+  courseList: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    marginTop: '20px',
+    marginBottom: '20px',
+    fontFamily: 'Arial, sans-serif',
+    fontSize: '14px',
+  },
+  headerRow: {
+    backgroundColor: '#deb5b545',
+  },
+  noCourseRow: {
+    backgroundColor: '#f5f5f5ab',
+  },
+});
+
+function CourseList({ listCourses }) {
   return (
-    <table className={css(styles.courseList)}>
+    <table className={css(styles.courseList)} id="CourseList">
       <thead>
-        <CourseListRow textFirstCell="Available courses" isHeader={true} />
-        <CourseListRow
-          textFirstCell="Course name"
-          textSecondCell="Credit"
-          isHeader={true}
-        />
+        <CourseListRow textFirstCell="Available courses" isHeader />
+        <CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader />
       </thead>
       <tbody>
         {listCourses.length === 0 ? (
-          <CourseListRow
-            textFirstCell="No course available yet"
-            isHeader={false}
-          />
+          <CourseListRow textFirstCell="No course available yet" isHeader={false} className={css(styles.noCourseRow)} />
         ) : (
-          listCourses.map(course => (
+          listCourses.map((course) => (
             <CourseListRow
               key={course.id}
               textFirstCell={course.name}
@@ -33,7 +43,7 @@ const CourseList = ({ listCourses }) => {
         )}
       </tbody>
     </table>
-  )
+  );
 }
 
 CourseList.propTypes = {
@@ -42,17 +52,6 @@ CourseList.propTypes = {
 
 CourseList.defaultProps = {
   listCourses: [],
-}
+};
 
-const styles = StyleSheet.create({
-  courseList: {
-    border: 'solid 1px rgb(227, 220, 220)',
-    width: '90%',
-    textAlign: 'left',
-    marginTop: '30px',
-    marginLeft: '5%',
-    fontFamily: `'Times New Roman', Times, serif`,
-  },
-});
-
-export default CourseList
+export default CourseList;

@@ -1,54 +1,52 @@
 import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
+const styles = StyleSheet.create({
+  loginContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    '@media (min-width: 900px)': {
+      width: '400px',
+      margin: '0 auto',
+    },
+  },
+  inputGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: '10px',
+    width: '100%',
+  },
+  button: {
+    marginTop: '10px',
+    padding: '10px 20px',
+    '@media (min-width: 900px)': {
+      width: 'auto',
+    },
+  },
+  label: {
+    marginBottom: '5px',
+  },
+  input: {
+    padding: '10px',
+    fontSize: '16px',
+  },
+});
+
 function Login() {
   return (
-    <div className={css(styles.body)}>
-      <p>Login to access the full dashboard</p>
-      <form className={css(styles.form)}>
-        <div className={css(styles.block)}>
-          <label className={css(styles.label)} htmlFor="email">Email:</label>
-          <input className={css(styles.input)} type="email" id="email" name="email" />
-        </div>
-        <div className={css(styles.block)}>
-          <label className={css(styles.label)} htmlFor="password">Password:</label>
-          <input className={css(styles.input)} type="password" id="password" name="password" />
-        </div>
-        <button className={css(styles.button)} type="submit">OK</button>
-      </form>
+    <div className={css(styles.loginContainer)}>
+      <div className={css(styles.inputGroup)}>
+        <label htmlFor="email" className={css(styles.label)}>Email: </label>
+        <input type="email" id="email" name="email" className={css(styles.input)} />
+      </div>
+      <div className={css(styles.inputGroup)}>
+        <label htmlFor="password" className={css(styles.label)}>Password: </label>
+        <input type="password" id="password" name="password" className={css(styles.input)} />
+      </div>
+      <button className={css(styles.button)}>OK</button>
     </div>
   );
 }
 
-const styles = StyleSheet.create({
-  body: {
-    fontSize: '20px',
-    fontFamily: 'Arial, sans-serif'
-  },
-  button: {
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    backgroundColor: 'white'
-  },
-  block: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '10px',
-    marginRight: '20px'
-  },
-  form: {
-    display: 'inline-block',
-    '@media (min-width: 900px)': {
-      display: 'flex'
-    }
-  },
-  label: {
-    marginRight: '10px',
-    fontWeight: 'bold'
-  },
-  input: {
-    border: '1px solid #ccc',
-    padding: '5px'
-  }
-})
 export default Login;

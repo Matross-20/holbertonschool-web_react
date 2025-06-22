@@ -1,16 +1,8 @@
-import React from "react"
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
+import './BodySection.css';
 
 class BodySection extends React.Component {
-  static propTypes = {
-    title: PropTypes.string.isRequired,
-    children: PropTypes.node
-  };
-
-  static defaultProps = {
-    children: null
-  };
-
   render() {
     const { title, children } = this.props;
 
@@ -23,4 +15,13 @@ class BodySection extends React.Component {
   }
 }
 
-export default BodySection
+BodySection.propTypes = {
+  title: PropTypes.string.isRequired,
+  children: PropTypes.node,
+};
+
+BodySection.defaultProps = {
+  children: null,
+};
+
+export default BodySection;

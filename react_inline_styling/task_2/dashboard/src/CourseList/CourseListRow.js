@@ -1,29 +1,29 @@
 import React from 'react';
-import { StyleSheet, css } from 'aphrodite';
 import PropTypes from 'prop-types';
+import { StyleSheet, css } from 'aphrodite';
 
-const headerStyle = {
-  backgroundColor: '#deb5b545'
-};
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: '#deb5b545', 
+  },
+  defaultRow: {
+    backgroundColor: '#f5f5f5ab', 
+  },
+  th: {
+    
+  },
+});
 
-const rowStyle = {
-  backgroundColor: '#f5f5f5ab'
-};
-
-const CourseListRow = ({ isHeader, textFirstCell, textSecondCell }) => {
-  const style = isHeader ? headerStyle : rowStyle;
+const CourseListRow = ({ textFirstCell, textSecondCell, isHeader }) => {
+  const rowStyle = css(isHeader ? styles.header : styles.defaultRow);
 
   return (
-    <tr style={style}>
+    <tr className={rowStyle}>
       {isHeader ? (
-        textSecondCell === null ? (
-          <th className={css(styles.thFirstChild, styles.th)} colSpan="2">{textFirstCell}</th>
-        ) : (
-          <>
-            <th className={css(styles.th)}>{textFirstCell}</th>
-            <th className={css(styles.th)}>{textSecondCell}</th>
-          </>
-        )
+        <>
+          <th className={css(styles.th)}>{textFirstCell}</th>
+          <th className={css(styles.th)}>{textSecondCell}</th>
+        </>
       ) : (
         <>
           <td>{textFirstCell}</td>
@@ -34,25 +34,17 @@ const CourseListRow = ({ isHeader, textFirstCell, textSecondCell }) => {
   );
 };
 
-CourseListRow.defaultProps = {
-  isHeader: false,
-  textSecondCell: null
-};
 
 CourseListRow.propTypes = {
-  isHeader: PropTypes.bool,
+
   textFirstCell: PropTypes.string.isRequired,
-  textSecondCell: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  textSecondCell: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  isHeader: PropTypes.bool,
 };
 
-const styles = StyleSheet.create({
-  thFirstChild: {
-    textAlign: 'center',
-  },
-  th: {
-    padding: '.4rem 0',
-    borderBottom: 'solid 2px rgb(227, 220, 220)',
-  },
-});
+CourseListRow.defaultProps = {
+  isHeader: false,
+};
 
 export default CourseListRow;
+

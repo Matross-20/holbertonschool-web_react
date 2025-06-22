@@ -1,141 +1,104 @@
-import React from 'react';
-import { StyleSheet, css } from 'aphrodite';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { StyleSheet, css } from 'aphrodite';
 import NotificationItem from './NotificationItem';
-import NotificationItemShape from './NotificationItemShape';
 
-class Notifications extends React.Component {
-  static propTypes = {
-    displayDrawer: PropTypes.bool,
-    listNotifications: PropTypes.arrayOf(NotificationItemShape)
-  }
+const styles = StyleSheet.create({
+  opacityChange: {
+    '0%': { opacity: 0.5 },
+    '100%': { opacity: 1 },
+  },
+  bounce: {
+    '0%, 100%': { transform: 'translateY(0)' },
+    '50%': { transform: 'translateY(-5px)' },
+  },
+  menuItem: {
+    position: 'fixed',
+    top: '10px',
+    right: '10px',
+    backgroundColor: '#fff8f8',
+    cursor: 'pointer',
+    ':hover': {
+      animationName: [styles.opacityChange, styles.bounce],
+      animationDuration: '1s, 0.5s',
+      animationIterationCount: '3',
+    },
+    '@media (max-width: 900px)': {
+      display: 'none',
+    },
+  },
+  notifications: {
+    border: '2px dashed #ccc',
+    padding: '10px',
+    position: 'relative',
+    '@media (max-width: 900px)': {
+      width: '100%',
+      height: '100%',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      backgroundColor: 'white',
+      zIndex: 1000,
+      padding: 0,
+      fontSize: '20px',
+    },
+  },
+  ul: {
+    listStyleType: 'none',
+    padding: 0,
+  },
+});
 
-  static defaultProps = {
-    displayDrawer: false,
-    listNotifications: []
-  }
-
-  markAsRead = id => {
-    console.log(`Notification ${id} has been marked as read`)
-  }
-
-  handleClose = () => {
-    console.log('Close button has been clicked')
-  }
-
+class Notifications extends Component {
   shouldComponentUpdate(nextProps) {
-    return (
-      nextProps.listNotifications.length > this.props.listNotifications.length
-    )
+    return nextProps.listNotifications.length > this.props.listNotifications.length;
   }
 
   render() {
-    const { displayDrawer, listNotifications } = this.props
+    const { displayDrawer, listNotifications } = this.props;
+
     return (
-      <>
+      <div>
         {!displayDrawer && (
           <div className={css(styles.menuItem)}>
-            <p>Your notifications</p>
+            Your notifications
           </div>
         )}
         {displayDrawer && (
           <div className={css(styles.notifications)}>
-            <button
-              className={css(styles.closeBtn)}
-              aria-label="Close"
-              onClick={this.handleClose}
-            >
-              x
-            </button>
-            <p>Here is the list of notifications</p>
             {listNotifications.length === 0 ? (
-              <NotificationItem
-                type="default"
-                value="No new notification for now"
-              />
+              <p>No new notification for now</p>
             ) : (
-              <ul>
-                {listNotifications.map(notification => (
+              <ul className={css(styles.ul)}>
+                {listNotifications.map((notification) => (
                   <NotificationItem
                     key={notification.id}
                     type={notification.type}
-                    value={notification.value}
                     html={notification.html}
-                    markAsRead={this.markAsRead}
-                    id={notification.id}
+                    value={notification.value}
+                    markAsRead={() => console.log(`Notification ${notification.id} has been marked as read`)}
                   />
                 ))}
               </ul>
             )}
           </div>
         )}
-      </>
-    )
+      </div>
+    );
   }
 }
 
-const opacityFrames = {
-  '0%': { opacity: 0.5 },
-  '100%': { opacity: 1 }
-}
+Notifications.propTypes = {
+  displayDrawer: PropTypes.bool.isRequired,
+  listNotifications: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    type: PropTypes.string.isRequired,
+    html: PropTypes.shape({
+      __html: PropTypes.string,
+    }),
+    value: PropTypes.string.isRequired,
+  })).isRequired,
+};
 
-const bounceFrames = {
-  '0%': { transform: 'translateY(0)' },
-  '50%': { transform: 'translateY(-5px)' },
-  '100%': { transform: 'translateY(5px)' }
-}
-
-const styles = StyleSheet.create({
-  notifications: {
-    position: 'absolute',
-    border: 'dashed #cf4550 2px',
-    padding: '10px',
-    width: '30%',
-    right: '1rem',
-    top: '4rem',
-    '@media (max-width: 900px)': {
-      inset: 0,
-      width: '100%',
-      height: '100%',
-      border: 'none',
-      padding: 0,
-      backgroundColor: 'white'
-    }
-  },
-  ul: {
-    '@media (max-width: 900px)': {
-      display: 'flex',
-      justifyContent: 'right',
-      padding: 0,
-      listStyle: 'none',
-      fontSize: '20px'
-    }
-  },
-  menuItem: {
-    display: 'flex',
-    justifyContent: 'right',
-    padding: '5px',
-    marginRight: '10px',
-    cursor: 'pointer',
-    animationName: [bounceFrames, opacityFrames],
-    animationDuration: '0.2s, 0.2s',
-    animationIterationCount: '3, 3',
-    animationTimingFunction: 'ease-in-out, ease-in-out',
-    animationFillMode: 'forwards, forwards'
-  },
-  closeBtn: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    background: 'none',
-    border: 'none',
-    fontSize: '20px',
-    cursor: 'pointer',
-    '@media (max-width: 900px)': {
-      top: 0,
-      right: '.5rem'
-    }
-  }
-})
 
 export default Notifications;
