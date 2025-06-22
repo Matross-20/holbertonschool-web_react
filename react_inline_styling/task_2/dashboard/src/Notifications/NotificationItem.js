@@ -1,27 +1,46 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, css } from 'aphrodite';
+import React from "react";
+import PropTypes from "prop-types";
+import { StyleSheet, css } from "aphrodite";
 
-const styles = StyleSheet.create({
-  default: {
-    color: 'blue',
-  },
-  urgent: {
-    color: 'red',
-  },
-});
-
-const NotificationItem = ({ type, value }) => {
-  return (
-    <li className={css(type === 'urgent' ? styles.urgent : styles.default)}>
-      {value}
-    </li>
-  );
-};
+class NotificationItem extends React.PureComponent {
+  render() {
+    const { type, html, value, markAsRead } = this.props;
+    const style = styles[type];
+    return (
+      <li
+        data-notification-type={type}
+        className={css(style)}
+        dangerouslySetInnerHTML={html}
+        onClick={() => markAsRead()}
+      >
+        {value}
+      </li>
+    );
+  }
+}
 
 NotificationItem.propTypes = {
   type: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  html: PropTypes.shape({
+    __html: PropTypes.string.isRequired,
+  }),
+  markAsRead: PropTypes.func,
 };
+
+NotificationItem.defaultProps = {
+  type: "default",
+  value: null,
+  markAsRead: () => {},
+};
+
+const styles = StyleSheet.create({
+  default: {
+    color: "blue",
+  },
+  urgent: {
+    color: "red",
+  },
+});
 
 export default NotificationItem;

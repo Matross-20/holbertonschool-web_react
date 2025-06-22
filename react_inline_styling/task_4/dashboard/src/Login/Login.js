@@ -1,52 +1,50 @@
-import React from 'react';
-import { StyleSheet, css } from 'aphrodite';
-
-const styles = StyleSheet.create({
-  loginContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    '@media (min-width: 900px)': {
-      width: '400px',
-      margin: '0 auto',
-    },
-  },
-  inputGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: '10px',
-    width: '100%',
-  },
-  button: {
-    marginTop: '10px',
-    padding: '10px 20px',
-    '@media (min-width: 900px)': {
-      width: 'auto',
-    },
-  },
-  label: {
-    marginBottom: '5px',
-  },
-  input: {
-    padding: '10px',
-    fontSize: '16px',
-  },
-});
+import { StyleSheet, css } from "aphrodite";
 
 function Login() {
   return (
-    <div className={css(styles.loginContainer)}>
-      <div className={css(styles.inputGroup)}>
-        <label htmlFor="email" className={css(styles.label)}>Email: </label>
-        <input type="email" id="email" name="email" className={css(styles.input)} />
-      </div>
-      <div className={css(styles.inputGroup)}>
-        <label htmlFor="password" className={css(styles.label)}>Password: </label>
-        <input type="password" id="password" name="password" className={css(styles.input)} />
-      </div>
-      <button className={css(styles.button)}>OK</button>
-    </div>
+    <>
+      <form className={css(styles.login)}>
+        <label className={css(styles.label)}>
+          Email:
+          <input
+            type="email"
+            autoComplete="email"
+            className={css(styles.input)}
+          />
+        </label>
+        <label className={css(styles.label)}>
+          Password:
+          <input type="password" className={css(styles.input)} />
+        </label>
+        <button type="button" className={css(styles.button)}>
+          Ok
+        </button>
+      </form>
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  login: {
+    display: "flex",
+    "@media (max-width: 900px)": {
+      flexDirection: "column",
+    },
+  },
+  label: {
+    display: "inline-flex",
+    alignItems: "center",
+    "@media (max-width: 900px)": {
+      marginBottom: ".25rem",
+    },
+  },
+  input: {
+    margin: "0 .5rem",
+    flexGrow: 1,
+  },
+  button: {
+    width: "fit-content",
+  },
+});
 
 export default Login;

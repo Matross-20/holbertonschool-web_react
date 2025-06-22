@@ -1,30 +1,67 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import CourseList from './CourseList';
-import CourseListRow from './CourseListRow';
+import { shallow } from "enzyme";
+import CourseList from "./CourseList";
 
-describe('CourseList Component', () => {
-  describe('When listCourses is empty or not provided', () => {
-    it('renders correctly', () => {
-      let wrapper = shallow(<CourseList />);
-      expect(wrapper.find(CourseListRow).length).toEqual(3);
-      expect(wrapper.find(CourseListRow).at(2).prop('textFirstCell')).toEqual('No course available yet');
+describe("<CourseList />", () => {
+  let wrapper;
 
-      wrapper = shallow(<CourseList listCourses={[]} />);
-      expect(wrapper.find(CourseListRow).length).toEqual(3);
-      expect(wrapper.find(CourseListRow).at(2).prop('textFirstCell')).toEqual('No course available yet');
+  describe("listCourses = default", () => {
+    beforeEach(() => {
+      wrapper = shallow(<CourseList />);
+    });
+
+    it("renders component without crashing", () => {});
+
+    it("renders the 5 different rows", () => {
+      expect(wrapper.find("CourseListRow")).toHaveLength(3);
+    });
+
+    it('renders the "No Course Available" row', () => {
+      expect(wrapper.html().includes("No course available yet")).toBe(true);
     });
   });
 
-  describe('When listCourses is provided', () => {
-    it('renders correctly with the right number of rows', () => {
-      const listCourses = [
-        { id: 1, name: 'ES6', credit: 60 },
-        { id: 2, name: 'Webpack', credit: 20 },
-        { id: 3, name: 'React', credit: 40 },
-      ];
-      const wrapper = shallow(<CourseList listCourses={listCourses} />);
-      expect(wrapper.find(CourseListRow).length).toEqual(5); // 2 header rows + 3 course rows
+  describe("listCourses = []", () => {
+    beforeEach(() => {
+      wrapper = shallow(<CourseList listCourses={[]} />);
+    });
+
+    it("renders component without crashing", () => {});
+
+    it("renders the 5 different rows", () => {
+      expect(wrapper.find("CourseListRow")).toHaveLength(3);
+    });
+
+    it('renders the "No Course Available" row', () => {
+      expect(wrapper.html().includes("No course available yet")).toBe(true);
+    });
+  });
+
+  describe("listCourses = [...]", () => {
+    const listCourses = [
+      { id: 1, name: "c1", credit: 10 },
+      { id: 2, name: "c2", credit: 20 },
+      { id: 3, name: "c3", credit: 30 },
+    ];
+
+    beforeEach(() => {
+      wrapper = shallow(<CourseList listCourses={listCourses} />);
+    });
+
+    it("renders component without crashing", () => {});
+
+    it("renders 5 different rows", () => {
+      expect(wrapper.find("CourseListRow")).toHaveLength(5);
+    });
+
+    it("renders each course correctly", () => {
+      listCourses.forEach((item) => {
+        const row = wrapper
+          .find("CourseListRow")
+          .filterWhere((n) => n.key() === item.id.toString());
+        expect(row).toHaveLength(1);
+        expect(row.prop("textFirstCell")).toEqual(item.name);
+        expect(row.prop("textSecondCell")).toEqual(item.credit);
+      });
     });
   });
 });

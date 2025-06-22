@@ -1,15 +1,12 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import NotificationItem from './NotificationItem';
+import PropTypes from "prop-types";
 
-describe('NotificationItem component', () => {
-  it('calls markAsRead on click with the right ID', () => {
-    const markAsReadMock = jest.fn();
-    const wrapper = shallow(
-      <NotificationItem id={1} markAsRead={markAsReadMock} />
-    );
-    wrapper.find('li').simulate('click');
+const NotificationItemShape = {
+  id: PropTypes.number.isRequired,
+  html: PropTypes.shape({
+    __html: PropTypes.string.isRequired,
+  }),
+  type: PropTypes.string.isRequired,
+  value: PropTypes.string,
+};
 
-    expect(markAsReadMock).toHaveBeenCalledWith(1);
-  });
-});
+export default NotificationItemShape;

@@ -1,28 +1,41 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import CourseListRow from './CourseListRow';
+import { shallow } from "enzyme";
+import CourseListRow from "./CourseListRow";
 
-describe('CourseListRow Component', () => {
-  it('renders without crashing', () => {
-    const wrapper = shallow(
-      <CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader />
-    );
-    expect(wrapper.exists()).toBeTruthy();
+describe("<CourseListRow />", () => {
+  describe("isHeader = true", () => {
+    it("renders one cell with colspan = 2 when textSecondCell does not exist", () => {
+      const wrapper = shallow(
+        <CourseListRow isHeader={true} textFirstCell="test"></CourseListRow>
+      );
+      const cells = wrapper.find("th");
+      expect(cells).toHaveLength(1);
+      expect(cells.first().is('[colSpan="2"]')).toBe(true);
+    });
+
+    it("renders two cells when textSecondCell is present", () => {
+      const wrapper = shallow(
+        <CourseListRow
+          isHeader={true}
+          textFirstCell="test"
+          textSecondCell="test2"
+        ></CourseListRow>
+      );
+      expect(wrapper.find("th")).toHaveLength(2);
+    });
   });
 
-  it('renders correctly as header row', () => {
-    const wrapper = shallow(
-      <CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader />
-    );
-    expect(wrapper.hasClass('header')).toBeTruthy(); 
+  describe("isHeader = false", () => {
+    it("renders correctly two td elements within a tr element", () => {
+      const wrapper = shallow(
+        <CourseListRow
+          isHeader={false}
+          textFirstCell="test"
+          textSecondCell="test2"
+        ></CourseListRow>
+      );
+      const row = wrapper.find("tr");
+      expect(row).toHaveLength(1);
+      expect(row.find("td")).toHaveLength(2);
+    });
   });
-
-  it('renders correctly as default row', () => {
-    const wrapper = shallow(
-      <CourseListRow textFirstCell="ES6" textSecondCell={60} />
-    );
-    expect(wrapper.hasClass('defaultRow')).toBeTruthy(); 
-  });
-
-  
 });

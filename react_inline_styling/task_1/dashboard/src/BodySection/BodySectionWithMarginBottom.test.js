@@ -1,19 +1,25 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import BodySectionWithMarginBottom from './BodySectionWithMarginBottom';
-import BodySection from './BodySection';
+import { shallow } from "enzyme";
+import BodySectionWithMarginBottom from "./BodySectionWithMarginBottom";
+import { StyleSheetTestUtils } from "aphrodite";
+StyleSheetTestUtils.suppressStyleInjection();
 
-describe('BodySectionWithMarginBottom component tests', () => {
-  it('should render correctly a BodySection component and pass the correct props', () => {
+describe("<BodySectionWithMarginBottom />", () => {
+  it("renders without crashing", () => {
+    shallow(<BodySectionWithMarginBottom title="test" />);
+  });
+
+  it("renders a BodySection with the correct props", () => {
+    const title = "test title";
+    const childNode = <p>test children node</p>;
+
     const wrapper = shallow(
-      <BodySectionWithMarginBottom title="test title">
-        <p>test children node</p>
+      <BodySectionWithMarginBottom title={title}>
+        {childNode}
       </BodySectionWithMarginBottom>
     );
-
-    expect(wrapper.find(BodySection)).toHaveLength(1);
-
-    expect(wrapper.find(BodySection).props().title).toBe('test title');
-    expect(wrapper.find(BodySection).contains(<p>test children node</p>)).toBe(true);
+    const bodySection = wrapper.find("BodySection");
+    expect(bodySection).toHaveLength(1);
+    expect(bodySection.prop("title")).toEqual(title);
+    expect(bodySection.prop("children")).toEqual(childNode);
   });
 });

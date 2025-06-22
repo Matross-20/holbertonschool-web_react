@@ -1,19 +1,41 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import CourseListRow from './CourseListRow';
+import { shallow } from "enzyme";
+import CourseListRow from "./CourseListRow";
 
-describe('CourseListRow component', () => {
-  it('renders a row with correct background color when isHeader is false', () => {
-    const wrapper = shallow(
-      <CourseListRow isHeader={false} textFirstCell="ES6" textSecondCell="60" />
-    );
-    expect(wrapper.find('tr').prop('style')).toHaveProperty('backgroundColor', '#f5f5f5ab');
+describe("<CourseListRow />", () => {
+  describe("isHeader = true", () => {
+    it("renders one cell with colspan = 2 when textSecondCell does not exist", () => {
+      const wrapper = shallow(
+        <CourseListRow isHeader={true} textFirstCell="test"></CourseListRow>
+      );
+      const cells = wrapper.find("th");
+      expect(cells).toHaveLength(1);
+      expect(cells.first().is('[colSpan="2"]')).toBe(true);
+    });
+
+    it("renders two cells when textSecondCell is present", () => {
+      const wrapper = shallow(
+        <CourseListRow
+          isHeader={true}
+          textFirstCell="test"
+          textSecondCell="test2"
+        ></CourseListRow>
+      );
+      expect(wrapper.find("th")).toHaveLength(2);
+    });
   });
 
-  it('renders a header row with correct background color when isHeader is true', () => {
-    const wrapper = shallow(
-      <CourseListRow isHeader={true} textFirstCell="Course name" textSecondCell="Credit" />
-    );
-    expect(wrapper.find('tr').prop('style')).toHaveProperty('backgroundColor', '#deb5b545');
+  describe("isHeader = false", () => {
+    it("renders correctly two td elements within a tr element", () => {
+      const wrapper = shallow(
+        <CourseListRow
+          isHeader={false}
+          textFirstCell="test"
+          textSecondCell="test2"
+        ></CourseListRow>
+      );
+      const row = wrapper.find("tr");
+      expect(row).toHaveLength(1);
+      expect(row.find("td")).toHaveLength(2);
+    });
   });
 });
