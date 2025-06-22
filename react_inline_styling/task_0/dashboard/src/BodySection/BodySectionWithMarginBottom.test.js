@@ -1,45 +1,23 @@
-import { shallow, mount } from "enzyme";
-import React from "react";
-import BodySectionWithMarginBottom from "./BodySectionWithMarginBottom";
+import React from 'react';
+import BodySectionWithMarginBottom from './BodySectionWithMarginBottom'
+import BodySection from './BodySection'
+import { shallow, render } from 'enzyme';
 
-describe("<BodySectionWithMarginBottom />", () => {
-  it("BodySectionWithMarginBottom renders without crashing", () => {
-    const wrapper = shallow(<BodySectionWithMarginBottom />);
-    expect(wrapper.exists()).toEqual(true);
-  });
+let wrapper = null;
 
-  it("Shallowing the component should render correctly a BodySection component and that the props are passed correctly to the child component", () => {
-    const wrapper = shallow(
-      <BodySectionWithMarginBottom title="test title">
-        <p>test children node</p>
-      </BodySectionWithMarginBottom>
+describe('Testing BodySectionWithMarginBottom render()', () => {
+  beforeEach(() => {
+    wrapper = null;
+    wrapper = shallow(
+      <BodySectionWithMarginBottom title='title test'><p>Test child</p></BodySectionWithMarginBottom>
     );
-
-    const BodySection = wrapper.find("BodySection");
-
-    expect(BodySection).toHaveLength(1);
-    expect(BodySection.props().title).toEqual("test title");
-
-    const internalBody = BodySection.dive();
-
-    const h2 = internalBody.find("h2");
-    const p = internalBody.find("p");
-
-    expect(h2).toHaveLength(1);
-    expect(h2.text()).toEqual("test title");
-
-    expect(p).toHaveLength(1);
-    expect(p.text()).toEqual("test children node");
-  });
-  it("BodySectionWithMarginBottom has correct class for style", () => {
-    const wrapper = shallow(
-      <BodySectionWithMarginBottom title="test title">
-        <p>test children node</p>
-      </BodySectionWithMarginBottom>
-    );
-
-    const div = wrapper.find(".bodySectionWithMargin").first();
-
-    expect(div.exists()).toEqual(true);
-  });
-});
+  })
+  // in task_3/dashboard/src/BodySection/BodySectionWithMarginBottom.test.js:
+  // Add one test checking that shallowing the component should render correctly a BodySection component and that the props are passed correctly to the child component
+  it('should render a BodySection component', () => {
+    let renderBodySection = wrapper.find('.bodySectionWithMargin').render();
+    expect(renderBodySection.find('.bodySection').length).toEqual(1);
+    expect(renderBodySection.find('h2').text()).toBe('title test');
+    expect(renderBodySection.find('p').text()).toBe('Test child');
+  })
+})

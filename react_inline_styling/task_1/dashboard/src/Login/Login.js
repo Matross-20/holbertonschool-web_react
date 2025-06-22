@@ -1,29 +1,29 @@
-import React from "react";
-import { StyleSheet, css } from "aphrodite";
-
-function Login() {
-  return (
-    <div className={css(styles.login)}>
-      <p>Login to access the full dashboard</p>
-      <label htmlFor="email">Email:</label>
-      <input type="email" id="email" className={css(styles.loginInput)} />
-      <label htmlFor="password">Password:</label>
-      <input type="password" id="password" className={css(styles.loginInput)} />
-      <button>OK</button>
-    </div>
-  );
-}
+/* LOGIN COMPONENT PROP */
+import React from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
 const styles = StyleSheet.create({
-  login: {
-    margin: "50px",
-    flexGrow: 1,
+  loginForm: {
+    margin: '0px 40px'
   },
-
-  loginInput: {
-    marginLeft: "10px",
-    marginRight: "20px",
+  loginPassword: {
+    marginLeft: '10px'
   },
+  margin: {
+  },
+  label: {
+    marginRight: '10px'
+  }
 });
 
-export default Login;
+export default function Login() {
+  return (
+    <form className={'login-form ' + css(styles.loginForm)}>
+      <label className={css(styles.label)} htmlFor='email' id='email-label'>Email:</label>
+      <input type='email' name='email' id='email'></input>
+      <label className={css(styles.loginLabel) + ' ' + css(styles.loginPassword)} htmlFor='password' id='password-label'>Password:</label>
+      <input type='text' name='password' id='password'></input>
+      <button>OK</button>
+    </form>
+  );
+}

@@ -1,25 +1,18 @@
-:root {
-  --border-table-color: rgb(170, 170, 170);
-}
+/* CSS for CourseList componenet */
 
 #CourseList {
-  margin-top: 40px;
-  border: 1px solid var(--border-table-color);
-  border-collapse: collapse;
-  width: 95%;
+    width: 85%;
+    border: 0.5px solid;
+    border-collapse: collapse;
+    margin: auto;
+    margin-top: 30px;
 }
 
-#CourseList th {
-  border-top: 1px solid var(--border-table-color);
-  border-bottom: 1px solid var(--border-table-color);
-  text-align: left;
-  font-size: 18px;
+th {
+    border-bottom: 0.5px solid;
+    text-align: left;
 }
 
-#CourseList th[colspan="2"] {
-  text-align: center;
-}
-
-#CourseList td {
-  text-align: left;
+#CourseList thead th[colspan] {
+    text-align: center;
 }

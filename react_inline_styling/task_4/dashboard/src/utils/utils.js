@@ -1,19 +1,29 @@
-export function getFullYear() {
-  return new Date().getFullYear();
-}
+/* All utility functions for dashboard application */
 
-export function getFooterCopy(isIndex) {
-  let msg;
-
-  if (isIndex) {
-    msg = "Holberton School";
-  } else {
-    msg = "Holberton School main dashboard";
+/**
+ * This function get the current year
+ * @returns: returns full year from javascript Date() object
+ */
+ function getFullYear() {
+    return (new Date().getFullYear());
   }
-
-  return msg;
-}
-
-export function getLatestNotification() {
-  return "<strong>Urgent requirement</strong> - complete by EOD";
-}
+  
+  /**
+   * 
+   * @param {boolean} isIndex: true if page is index; false if page is not index
+   * @returns: returns a string depending on if the current page is the index or not
+   */
+  function getFooterCopy(isIndex) {
+      if (isIndex === true) {
+        return ('Holberton School');
+      } else {
+        return ('Holberton School main dashboard')
+      }
+  }
+  
+  function getLatestNotification() {
+    return ('<strong>Urgent requirement</strong> - complete by EOD');
+  }
+  
+  export {getFooterCopy, getFullYear, getLatestNotification};
+  

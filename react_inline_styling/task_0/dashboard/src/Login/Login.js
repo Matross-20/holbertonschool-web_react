@@ -1,17 +1,15 @@
-import React from "react";
-import "./Login.css";
+/* LOGIN COMPONENT PROP */
+import React from 'react';
+import './Login.css'
 
-function Login() {
+export default function Login() {
   return (
-    <div className="login">
-      <p>Login to access the full dashboard</p>
-      <label htmlFor="email">Email:</label>
-      <input type="email" id="email" />
-      <label htmlFor="password">Password:</label>
-      <input type="password" id="password" />
+    <form className='login-form'>
+      <label htmlFor='email' id='email-label'>Email:</label>
+      <input type='email' name='email' id='email'></input>
+      <label htmlFor='password' id='password-label'>Password:</label>
+      <input type='text' name='password' id='password'></input>
       <button>OK</button>
-    </div>
+    </form>
   );
 }
-
-export default Login;

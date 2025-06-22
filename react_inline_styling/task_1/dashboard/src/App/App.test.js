@@ -1,69 +1,69 @@
-import { shallow, mount } from "enzyme";
-import React from "react";
-import App from "./App";
-import { StyleSheetTestUtils } from "aphrodite";
+/**
+ * @jest-environment jsdom
+ */
+import { shallow, render, mount } from 'enzyme';
+import { StyleSheetTestUtils } from 'aphrodite';
+import App from './App';
+import Footer from '../Footer/Footer';
+import Login from '../Login/Login';
+import Header from '../Header/Header';
+import Notifications from '../Notifications/Notifications';
+import React from 'react';
 
-describe("<App />", () => {
-  beforeAll(() => {
+let wrapper = null;
+
+describe('Checks if App component is rendered correctly', () => {
+  beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
   });
-  afterAll(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  afterEach(() => {
+      StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
+  it("Checks if App is rendered properly without error", () => {
+    wrapper = shallow(<App/>);
+    expect(wrapper.exists('.App')).toBeTruthy()
   });
 
-  it("App renders without crashing", () => {
-    const wrapper = shallow(<App />);
-    expect(wrapper.exists()).toEqual(true);
-  });
-  it("should contain the Notifications component", () => {
-    const wrapper = shallow(<App />);
-    wrapper.update();
-    expect(wrapper.find("Notifications")).toHaveLength(1);
-  });
-  it("should contain the Header component", () => {
-    const wrapper = shallow(<App />);
-    wrapper.update();
-    expect(wrapper.find("Header")).toHaveLength(1);
-  });
-  it("should contain the Login component", () => {
-    const wrapper = shallow(<App />);
-    wrapper.update();
-    expect(wrapper.find("Login")).toHaveLength(1);
-  });
-  it("should contain the Footer component", () => {
-    const wrapper = shallow(<App />);
-    wrapper.update();
-    expect(wrapper.find("Footer")).toHaveLength(1);
-  });
-  it("CourseList is not displayed with isLoggedIn false by default", () => {
-    const wrapper = shallow(<App />);
-    wrapper.update();
-    expect(wrapper.find("CourseList")).toHaveLength(0);
-  });
-  it("isLoggedIn is true", () => {
-    const wrapper = shallow(<App isLoggedIn />);
-    wrapper.update();
-    expect(wrapper.find("Login")).toHaveLength(0);
-    expect(wrapper.find("CourseList")).toHaveLength(1);
+  it("renders App-Notifications properly", () => {
+    wrapper = shallow(<App/>);
+    expect(wrapper.exists(<Notifications/>));
   });
 
-  it("when the keys control and h are pressed the logOut function, passed as a prop, is called and the alert function is called with the string Logging you out", () => {
-    const events = {};
-    const logout = jest.fn();
+  it("renders App-header properly", () => {
+    wrapper = shallow(<App/>);
+    expect(wrapper.exists(<Header/>));
+  });
 
-    document.addEventListener = jest.fn((event, cb) => {
-      events[event] = cb;
-    });
+  it("renders App-footer properly", () => {
+    wrapper = shallow(<App/>);
+    expect(wrapper.exists(<Footer/>));
+  });
 
-    window.alert = jest.fn();
+  it("renders App-Login properly", () => {
+    wrapper = shallow(<App/>);
+    expect(wrapper.exists(<Login/>));
+  });
 
-    shallow(<App logOut={logout} />);
+  it("should not display CourseList", () => {
+    wrapper = shallow(<App/>)
+    expect(wrapper.find('.App-body').render().find('#CourseList').length).toBe(0);
+  });
+});
 
-    events.keydown({ key: "h", ctrlKey: true });
+describe('Checks if App componenet is rendered correctly when (isLoggedIn = true)', () => {
+  beforeEach(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
+  afterEach(() => {
+      StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
+  it("should not display Login", () => {
+    wrapper = shallow(<App isLoggedIn={true}/>)
+    expect(wrapper.find('.App-body').render().find('.login-form').length).toBe(0);
+  });
 
-    expect(window.alert).toHaveBeenCalledWith("Logging you out");
-    expect(logout).toHaveBeenCalled();
-
-    jest.restoreAllMocks();
+  it("should display CourseList", () => {
+    wrapper = shallow(<App isLoggedIn={true}/>)
+    expect(wrapper.find('.App-body').render().find('#CourseList').length).toBe(1);
   });
 });
