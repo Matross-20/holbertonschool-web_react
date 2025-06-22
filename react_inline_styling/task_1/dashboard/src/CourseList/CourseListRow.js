@@ -1,41 +1,46 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "./CourseList.css";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { StyleSheet, css } from 'aphrodite';
 
-const rowStyles = { backgroundColor: "#f5f5f5ab" };
-const headerRowStyles = { backgroundColor: "#deb5b545" };
+const styles = StyleSheet.create({
+  CourseListTh: {
+    paddingTop: 8,
+    paddingBottom: 8,
+    borderBottom: '3px lightgrey solid',
+  },
+  // #CourseList thead tr:first-child
+  CourseListCaption: {
+    textAlign: 'center',
+  },
+});
 
 function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
-  let element;
+  // console.log(typeof isHeader, typeof textFirstCell, typeof textSecondCell);
 
-  if (isHeader === true) {
-    //
-    if (textSecondCell === null) {
-      element = <th colSpan="2">{textFirstCell}</th>;
-    } else {
-      element = (
-        <>
-          <th>{textFirstCell}</th>
-          <th>{textSecondCell}</th>
-        </>
+  const headerRowStyle = { backgroundColor: '#deb5b545' };
+  const bodyRowStyle = { backgroundColor: '#f5f5f5ab' };
+
+  if (isHeader) {
+    if (!textSecondCell) {
+      return (
+        <tr style={headerRowStyle}>
+          <th className={css(styles.CourseListTh, styles.CourseListCaption)} colSpan="2">{textFirstCell}</th>
+        </tr>
       );
     }
-    //
-  } else if (isHeader === false) {
-    element = (
-      <>
-        <td>{textFirstCell}</td>
-        <td>{textSecondCell}</td>
-      </>
+    return (
+      <tr style={headerRowStyle}>
+        <th className={css(styles.CourseListTh)}>{textFirstCell}</th>
+        <th className={css(styles.CourseListTh)}>{textSecondCell}</th>
+      </tr>
     );
   }
-
-  let isHeaderStyle;
-
-  if (isHeader) isHeaderStyle = headerRowStyles;
-  else isHeaderStyle = rowStyles;
-
-  return <tr style={isHeaderStyle}>{element}</tr>;
+  return (
+    <tr style={bodyRowStyle}>
+      <td>{textFirstCell}</td>
+      <td>{textSecondCell}</td>
+    </tr>
+  );
 }
 
 CourseListRow.defaultProps = {

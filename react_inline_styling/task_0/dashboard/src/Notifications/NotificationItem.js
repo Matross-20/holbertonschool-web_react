@@ -1,50 +1,42 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const NotificationItem = React.memo(function NotificationItem({
-  type,
-  value,
-  html,
-  markAsRead,
-  id,
-}) {
-  let listItem;
+const NotificationItem = React.memo(
+  class NotificationItem extends React.Component {
+    render() {
+      // console.log(`NotificationItem with id ${this.props.id} is being rendered, at: ${(new Date()).toLocaleTimeString()}`);
 
-  if (value) {
-    listItem = (
-      <li data-notification-type={type} onClick={() => markAsRead(id)}>
-        {value}
-      </li>
-    );
-  } else {
-    listItem = (
-      <li
-        data-notification-type={type}
-        dangerouslySetInnerHTML={html}
-        onClick={() => markAsRead(id)}
-      ></li>
-    );
+      if (this.props.html) {
+        return (
+          <li onClick={() => this.props.markAsRead(this.props.id)} data-notification-type={this.props.type} dangerouslySetInnerHTML={this.props.html} />
+        );
+      }
+      return (
+        <li onClick={() => this.props.markAsRead(this.props.id)} data-notification-type={this.props.type}>{this.props.value}</li>
+      );
+      /*
+      React should default to filling the <li /> with ''
+      when `value` is undefined.
+      */
+    }
   }
-
-  return listItem;
-});
+);
 
 NotificationItem.defaultProps = {
-  type: "default",
-  value: "",
-  html: {},
+  type: 'default',
+  html: null,
+  value: '',
+  id: 0,
   markAsRead: () => {},
-  id: NaN,
 };
-
 NotificationItem.propTypes = {
-  type: PropTypes.string,
-  value: PropTypes.string,
+  type: PropTypes.string,  // .isRequired
   html: PropTypes.shape({
     __html: PropTypes.string,
   }),
-  markAsRead: PropTypes.func,
+  value: PropTypes.string,
   id: PropTypes.number,
+  markAsRead: PropTypes.func,
 };
 
 export default NotificationItem;

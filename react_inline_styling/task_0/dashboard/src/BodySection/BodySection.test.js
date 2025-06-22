@@ -1,38 +1,56 @@
-import { shallow, mount } from "enzyme";
-import React from "react";
-import BodySection from "./BodySection";
+import React from 'react';
+import { shallow } from 'enzyme';
+import BodySection from './BodySection';
 
-describe("<BodySection />", () => {
-  it("BodySection renders without crashing", () => {
-    const wrapper = shallow(<BodySection />);
-    expect(wrapper.exists()).toEqual(true);
-  });
+describe('<BodySection />', () => {
+  it('should renders correctly the `title` prop as an <h2 /> and its children', () => {
+    const title = 'Hello, World!';
+    const pText = 'This is a test';
+    const buttonText = 'Click me!'
 
-  it("BodySection renders without crashing", () => {
-    const wrapper = shallow(
-      <BodySection title="test title">
-        <p>test children node</p>
+    let wrapper;
+    let foundH2;
+    let foundP;
+
+    wrapper = shallow(<BodySection title={title} />);
+    expect(wrapper.children()).toHaveLength(1);
+    foundH2 = wrapper.find('h2');
+    expect(foundH2).toHaveLength(1);
+    expect(foundH2.first().text()).toBe(title);
+
+    wrapper = shallow(
+      <BodySection title={title}>
+        <p>{pText}</p>
       </BodySection>
     );
+    expect(wrapper.children()).toHaveLength(2);
 
-    const h2 = wrapper.find("h2");
-    const p = wrapper.find("p");
+    foundH2 = wrapper.find('h2');
+    expect(foundH2).toHaveLength(1);
+    expect(foundH2.first().text()).toBe(title);
 
-    expect(h2).toHaveLength(1);
-    expect(h2.text()).toEqual("test title");
+    foundP = wrapper.find('p');
+    expect(foundP).toHaveLength(1);
+    expect(foundP.first().text()).toBe(pText);
 
-    expect(p).toHaveLength(1);
-    expect(p.text()).toEqual("test children node");
-  });
-  it("BodySection has correct class for style", () => {
-    const wrapper = shallow(
-      <BodySection title="test title">
-        <p>test children node</p>
+    wrapper = shallow(
+      <BodySection title={title}>
+        <p>{pText}</p>
+        <button>{buttonText}</button>
       </BodySection>
     );
+    expect(wrapper.children()).toHaveLength(3);
 
-    const div = wrapper.find(".bodySection").first();
+    foundH2 = wrapper.find('h2');
+    expect(foundH2).toHaveLength(1);
+    expect(foundH2.first().text()).toBe(title);
 
-    expect(div.exists()).toEqual(true);
+    foundP = wrapper.find('p');
+    expect(foundP).toHaveLength(1);
+    expect(foundP.first().text()).toBe(pText);
+
+    const foundButton = wrapper.find('button');
+    expect(foundButton).toHaveLength(1);
+    expect(foundButton.first().text()).toBe(buttonText);
   });
 });

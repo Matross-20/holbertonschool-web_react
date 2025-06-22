@@ -1,45 +1,49 @@
-import React from "react";
-import { StyleSheet, css } from "aphrodite";
-
-function Login() {
-  return (
-    <div className={css(styles.login)}>
-      <p>Login to access the full dashboard</p>
-      <label htmlFor="email">Email:</label>
-      <input type="email" id="email" className={css(styles.loginInput)} />
-      <label htmlFor="password">Password:</label>
-      <input type="password" id="password" className={css(styles.loginInput)} />
-      <button>OK</button>
-    </div>
-  );
-}
-
-const screenSize = {
-  small: "@media screen and (max-width: 900px)",
-};
+import React from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
 const styles = StyleSheet.create({
   login: {
-    margin: "50px",
-    flexGrow: 1,
-    [screenSize.small]: {
-      marginTop: "10px",
-      marginLeft: 0,
-      marginRight: 0,
-      marginBottom: 0,
+    display: 'flex',
+    '@media (max-width: 900px)': {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
     },
   },
-
-  loginInput: {
-    marginLeft: "10px",
-    marginRight: "20px",
-    [screenSize.small]: {
-      display: "block",
-      marginLeft: 0,
-      marginTop: "10px",
-      marginBottom: "10px",
-    },
+  loginRow: {
+    display: 'flex',
+  },
+  loginItem: {
+    marginRight: 15,
+  },
+  loginTextInput: {
+    border: 'none',
+  },
+  loginButton: {
+    fontSize: 18,
+    padding: '7px 12px',
+    background: 'transparent',
+    border: 'none',
+    outlineColor: 'orange',
   },
 });
 
+function Login() {
+  return (
+    <>
+      <p>Login to access the full dashboard</p>
+      <div className={css(styles.login)}>
+        <div className={css(styles.loginRow)}>
+          <label className={css(styles.loginItem)} htmlFor="email">Email:</label>
+          <input className={css(styles.loginTextInput)} id="email" name="email" type="email" autoComplete="true"/>
+        </div>
+        <div className={css(styles.loginRow)}>
+          <label className={css(styles.loginItem)} htmlFor="password">Password:</label>
+          <input className={css(styles.loginTextInput)} id="password" name="password" type="text"/>
+        </div>
+        <button className={css(styles.loginButton)}>OK</button>
+      </div>
+    </>
+  );
+}
+Login.displayName = 'Login';
 export default Login;
