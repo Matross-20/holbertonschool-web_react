@@ -1,17 +1,14 @@
-.App-header{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    border-bottom: 3px solid var(--red);
+:root {
+  --main-color: #e01d3f;
 }
 
-.App-header_logo{
-    width: auto;
-    height: 200px;
+.header {
+  display: flex;
+  align-items: center;
+  color: var(--main-color);
+  font-size: 20px;
 }
 
-h1{
-    font-size: 35px;
-    color: var(--red);
+.header img {
+  width: 200px;
 }

@@ -1,19 +1,13 @@
-.form{
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    gap: 10px;
+:root {
+  --main-color: #e01d3f;
 }
 
-.App-footer{
-    display: flex;
-    padding: 20px 0;
-    margin-top: auto;
-    border-top: 3px solid var(--red);
-}
-
-.App-footer p{
-    margin: auto;
-    font-weight: 500;
-    font-style: italic;
+.footer {
+  border-top: 3px solid var(--main-color);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  font-style: italic;
 }

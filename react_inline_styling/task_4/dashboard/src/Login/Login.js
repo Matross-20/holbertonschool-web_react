@@ -1,35 +1,45 @@
-import React from 'react'
-import { StyleSheet, css } from 'aphrodite';
+import React from "react";
+import { StyleSheet, css } from "aphrodite";
+
+function Login() {
+  return (
+    <div className={css(styles.login)}>
+      <p>Login to access the full dashboard</p>
+      <label htmlFor="email">Email:</label>
+      <input type="email" id="email" className={css(styles.loginInput)} />
+      <label htmlFor="password">Password:</label>
+      <input type="password" id="password" className={css(styles.loginInput)} />
+      <button>OK</button>
+    </div>
+  );
+}
+
+const screenSize = {
+  small: "@media screen and (max-width: 900px)",
+};
 
 const styles = StyleSheet.create({
-    contentLogin: {
-        width: '300px',
-        display: 'flex',
-        flexDirection: 'column',
+  login: {
+    margin: "50px",
+    flexGrow: 1,
+    [screenSize.small]: {
+      marginTop: "10px",
+      marginLeft: 0,
+      marginRight: 0,
+      marginBottom: 0,
     },
-    buttonLogin : {
-        marginTop: '30px',
+  },
+
+  loginInput: {
+    marginLeft: "10px",
+    marginRight: "20px",
+    [screenSize.small]: {
+      display: "block",
+      marginLeft: 0,
+      marginTop: "10px",
+      marginBottom: "10px",
     },
-    smallButtonLogin: {
-        padding: '10px 20px',
-        border: '3px solid yellow',
-        cursor: 'pointer',
-    }
-})
+  },
+});
 
-export default function Login() {
-    return (
-        <>
-            <p>Login to access the full dashboard</p>
-            <div className={css(styles.contentLogin)}>
-                <label htmlFor="email">Email:</label>
-                <input type="email" id="email"/>
-
-                <label htmlFor="password">Password:</label>
-                <input type="password"id="password"/>
-
-                <button className={css(styles.buttonLogin, styles.smallButtonLogin)}>OK</button>
-            </div>
-        </>
-    )
-}
+export default Login;

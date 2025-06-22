@@ -1,115 +1,112 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, css } from 'aphrodite';
-import Footer from '../Footer/Footer';
-import Header from '../Header/Header';
-import Login from '../Login/Login';
-import CourseList from '../CourseList/CourseList';
-import Notification from '../Notifications/Notifications'
-import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
-import BodySection from '../BodySection/BodySection';
-import WithLogging from '../HOC/WithLogging';
+import React, { Component } from "react";
+import Notifications from "../Notifications/Notifications";
+import Header from "../Header/Header";
+import BodySection from "../BodySection/BodySection";
+import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
+import Login from "../Login/Login";
+import CourseList from "../CourseList/CourseList";
+import Footer from "../Footer/Footer";
+import PropTypes from "prop-types";
+import { getLatestNotification } from "../utils/utils";
+import { StyleSheet, css } from "aphrodite";
 
-const styles = StyleSheet.create({
-    '*':{
-        margin: 0,
-        padding: 0,
-        'box-sizing': 'border-box',
-    },
-    root:{
-        '--red': '#e11c3e',
-    },
-    body:{
-        margin: 0,
-        padding: 0,
-    },
-    contentHeader:{
-        display: 'flex',
-        flexDirection: 'row-reverse',
-        justifyContent: 'space-between',
-        borderBottom: '3px solid var(--red)',
-    },
-    appBody: {
-        marginTop: '20px',
-        marginLeft: '40px',
-    },
-    appFooter: {
-        textAlign: 'center',
-        borderTop: '3px solid var(--red)',
-    },
-});
+const listCourses = [
+  { id: 1, name: "ES6", credit: 60 },
+  { id: 2, name: "Webpack", credit: 20 },
+  { id: 3, name: "React", credit: 40 },
+];
 
-class App extends React.Component {
-    constructor(props) {
-        super(props);
+const listNotifications = [
+  { id: 1, type: "default", value: "New course available" },
+  { id: 2, type: "urgent", value: "New resume available" },
+  { id: 3, type: "urgent", html: { __html: getLatestNotification() } },
+];
 
-        this.listCourses = [
-            { id: 1, name: 'ES6', credit: 60 },
-            { id: 2, name: 'Webpack', credit: 20 },
-            { id: 3, name: 'React', credit: 40 },
-        ];
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.handleKeyCombination = this.handleKeyCombination.bind(this);
+  }
 
-        this.state = {
-            listNotifications: [
-                { id: 1, type: 'default', value: 'New course available' },
-                { id: 2, type: 'urgent', value: 'New resume available' },
-                { id: 3, type: 'urgent', html: { __html: 'Custom notification with HTML' } },
-            ],
-        };
+  handleKeyCombination(e) {
+    if (e.key === "h" && e.ctrlKey) {
+      alert("Logging you out");
+      this.props.logOut();
     }
+  }
 
-    static defaultProps = {
-        logOut: () => {
-        },
-    };
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyCombination);
+  }
 
-    componentDidMount() {
-        document.addEventListener('keydown', this.handleKeyDown);
-    }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyCombination);
+  }
 
-    componentWillUnmount() {
-        document.removeEventListener('keydown', this.handleKeyDown);
-    }
-
-    handleKeyDown = (event) => {
-        event.preventDefault();
-
-        if (event.ctrlKey && event.key === 'h') {
-        alert('Logging you out');
-        this.props.logOut();
-        }
-    }
-
-    render() {
-        const { isLoggedIn } = this.props;
-        const { listNotifications } = this.state;
-        let title = isLoggedIn ? 'Course list': 'Log in to continue'
-
-        return (
-        <div className={css(styles.root)}>
-            <div className={css(styles.contentHeader)}>
-                <Notification displayDrawer listNotifications={listNotifications} />
-                <Header />
-            </div>
-            <div className={css(styles.appBody)}>
-                <BodySectionWithMarginBottom title={title}>
-                    {isLoggedIn ? <CourseList listCourses={this.listCourses} /> : <Login />}
-                </BodySectionWithMarginBottom>
-
-                <BodySection title='News from the School'>
-                    <p>Some random text about the latest news from the school.</p>
-                </BodySection>
-            </div>
-
-            <div className={css(styles.appFooter)}><Footer/></div>
+  render() {
+    const { isLoggedIn, logOut } = this.props;
+    return (
+      <>
+        <Notifications listNotifications={listNotifications} />
+        <div className={css(styles.app)}>
+          <Header />
         </div>
-        )
-    }
+        <div className={css(styles.appBody)}>
+          {!isLoggedIn ? (
+            <BodySectionWithMarginBottom title="Log in to continue">
+              <Login />
+            </BodySectionWithMarginBottom>
+          ) : (
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList listCourses={listCourses} />
+            </BodySectionWithMarginBottom>
+          )}
+        </div>
+        <BodySection title="News from the School">
+          <p>Some Random Text</p>
+        </BodySection>
+
+        <div className={css(styles.footer)}>
+          <Footer />
+        </div>
+      </>
+    );
+  }
 }
 
-App.propTypes = {
-    isLoggedIn: PropTypes.bool,
-    logOut: PropTypes.func,
+App.defaultProps = {
+  isLoggedIn: false,
+  logOut: () => {},
 };
 
-export default WithLogging(App);
+App.propTypes = {
+  isLoggedIn: PropTypes.bool,
+  logOut: PropTypes.func,
+};
+
+const cssVars = {
+  mainColor: "#e01d3f",
+};
+
+const styles = StyleSheet.create({
+  app: {
+    borderBottom: `3px solid ${cssVars.mainColor}`,
+  },
+
+  appBody: {
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  footer: {
+    borderTop: `3px solid ${cssVars.mainColor}`,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    position: "fixed",
+    bottom: 0,
+    fontStyle: "italic",
+  },
+});
+
+export default App;

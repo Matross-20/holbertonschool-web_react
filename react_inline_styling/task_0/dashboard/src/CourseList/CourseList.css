@@ -1,30 +1,25 @@
-table{
-    border: 2px solid gray;
+:root {
+  --border-table-color: rgb(170, 170, 170);
 }
 
-#CourseList{
-    width: 100%;
-    text-align: left;
-    border: 2px solid gray;
-    border-collapse: collapse;
+#CourseList {
+  margin-top: 40px;
+  border: 1px solid var(--border-table-color);
+  border-collapse: collapse;
+  width: 95%;
 }
 
-#CourseList caption{
-    font-size: 18px;
-    border: 2px solid gray;
-    border-bottom: 0;
-    padding: 10px;
+#CourseList th {
+  border-top: 1px solid var(--border-table-color);
+  border-bottom: 1px solid var(--border-table-color);
+  text-align: left;
+  font-size: 18px;
 }
 
-#CourseList tbody{
-    padding: 10px;
-    border-top: 2px solid gray;
+#CourseList th[colspan="2"] {
+  text-align: center;
 }
 
-th, td{
-    padding: 10px;
-}
-
-th{
-    font-size: 17px;
+#CourseList td {
+  text-align: left;
 }
