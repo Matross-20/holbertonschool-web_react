@@ -1,12 +1,12 @@
+import { checkPropTypes } from 'prop-types';
 import React from 'react';
 import { getFullYear, getFooterCopy } from '../utils/utils';
 
-function Footer() {
+export default function Footer(props) {
   return (
-    <footer>
-      <p>{`Copyright ${getFullYear()} - ${getFooterCopy(true)}`}</p>
-    </footer>
-  )
+        <div className={props.className}> 
+            <p>{`Copyright ${getFullYear()} - ${getFooterCopy(true)}`}</p>
+        </div>
+  );
 }
 
-export default Footer;

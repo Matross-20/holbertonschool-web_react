@@ -1,10 +1,24 @@
-:root {
-  --color-white: #fff;
-  --color-hb: #e1354b;
+body {
+  padding: 0;
 }
 
-.App-body {
-  background-color: var(--color-white);
-  padding: 4rem;
-  min-height: 26rem;
+.App {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.CourseListContainer {
+  height: 70%;
+}
+
+#CourseList {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+#CourseList th {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
 }

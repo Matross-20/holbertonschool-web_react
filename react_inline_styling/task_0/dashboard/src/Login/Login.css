@@ -1,9 +1,10 @@
-:root {
-  --color-white: #fff;
-  --color-hb: #e1354b;
+.App-body {
+    height: 70%;
+    padding: 1rem;
+    font-size: 1.2rem;
+    font-weight: 500;
 }
-
-.login-container input {
-  margin-right: 9px;
-  margin-left: 9px;
+  
+#password {
+    margin-left: 5px;
 }

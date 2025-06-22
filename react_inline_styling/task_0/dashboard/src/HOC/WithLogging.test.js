@@ -3,6 +3,7 @@ import { shallow, mount } from 'enzyme';
 import { expect as expectChai } from 'chai';
 import WithLogging from './WithLogging';
 import Login from '../Login/Login';
+import 'jsdom-global/register'
 
 describe('Test WithLogging.js', () => {
   it('console.log was called on mount and on unmount with Component when the wrapped element is pure html', (done) => {

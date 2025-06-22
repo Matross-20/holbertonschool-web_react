@@ -1,25 +1,26 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import { expect } from 'chai';
-import App from '../App/App';
-import Login from './Login'
+import { shallow } from 'enzyme';
+import Login from './Login';
 
-describe('Test Login.js', () => {
-  it('Login without crashing', (done) => {
-    expect(shallow(<Login />).exists());
-    done();
-  });
+describe("Testing the <Login /> Component", () => {
+	
+	let wrapper;
 
-  it('div with the class App-body', (done) => {
-    const wrapper = shallow(<App />);
-    expect(wrapper.contains(<body className='App-body' />))
-    done();
-  });
+	beforeEach(() => {
+		wrapper = shallow(<Login shouldRender />);
+	});
 
-  it('renders 2 inputs and 2 labels', (done) => {
-    const wrapper = shallow(<Login />);
-    expect(wrapper.find('input')).to.have.lengthOf(2);
-    expect(wrapper.find('label')).to.have.lengthOf(2);
-    done();
-  });
+	it("<Login /> is rendered without crashing", () => {
+		expect(wrapper).to.not.be.an('undefined');
+    });
+    
+    it("the <Login /> component render 2 inputs", () => {
+		expect(wrapper.find('input')).to.have.lengthOf(2);
+    });
+    
+    it("the <Login /> component render 2 labels", () => {
+		expect(wrapper.find('label')).to.have.lengthOf(2);
+	});
+
 });
