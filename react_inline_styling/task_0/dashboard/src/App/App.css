@@ -1,25 +1,18 @@
-:root {
-  --holberton-red: #e1484c;
-}
-
-body {
-  max-width: 90%;
-  margin: 0 auto;
-}
-
-div {
-  padding: 2px 8px;
-}
-
 .App {
-  position: relative;
-  min-height: 100vh;
+  text-align: center;
+
 }
 
-.upperside {
-  display: flex;
-  flex-direction: row-reverse;
+
+hr {
   width: 100%;
-  border-bottom: 3px solid var(--holberton-red);
-  justify-content: space-between;
+  height: 3px;
+  font-size: larger;
+  background-color: rgb(204, 44, 44);
+  border: 0;
 }
+
+
+
+
+

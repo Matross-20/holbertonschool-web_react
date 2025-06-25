@@ -1,34 +1,23 @@
-import React from 'react'; 
-import PropTypes from 'prop-types'
-import { css, StyleSheet } from 'aphrodite';
-import BodySection from './BodySection';
+import React from "react";
+import BodySection from "./BodySection.js";
+import { StyleSheet, css } from 'aphrodite';
+import PropTypes from "prop-types";
 
 
 const styles = StyleSheet.create({
-    sectionMargin: {
-        marginBottom: '40px',
+    margin: {
+        marginBottom: 40
     }
+    
 })
-
-class BodySectionWithMarginBottom extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-    render() {
-        return (
-            <div className={css(styles.sectionMargin)}>
-                <BodySection {...this.props} />
-            </div>
-        )
-    }
+export default function BodySectionWithMarginBottom(props) {
+    return (
+      <div className={css(styles.margin)}>
+          <BodySection {...props}/>
+      </div>
+    );
 }
-
-BodySectionWithMarginBottom.defaultProps = {
-    title: ''
-}
-
 BodySectionWithMarginBottom.propTypes = {
-    title: PropTypes.string
-}
-
-export default BodySectionWithMarginBottom;
+    title: PropTypes.string,
+    children: PropTypes.node,
+};

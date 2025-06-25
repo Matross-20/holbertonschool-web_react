@@ -1,19 +1,25 @@
 .Notifications {
-	border: 2px dotted var(--holberton-red);
-	padding: 6px 12px;
-	position: relative;
-	margin-top: 12px;
+    border: dashed blue 1px;
+    position: absolute;
+    right: 50px;
+    width: 400px;
+    top: 40px;
+}
+
+.Notifications p {
+    margin-left: 10px;
 }
 
 .menuItem {
-	text-align: right;
-	font-weight: bold;
+    position: absolute;
+    right: 50px; 
+    top: 10ox;
 }
 
-li[data-priority-type="default"] {
-	color: blue;
+li[data-notification-type=default] {
+    color: blue;
 }
 
-li[data-priority-type="urgent"] {
-	color: red;
+li[data-notification-type=urgent] {
+    color: red;
 }
