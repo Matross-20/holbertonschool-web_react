@@ -1,17 +1,17 @@
-import './Login.css';
-import { getFullYear,getFooterCopy } from './utils';
+import React from "react"
+import './Login.css'
 
-function login() {
-  return (
-      <body className="App-body">
-      <p>Login to access the full dashboard</p>
-      <label>Email: </label>
-      <input type='email'></input>
-      <label>Password: </label>
-      <input type='password'></input>
-      <button>OK</button>
-      </body>
-  );
+export default function Login() {
+    return (
+        <div className="login">
+            <p>Login to access the full dashboard</p>
+            <div>
+                <label htmlFor="email">Email:</label>
+                <input type="text" id='email' name="email"></input>
+                <label htmlFor="password">Password:</label>
+                <input type="password" id='password' name="password"></input>
+                <button>OK</button>
+            </div>
+        </div>
+    )
 }
-
-export default login;

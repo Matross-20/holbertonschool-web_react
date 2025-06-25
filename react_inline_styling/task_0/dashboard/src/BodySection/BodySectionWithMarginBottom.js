@@ -1,13 +1,9 @@
-import './BodySection.css';
+import './BodySection.css'
+import React from 'react';
+import BodySection from './BodySection';
 
-function BodySectionWithMarginBottom(props) {
-    return (
-        <div className="bodySectionWithMargin">
-        <BodySection>
-        {props}
-        </BodySection>
-        </div>
-    );
-  }
-  
-  export default BodySectionWithMarginBottom;
+export default function BodySectionWithMarginBottom({ ...props }) {
+    return <div className="bodySectionWithMargin">
+                <BodySection {...props} />
+            </div>
+}

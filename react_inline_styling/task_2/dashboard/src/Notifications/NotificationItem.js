@@ -1,88 +1,46 @@
-import React from 'react';
-import { getLatestNotification } from './utils';
-import NotificationItem from './NotificationItem';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, css } from 'aphrodite';
 
 const styles = StyleSheet.create({
-    bodySectionWithMargin: {
-        marginBottom: '40px'
-  }
-  })
+    defaultNotification: {
+       color: 'rgb(9, 9, 182)',
+    },
+    urgentNotification: {
+       color: 'rgb(240, 86, 112)',
+    },
+    strongClass: {
+       color: 'rgb(255, 0, 43)',
+       fontWeight: '900',
+    },
+   });
+   
 
-
-
-class Notifications extends React.Component {
- 
-  constructor(props) {
-      super(props)
-      this.state = {
-          html: PropTypes.string,
-          value: PropTypes.string,
-          type: PropTypes.string.isRequired
-      }
-  }
-
-  markAsRead(id) {
-    console.log(`Notification ${id} has been marked as read`);
-}
-
-shouldComponentUpdate(nextProps) {
-  if (nextProps.listNotifications.length === this.props.listNotifications.length) {
-      return false
-  }
-  return true
-}
-
-
-  render() {
+function NotificationItem({ id ,type, html, value, markAsRead = () => {} }) {
     return (
-      <><div className="menuItem">
-        <p>Your notifications</p>
-      </div>
-      {displayDrawer ? (
-              <div className="Notifications">
-              <p>Here is the list of notifications</p>
-              <button aria-label='Close' onClick={buttonclc()} style={btncs}>
-                <img src='close-icon'></img>
-              </button>
-              <li markAsRead={this.markAsRead} onClick="markAsRead()"></li>
-              <ul>
-              {listCourses ? (
-                  <tr>No new notification for now</tr>
-                ) : (
-                  listNotifications.map(listNotification => (
-                      <NotificationItem type={listNotification.type} value={listNotification.value} dangerouslySetInnerHTML={listNotification.__html}/>
-                ))
-                )}
-              </ul>
-            </div>
-      ) : (
-        <Login />
-      )}
-</>
-    );
-  }
-}
+        <li 
+           data-notification-type={type} 
+           onClick={() => markAsRead(id)}
+           className={type === 'default' ? css(styles.defaultNotification) : css(styles.urgentNotification)}
+        >
+           <span dangerouslySetInnerHTML={{ __html: html + value }} />
+        </li>
+       );
+       
+};
 
-  function buttonclc(){
-    console.log("Close button has been clicked");
-}
-const btncs = {
-    position: 'fixed',
-    float: 'right',
-    background: 'transparent',
-	  color: 'white',
-    top: '10px',
-    right: '10px',
-    height: '17px'
-}
+NotificationItem.propTypes = {
+  id: PropTypes.number.isRequired,
+  type: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
+  html: PropTypes.shape({
+      __html: PropTypes.string.isRequired,
+  }).isRequired,
+  value: PropTypes.string.isRequired,
+  markAsRead: PropTypes.func.isRequired,
+};
 
-Notifications.PropTypes = {
-  displayDrawer: PropTypes.bool,
-}
-Notifications.defaultProps = {
-  displayDrawer: false,
-}
-export default Notifications;
+NotificationItem.defaultProps = {
+    type: 'default',
+};
 
+export default memo(NotificationItem)

@@ -1,13 +1,12 @@
-import { shallow } from 'enzyme';
-import Footer from './Footer';
+import Footer from "./Footer";
+import { shallow } from "enzyme";
 
-describe('Footer', () => {
-  it('verify it renders without crashing', () => {
+it('render without crashing', () => {
     shallow(<Footer />);
-  });
+});
 
-  it('img', () => {
+it('render the expecific text copyrigth', () => {
     const wrapper = shallow(<Footer />);
-    expect(wrapper.find('Footer')).toContain('Copyright')
-  });
+    const renderedText = wrapper.text()
+    expect(renderedText.includes("Copyright")).toEqual(true)
 });

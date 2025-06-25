@@ -1,29 +1,15 @@
-import { shallow } from 'enzyme';
-import BodySection from './BodySection';
+import { shallow } from "enzyme";
+import BodySection from "./BodySection";
 
+describe('BodySection', () => {
+    it('render correctly body section', () => {
+        const wrapper = shallow(<BodySection title="test title"><p>test children node</p></BodySection>)
 
-describe('BodySection tests', () => {
-  it('renders app', () => {
-    const wrapper = shallow(<BodySection />);
-    container = wrapper.find("h2");
-    expect(container).toHaveLength(1);
-  });
+        expect(wrapper.find('h2').length).toBe(1)
+        expect(wrapper.find('h2').text()).toBe("test title")
 
-  it('renders app', () => {
-    const wrapper = shallow(<BodySection />);
-    container = wrapper.find("test title");
-    expect(container).toHaveLength(1);
-  });
-
-  it('renders app', () => {
-    const wrapper = shallow(<BodySection />);
-    container = wrapper.find("p");
-    expect(container).toHaveLength(1);
-  });
-
-  it('renders app', () => {
-    const wrapper = shallow(<BodySection />);
-    container = wrapper.find("test children node");
-    expect(container).toHaveLength(1);
-  });
+        expect(wrapper.find('p').length).toBe(1)
+        expect(wrapper.find('p').text()).toBe("test children node")
+    })
 });
+   

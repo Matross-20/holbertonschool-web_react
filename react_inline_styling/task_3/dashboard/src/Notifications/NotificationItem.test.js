@@ -1,38 +1,27 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import NotificationItem from './NotificationItem';
-import { StyleSheetTestUtils } from 'aphrodite';
 
-describe('<NotificationItem />', () => {
-  beforeAll(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
-  afterAll(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
+describe('NotificationItem', () => {
+ it('renders without crashing', () => {
+    shallow(<NotificationItem />);
+ });
 
-  it('render without crashing', () => {
-    const wrapper = shallow(<NotificationItem />);
-    expect(wrapper.exists());
-  });
+ it('renders correct html with type and value props', () => {
+    const wrapper = shallow(<NotificationItem type="default" value="test" />);
+    expect(wrapper.prop('data-notification-type')).toEqual('default');
+    expect(wrapper.text()).toEqual('test');
+ });
 
-  it('renders type and value props', () => {
-    const wrapper = shallow(<NotificationItem type='default' value='test' />);
-    const li = wrapper.find('li');
-    expect(wrapper.exists());
-    expect(li.exists());
-    expect(li).toHaveLength(1);
-    expect(li.text()).toEqual('test');
-    expect(li.prop('data-notification-type')).toEqual('default');
-  });
+ it('renders correct html with html prop', () => {
+    const wrapper = shallow(<NotificationItem html={{ __html: '<u>test</u>' }} />);
+    expect(wrapper.html()).toContain('<u>test</u>');
+ });
+});
 
-  it('renders html prop', () => {
-    const text = 'Here is the list of notifications';
-    const wrapper = shallow(
-      <NotificationItem html={{ __html: '<u>test</u>' }} />
-    );
-    const li = wrapper.find('li');
-    expect(wrapper.exists());
-    expect(li.exists());
-  });
+it('calls markAsRead with the correct id when clicked', () => {
+   const markAsReadSpy = jest.fn();
+   const wrapper = shallow(<NotificationItem id={1} markAsRead={markAsReadSpy} />);
+   wrapper.simulate('click');
+   expect(markAsReadSpy).toHaveBeenCalledWith(1);
 });

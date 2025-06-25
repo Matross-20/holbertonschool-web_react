@@ -1,23 +1,27 @@
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-const MyComponent = React.memo(function NotificationItem({type, html, value}){
+import './Notifications.css'
+
+function NotificationItem({ id ,type, html, value, markAsRead = () => {} }) {
     return (
-        <li data-notification-type={type}>
-            {value}
-          <li dangerouslySetInnerHTML={{ __html: html }} />
-          <li markAsRead={this.markAsRead} onClick="markAsRead()"></li>
+        <li data-notification-type={type} onClick={() => markAsRead(id)}>
+            <span dangerouslySetInnerHTML={{ __html: html + value }} />
         </li>
-      );
-});
-
-markAsRead: () => {}
-
-Notifications.propTypes = {
-  markAsRead: PropTypes.func,
+    );
 };
 
-NotificationItem.PropTypes = {
-  html: PropTypes.string,
-  value: PropTypes.string,
-  type: PropTypes.string.isRequired
-}
-export default React.memo(MyComponent);
+NotificationItem.propTypes = {
+  id: PropTypes.number.isRequired,
+  type: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
+  html: PropTypes.shape({
+      __html: PropTypes.string.isRequired,
+  }).isRequired,
+  value: PropTypes.string.isRequired,
+  markAsRead: PropTypes.func.isRequired,
+};
+
+NotificationItem.defaultProps = {
+    type: 'default',
+};
+
+export default memo(NotificationItem)

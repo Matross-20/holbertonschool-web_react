@@ -1,13 +1,11 @@
-import './Header.css';
-import { getFullYear,getFooterCopy } from './utils';
+import React from "react"
+import './Header.css'
 
-function Header() {
-  return (
-      <header className="App-header">
-        <img className="App-Logo" alt='' src={require('./logo.jpg')} />
-        <h1>School dashboard</h1>
-      </header>
-  );
+export default function Header() {
+    return (
+        <header className="App-header">
+            <img src="holberton-logo.jpg" className="App-logo" alt="logo" />
+            <h1>School dashboard</h1>
+        </header>
+    )
 }
-
-export default Header;

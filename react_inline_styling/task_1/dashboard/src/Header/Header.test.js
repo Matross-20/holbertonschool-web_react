@@ -1,18 +1,12 @@
-import { shallow } from 'enzyme';
-import Header from './Header';
+import Header from "./Header";
+import { shallow } from "enzyme";
 
-describe('Header', () => {
-  it('verify it renders without crashing', () => {
+it('render without crashing', () => {
     shallow(<Header />);
-  });
-
-  it('img', () => {
-    const wrapper = shallow(<Header />);
-    expect(wrapper.find('img')).toHaveLength(1);
-  });
-
-  it('h1', () => {
-    const wrapper = shallow(<Header />);
-    expect(wrapper.find('h1')).toHaveLength(1);
-  });
 });
+
+it('render imgand h1 tags', () => {
+    const wrapper = shallow(<Header />);
+    expect(wrapper.find('img').length).toEqual(1)
+    expect(wrapper.find('h1').length).toEqual(1)
+})

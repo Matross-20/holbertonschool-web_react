@@ -1,54 +1,46 @@
-const path = require("path");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
-  entry: "./js/main.ts",
-  devtool: "inline-source-map",
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
-        options: {
-          transpileOnly: true
-        }
-      },
-      {
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader", "image-webpack-loader"],
-      },
-      {
-        test: /\.(?:js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              ['@babel/preset-env', { targets: "defaults" }]
-            ]
-          }
-        }
-      }
-    ]
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js"]
-  },
-  devServer: {
-    contentBase: "./dist",
-    hot: true
-  },
-  plugins: [
-    new ForkTsCheckerWebpackPlugin(),
-    new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      title: "Development"
-    })
-  ],
-  output: {
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "dist")
-  }
+    entry: [
+        'webpack-dev-server/client?http://localhost:8080',
+        'webpack/hot/dev-server',
+        './src/index.js'
+    ],
+    output: {
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, '../dist'),
+    },
+    mode: 'development',
+    devtool: 'inline-source-map',
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.(png|jpe?g|gif)$/,
+                use: [
+                    {
+                        loader: 'image-webpack-loader',
+                    },
+                ],
+            },
+            {
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                use: ['babel-loader'],
+            }
+        ],
+    },
+    devServer: {
+        static: path.join(__dirname, '../dist'),
+        compress: true,
+        port: 9000,
+        hot: true,
+    },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+    ],
 };

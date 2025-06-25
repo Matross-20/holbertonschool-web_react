@@ -1,32 +1,32 @@
-const backgroundColorth = { backgroundColor: '#deb5b545'};
-const backgroundColortr = { backgroundColor: '#f5f5f5ab'};
-function CourseListRow({isHeader, textFirstCell, textSecondCell}){
-        if (isHeader) {
-            if (textFirstCell === null){
-                return (
-                    <tr style={backgroundColortr}>
-                        <th colSpan = {2} style={backgroundColorth}>{textFirstCell}</th>
+import React from "react"
+import PropTypes from 'prop-types'
+
+export default function CourseListRow({ isHeader = false, textFirstCell, textSecondCell = null}) {
+    if (isHeader) {
+        if (textSecondCell === null) {
+            return  <tr>
+                        <th style={{backgroundColor: "#deb5b545"}} colSpan={2}>{textFirstCell}</th>
                     </tr>
-                )
-            }
-            else {
-                return (
-                    <tr style={backgroundColortr}>
-                        <th style={backgroundColorth}>{textFirstCell}</th>
-                        <th style={backgroundColorth}>{textSecondCell}</th>
+            
+        } else {
+            return  <tr>
+                        <th style={{backgroundColor: "#deb5b545"}}>{textFirstCell}</th>
+                        <th style={{backgroundColor: "#deb5b545"}}>{textSecondCell}</th>
                     </tr>
-                )
-            }
         }
-        else {
-            <tr style={backgroundColortr}>
-                <th style={backgroundColorth}>{textFirstCell}</th>
-                <th style={backgroundColorth}>{textSecondCell}</th>
-            </tr>
-        }
+    } else {
+        return  <tr>
+                    <td style={{backgroundColor: "#f5f5f5ab"}}>{textFirstCell}</td>
+                    <td style={{backgroundColor: "#f5f5f5ab"}}>{textSecondCell}</td>
+                </tr>
+    }
 }
 
 CourseListRow.propTypes = {
-    textSecondCell : oneOfType([string, number]),
-  };
-export default CourseListRow;
+    isHeader: PropTypes.bool,
+    textFirstCell: PropTypes.string,
+    textSecondCell: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ])
+};

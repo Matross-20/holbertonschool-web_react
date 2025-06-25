@@ -1,39 +1,20 @@
-class HOC extends React.Component {
-    constructor(props) {
-      super(props);
-      this.handleChange = this.handleChange.bind(this);
-      this.state = {
-        comments: DataSource.getComments()
-      };
+const withLogging = (WrappedComponent) => {
+    class WithLogging extends React.Component {
+       componentDidMount() {
+         console.log(`Component ${WrappedComponent.displayName || WrappedComponent.name} is mounted`);
+       }
+   
+       componentWillUnmount() {
+         console.log(`Component ${WrappedComponent.displayName || WrappedComponent.name} is going to unmount`);
+       }
+   
+       render() {
+         return <WrappedComponent {...this.props} />;
+       }
     }
-  
-    componentDidMount() {
-      console.log(`Component ${this.name} is mounted`);
-    }
-  
-    componentWillUnmount() {
-        console.log(`Component ${this.name} is going to unmount`);
-    }
-  
-    handleChange() {
-      this.setState({
-        comments: DataSource.getComments()
-      });
-    }
-  
-    render() {
-      return (
-        <div>
-          {this.state.comments.map((comment) => (
-            <Comment comment={comment} key={comment.id} />
-          ))}
-        </div>
-      );
-    }
-  }
-
-  function WithLogging(WrappedComponent) {
-    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
-  }
-
-export default WithLogging;
+   
+    WithLogging.displayName = `WithLogging(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
+   
+    return WithLogging;
+   };
+   

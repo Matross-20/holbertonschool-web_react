@@ -1,63 +1,64 @@
+import React from 'react';
 import './App.css';
-import { getFullYear,getFooterCopy } from './utils';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import Login from '../Login/Login';
-import Notifications from '../Notifications/Notifications';
-import PropTypes from 'prop-types';
 import CourseList from '../CourseList/CourseList';
-import BodySectionWithMarginBottom from '../BodySectionWithMarginBottom/BodySectionWithMarginBottom';
+import PropTypes from 'prop-types'
+import Notifications from '../Notifications/Notifications';
 import BodySection from '../BodySection/BodySection';
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 
-class App extends React.Component {
- 
- 
-  render() {
-      return (
-          <React.Fragment>
-          <Notifications listNotifications={listNotifications}/>
-          <div className="App">
-          <Header />
-          <div className="App-body">
-          {isLoggedIn ? (
-            <BodySectionWithMarginBottom title="Course list">
-            <CourseList />
-            </BodySectionWithMarginBottom>
-            ) : (
-              <BodySectionWithMarginBottom title="Log in to continue">
-              <Login />
-              </BodySectionWithMarginBottom>
-            )}
-            <BodySection title="News from the School">
+export default function App({ isLoggedIn = true, logOut = () => {} }) {
 
-            </BodySection>
-          </div>
-          <div className="App-footer">
-          <Footer />
-          </div>
-          </div>
-          </React.Fragment>
-        );
-  }
+  document.addEventListener('keydown', function(event) {
+    console.log(event.key)
+    if ((event.ctrlKey || event.metaKey) && event.key === 'h') {
+      console.log('Preciono control + h')
+      alert('Logging you out')
+      logOut()
+    }
+  })
+
+  const listCourses = [
+    {id: 1, name: "ES6", credit: 60},
+    {id: 2, name: "Webpack", credit: 20},
+    {id: 3, name: "React", credit: 40},
+  ]
+
+  const listNotifications = [
+    { type: "default", html: "", value: "New course available" },
+    { type: "urgent", html: "", value: "New resume available" },
+    { type: "", html: "<strong class='strong'>Urgent requirement</strong>", value: " - complete by EOD" }
+];
+  
+  return (
+    <div className="App">
+      <div className='top'>
+        <Notifications data-testid="notifications" displayDrawer={isLoggedIn} listNotifications={listNotifications}/>
+        <Header data-testid="header" />
+      </div>
+      <div className="App-body">
+        {!isLoggedIn ?
+          <BodySectionWithMarginBottom title="Log in to continue">
+            <Login data-testid="login" />
+          </BodySectionWithMarginBottom>
+          :
+          <BodySectionWithMarginBottom title="Course list">
+            <CourseList listCourses={listCourses}/>
+          </BodySectionWithMarginBottom>
+        }
+        <BodySection title="News from the School">
+          <p>This is the place for the random text</p>
+        </BodySection>
+      </div>
+      <Footer data-testind="footer" />
+    </div>
+  );
 }
-
-App.defaultProps = {
-  isLoggedIn: false
-};
-
-App.propTypes = {
-  logOut: PropTypes.func,
-};
 
 App.propTypes = {
   isLoggedIn: PropTypes.bool,
+  logOut: PropTypes.func,
 };
 
-
-const listCourses = [
-  {id: 1, name: 'ES6', credit: 60},
-  {id: 2, name: 'Webpack', credit: 20},
-  {id: 3, name: 'React', credit: 40}
-];
-
-export default App;

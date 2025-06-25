@@ -1,55 +1,56 @@
-import React from 'react';
+import React from "react"
 import { StyleSheet, css } from 'aphrodite';
 
-function Login() {
-  return (
-    <main role='main' className={css(styles.login)}>
-      <p>Login to access the full dashboard</p>
-      <label htmlFor='email'>Email:</label>
-      <input className={css(styles.inp)} type='email' name='email' id='email' />
-      <label htmlFor='password'>Password:</label>
-      <input
-        className={css(styles.inp)}
-        type='password'
-        name='password'
-        id='password'
-      />
-      <button className={css(styles.btn)} type='button'>
-        OK
-      </button>
-    </main>
-  );
-}
-
-const screenSize = {
-  small: '@media screen and (max-width: 900px)',
-};
-
 const styles = StyleSheet.create({
-  login: {
-    padding: '16px 24px',
-    [screenSize.small]: {
-      width: '90%',
-      padding: 0,
+    login: {
+       display: 'flex',
+       flexDirection: 'column',
+       alignItems: 'start',
     },
-  },
-  inp: {
-    margin: '4px',
-    [screenSize.small]: {
-      display: 'block',
-      border: 'none',
-      margin: 0,
+    p: {
+       margin: '40px 0px 20px 40px',
+       fontSize: '16px',
+       fontWeight: '600',
     },
-  },
-  btn: {
-    margin: '4px',
-    cursor: 'pointer',
-    [screenSize.small]: {
-      width: '32px',
-      display: 'block',
-      margin: 0,
+    div: {
+      display: 'flex',
+      top: '10px',
+      paddingLeft: '40px',
+      fontWeight: '600',
+      '@media (max-width: 900px)': {
+        flexDirection: 'column',
+      },
+      'label': {
+        '@media (max-width: 900px)': {
+           border: '0px'
+        }
+      }
+   },
+    inputButton: {
+       margin: '0px 10px',
+       borderRadius: '5px',
+       border: '2px solid rgb(223, 222, 222)',
+       backgroundColor: 'white',
+       '@media (max-width: 900px)': {
+         width: '40px'
+       }
     },
-  },
-});
+   });
+   
 
-export default Login;
+export default function Login() {
+    return (
+        <div className={css(styles.login)}>
+           <p className={css(styles.p)}>Login to access the full dashboard</p>
+           <div className={css(styles.div)}>
+               <label className={css(styles.label)} htmlFor="email">Email:
+               <input type="text" id='email' name="email" className={css(styles.inputButton)}></input>
+               </label>
+               <label htmlFor="password">Password:
+               <input type="password" id='password' name="password" className={css(styles.inputButton)}></input>
+               </label>
+               <button className={css(styles.inputButton)}>OK</button>
+           </div>
+        </div>
+       );       
+}

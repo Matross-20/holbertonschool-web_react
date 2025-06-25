@@ -1,78 +1,46 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, css } from 'aphrodite';
 
-class NotificationItem extends React.PureComponent {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    const { type, html, value, markAsRead, id } = this.props;
-    const color = css(type === 'urgent' ? styles.urgent : styles.default);
-    let li;
+const styles = StyleSheet.create({
+    defaultNotification: {
+       color: 'rgb(9, 9, 182)',
+    },
+    urgentNotification: {
+       color: 'rgb(240, 86, 112)',
+    },
+    strongClass: {
+       color: 'rgb(255, 0, 43)',
+       fontWeight: '900',
+    },
+   });
+   
 
-    value
-      ? (li = (
-          <li
-            className={color}
-            data-notification-type={type}
-            onClick={() => markAsRead(id)}
-          >
-            {value}
-          </li>
-        ))
-      : (li = (
-          <li
-            className={color}
-            data-notification-type={type}
-            dangerouslySetInnerHTML={html}
-            onClick={() => markAsRead(id)}
-          ></li>
-        ));
-
-    return li;
-  }
-}
-
-NotificationItem.defaultProps = {
-  type: 'default',
-  html: {},
-  value: '',
-  markAsRead: () => {},
-  id: NaN,
+function NotificationItem({ id ,type, html, value, markAsRead = () => {} }) {
+    return (
+        <li 
+           data-notification-type={type} 
+           onClick={() => markAsRead(id)}
+           className={type === 'default' ? css(styles.defaultNotification) : css(styles.urgentNotification)}
+        >
+           <span dangerouslySetInnerHTML={{ __html: html + value }} />
+        </li>
+       );
+       
 };
 
 NotificationItem.propTypes = {
-  type: PropTypes.string,
+  id: PropTypes.number.isRequired,
+  type: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   html: PropTypes.shape({
-    __html: PropTypes.string,
-  }),
-  value: PropTypes.string,
-  markAsRead: PropTypes.func,
-  id: PropTypes.number,
+      __html: PropTypes.string.isRequired,
+  }).isRequired,
+  value: PropTypes.string.isRequired,
+  markAsRead: PropTypes.func.isRequired,
 };
 
-const screenSize = {
-  small: '@media screen and (max-width: 900px)',
+NotificationItem.defaultProps = {
+    type: 'default',
 };
 
-const onSmall = {
-  fontSize: '20px',
-  padding: '10px 8px',
-  borderBottom: '1px solid black',
-  listStyle: 'none',
-};
-
-const styles = StyleSheet.create({
-  default: {
-    color: 'blue',
-    [screenSize.small]: onSmall,
-  },
-
-  urgent: {
-    color: 'red',
-    [screenSize.small]: onSmall,
-  },
-});
-
-export default NotificationItem;
+export default memo(NotificationItem)

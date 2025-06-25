@@ -1,24 +1,27 @@
+import React from 'react';
 import { shallow } from 'enzyme';
 import NotificationItem from './NotificationItem';
 
 describe('NotificationItem', () => {
-  it('verify it renders without crashing', () => {
+ it('renders without crashing', () => {
     shallow(<NotificationItem />);
-  });
+ });
 
-  it('img', () => {
-    const wrapper = shallow(<NotificationItem type="default" and value="test" />);
-    expect(wrapper.find("value"));
-    expect(wrapper.find("type"));
-  });
+ it('renders correct html with type and value props', () => {
+    const wrapper = shallow(<NotificationItem type="default" value="test" />);
+    expect(wrapper.prop('data-notification-type')).toEqual('default');
+    expect(wrapper.text()).toEqual('test');
+ });
 
-  it('h1', () => {
+ it('renders correct html with html prop', () => {
     const wrapper = shallow(<NotificationItem html={{ __html: '<u>test</u>' }} />);
-    expect(wrapper.find("html"));
-  });
+    expect(wrapper.html()).toContain('<u>test</u>');
+ });
+});
 
-  it('h1', () => {
-    const logtest = jest.spyOn(global.console, 'log');
-    expect(logtest).toHaveBeenCalledWith('Notification has been marked as read');
-  });
+it('calls markAsRead with the correct id when clicked', () => {
+   const markAsReadSpy = jest.fn();
+   const wrapper = shallow(<NotificationItem id={1} markAsRead={markAsReadSpy} />);
+   wrapper.simulate('click');
+   expect(markAsReadSpy).toHaveBeenCalledWith(1);
 });
