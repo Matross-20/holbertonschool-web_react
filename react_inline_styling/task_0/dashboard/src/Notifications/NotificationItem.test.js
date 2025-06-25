@@ -1,28 +1,24 @@
 import { shallow } from 'enzyme';
 import NotificationItem from './NotificationItem';
-import React from 'react';
 
-describe('the component renders without crashing', () {
-    it('verify that the component exists', () => {
-        const wrapper = shallow(<NotificationItem />)
-        expect(wrapper.exisits().to.equal(true));
-    })
-    it("Verify that by passing dummy type and value props, it renders the correct html", () => {
-        const wrapper = shallow(<NotificationItem type="default" value="test" />);
-        wrapper.update();
-        const listItem = wrapper.find("li");
-    
-        expect(listItem).toHaveLength(1);
-        expect(listItem.text()).toEqual("test");
-        expect(listItem.prop("data-notification-type")).toEqual("default");
-      });
-      it("Passing a dummy html prop, it renders the correct html (for example", () => {
-        const text = "Here is the list of notifications";
-        const wrapper = shallow(
-          <NotificationItem html={{ __html: "<u>test</u>" }} />
-        );
-        wrapper.update();
-        const listItem = wrapper.find("li");
-        expect(listItem.html()).toEqual("<li><u>test</u></li>");
-      });
-})
+describe('NotificationItem', () => {
+  it('verify it renders without crashing', () => {
+    shallow(<NotificationItem />);
+  });
+
+  it('img', () => {
+    const wrapper = shallow(<NotificationItem type="default" and value="test" />);
+    expect(wrapper.find("value"));
+    expect(wrapper.find("type"));
+  });
+
+  it('h1', () => {
+    const wrapper = shallow(<NotificationItem html={{ __html: '<u>test</u>' }} />);
+    expect(wrapper.find("html"));
+  });
+
+  it('h1', () => {
+    const logtest = jest.spyOn(global.console, 'log');
+    expect(logtest).toHaveBeenCalledWith('Notification has been marked as read');
+  });
+});

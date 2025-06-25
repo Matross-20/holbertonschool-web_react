@@ -1,51 +1,37 @@
-import React from "react";
 import CourseListRow from "./CourseListRow";
 import { StyleSheet, css } from 'aphrodite';
-import CourseShape from "./CourseShape";
-import PropTypes from 'prop-types';
-import './CourseList.css';
 
-function CourseList({listCourses}) {
+const styles = StyleSheet.create({
+    bodySectionWithMargin: {
+        marginBottom: '40px'
+  }
+  })
+
+function CourseList(){
     return (
-        <table className={css(styles.courseList)}>
+        <table id="CourseList">
             <thead>
                 <CourseListRow textFirstCell="Available courses" isHeader={true}/>
                 <CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader={true}/>
             </thead>
             <tbody>
-                
-                {listCourses.length === 0 && 
-                    <CourseListRow textFirstCell="No course available yet" isHeader={false} />
-                }
-
-                {listCourses.map((course) => (
-                    <CourseListRow
-                    key={course.id}
-                    textFirstCell={course.name}
-                    textSecondCell={course.credit}
-                    isHeader={false}
-                    />
-                ))}
+            {listCourses ? (
+                <tr>No course available yet</tr>
+            ) : (
+                listCourses.map(item => (
+                    <CourseListRow key={item.id} textFirstCell={item.name} textSecondCell={item.credit}/>
+      ))
+)}
             </tbody>
         </table>
-    )
+    );
 }
 
-const styles = StyleSheet.create({
-    courseList: {
-        marginTop: 40,
-        border: '1px solid rgb(170, 170, 170)',
-        borderCollapse: 'collapse',
-        width: '95%'
-    },
-    
-})
+CourseList.propTypes = {
+    listCourses: PropTypes.arrayOf(shape(CourseShape)).isRequired,
+  };
 
 CourseList.defaultProps = {
-    listCourses: []
-}
-CourseList.propTypes = {
-    listCourses: PropTypes.arrayOf(CourseShape),
-};
-
+    listCourses: [],
+ };
 export default CourseList;

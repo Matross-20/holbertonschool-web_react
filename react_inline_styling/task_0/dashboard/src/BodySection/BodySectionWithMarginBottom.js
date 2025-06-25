@@ -1,16 +1,13 @@
-import React from "react";
-import BodySection from "./BodySection.js";
-import './BodySection.css'
-import PropTypes from "prop-types";
+import './BodySection.css';
 
-export default function BodySectionWithMarginBottom(props) {
+function BodySectionWithMarginBottom(props) {
     return (
-      <div className='bodySectionWithMargin'>
-          <BodySection {...props}/>
-      </div>
+        <div className="bodySectionWithMargin">
+        <BodySection>
+        {props}
+        </BodySection>
+        </div>
     );
-}
-BodySectionWithMarginBottom.propTypes = {
-    title: PropTypes.string,
-    children: PropTypes.node,
-};
+  }
+  
+  export default BodySectionWithMarginBottom;

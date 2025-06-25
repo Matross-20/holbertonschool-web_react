@@ -1,14 +1,18 @@
-export function getFullYear() {
-    return new Date().getFullYear();
+export function getFullYear(){
+    var date = new Date();
+    var CurrentYear = date.getFullYear();
+    return CurrentYear;
 }
 
-export function getFooterCopy(isIndex) {
-    if (isIndex) {
-        return "Holberton School"
+export function getFooterCopy(isIndex){
+    if (typeof isIndex === 'boolean'){
+        return 'Holberton School';
     }
-    return "Holberton School main dashboard"
+    else {
+        return 'Holberton School main dashboard';
+    }
 }
 
-export function getLatestNotification() {
-    return "<strong>Urgent requirement</strong> - complete by EOD"
+export function getLatestNotification(){
+    return '<strong>Urgent requirement</strong> - complete by EOD';
 }

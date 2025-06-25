@@ -1,25 +1,12 @@
-.Notifications {
-    border: dashed blue 1px;
-    position: absolute;
-    right: 50px;
-    width: 400px;
-    top: 40px;
+.Notification{
+    border-bottom: 2px solid #ee5757;
+    padding: 1rem;
 }
 
-.Notifications p {
-    margin-left: 10px;
-}
-
-.menuItem {
-    position: absolute;
-    right: 50px; 
-    top: 10ox;
-}
-
-li[data-notification-type=default] {
+ul li[data-priority="default"] {
     color: blue;
-}
+  }
 
-li[data-notification-type=urgent] {
+  ul li[data-priority="high"] {
     color: red;
-}
+  }
