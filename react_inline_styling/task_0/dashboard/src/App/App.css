@@ -1,34 +1,67 @@
-html {
-    font-family:'Times New Roman', Times, serif;
+.App-header {
+  display: flex;
+  align-items: center;
+}
+/* task_1/dashboard/src/Notifications.css */
+
+.notifications {
+  border: 3px dotted #ff0000;
+  padding: 10px;
+  margin: 10px 0;
 }
 
-.App {
-  text-align: center;
-  height: auto;
+.App-header img {
+  margin-right: 10px;
 }
 
-.App-logo {
-  height: 20vmin;
-  pointer-events: none;
+.App-header h1 {
+  color: #e1003c;
 }
 
-/* Body */
 
 .App-body {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  height: 50vmin;
-  border-bottom: 3px solid rgb(225, 29, 63);
+  margin-top: 20px;
 }
 
-.top {
-  width: 100%;
-  height: 200px;
+.long-br {
+  border-top: 1px solid red;
+  margin-bottom: 20px;
+}
+
+.App-body form {
   display: flex;
-  position: relative;
-  flex-direction: row-reverse;
-  justify-content: space-between;
-  border-bottom: 3px solid rgb(225, 29, 63);
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+
+.App-footer {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 12px;
+  color: gray;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 0;
 }
 

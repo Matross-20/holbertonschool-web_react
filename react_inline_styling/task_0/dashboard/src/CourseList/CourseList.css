@@ -1,21 +1,18 @@
-table {
-    padding: 0px;
-    width: 90%;
-    margin: 50px;
-    border: 2px solid rgb(229, 228, 228);
-    border-radius: 2px;
-}
-
-table thead th{
-    border-bottom: 2px solid rgb(229, 228, 228);
-}
-
-table thead tr:nth-child(2) {
+#CourseList {
+    width: 100%;
+    border: 1px solid #ddd;
+    margin: 20px 0;
     text-align: left;
-}
-
-table tbody {
-    font-weight: 500;
-    text-align: left;
-
-}
+    border-collapse: collapse;
+  }
+  
+  #CourseList th,
+  #CourseList td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #CourseList th {
+    background-color: #f4f4f4;
+  }
+  
