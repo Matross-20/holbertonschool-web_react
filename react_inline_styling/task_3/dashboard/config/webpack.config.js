@@ -1,48 +1,43 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-    mode: "development",
-    entry: "./src/index.js",
-    output: {
-        filename: "bundle.js",
-        path: path.resolve(__dirname, "../dist")
-    },
-    devtool: 'inline-source-map',
-    devServer: {
-        port: 8564,
-        hot: true,
-        static: {
-           directory: path.resolve(__dirname, '../dist')
-        },
-    },
-    module: {
-        rules: [
-            {
-                test: /\.css$/i,
-                use: [
-                    'style-loader',
-                    'css-loader'
-                ]
-            },
-            {
-                test: /\.(gif|png|jpe?g|svg)$/i,
-                use: [
-                    'file-loader',
-                    {
-                        loader: 'image-webpack-loader',
-                        options: {
-                            bypassOnDebug: true,
-                        },
-                    }
-                ]
-            },
-            {
-                test: /\.(js|jsx)$/i,
-                exclude: /nodes_modules/,
-                use: {
-                    loader: "babel-loader"
-                }
-            }
-        ]
-    },
-}
+  mode: 'development',
+	devtool: 'inline-source-map',
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+	devServer: {
+		hot: true,
+		contentBase: path.resolve(__dirname, 'dist'),
+	},
+	plugins: [
+		new CleanWebpackPlugin(),
+		new HtmlWebpackPlugin({
+			template: './dist/index.html',
+      title: 'Holberton Dashboard',
+			favicon: './dist/favicon.ico',
+    }),
+	],
+	module: {
+		rules: [
+			{
+				test: /\.(js|jsx)$/,
+				exclude: /node_modules/,
+				loader: 'babel-loader',
+			},
+			{
+				test: /\.css$/i,
+				use: ['style-loader', 'css-loader'],
+			},
+			{
+				test: /\.(png|svg|jpg|jpeg|gif)$/i,
+				type: 'asset/resource',
+				loader: 'image-webpack-loader',
+			},
+		],
+	},
+};

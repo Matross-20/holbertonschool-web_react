@@ -1,19 +1,34 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import BodySection from './BodySection';
+import { expect } from 'chai';
+import Adapter from 'enzyme-adapter-react-16';
+import { shallow, configure, mount, } from 'enzyme';
+import BodySection from './BodySection.js';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-describe('Tests the BodySection component', () => {
-    it('Tests that shallowing the component should render correctly the children and one h2 element', () => {
-        const wrapper = shallow(
-            <BodySection title="test title">
-                <p>test children node</p>
-            </BodySection>
-        );
-        const h = wrapper.find('h2');
-        const p = wrapper.find('p');
-        expect(h).toHaveLength(1);
-        expect(p).toHaveLength(1);
-        expect(p.text()).toEqual('test children node');
-        expect(h.text()).toEqual('test title');
-    });
+configure({
+	adapter: new Adapter()
+});
+
+describe("Testing the <BodySection /> Component", () => {
+
+	beforeEach(() => {
+		StyleSheetTestUtils.suppressStyleInjection();
+	});
+
+	afterEach(() => {
+		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+	});
+
+	it("Renders the correct children", () => {
+		let wrapper = shallow(
+			<BodySection title="test title">
+				<p>test children node</p>
+			</BodySection>
+		);
+		expect(wrapper.containsAllMatchingElements([
+			<h2>test title</h2>,
+			<p>test children node</p>
+		])).to.equal(true);
+	});
+
 });

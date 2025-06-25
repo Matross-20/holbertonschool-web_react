@@ -1,21 +1,30 @@
 import React from "react";
-import { StyleSheet, css } from 'aphrodite';
+import { css, StyleSheet } from 'aphrodite';
 
-export default function Login(props) {
-    return (
-        <>
-            <p>{props.text}</p>
-            <label htmlFor="email">Email:</label>
-            <input type="email" id="email" name="email" className={css(styles.maringRight)}></input>
-            <label htmlFor="password">Password:</label>
-            <input type="password" id="password" name="password" className={css(styles.maringRight)}></input>
-            <button type='button'>OK</button>
-        </>
-    );
-}
 
 const styles = StyleSheet.create({
-    maringRight: {
-        marginRight: '1rem'
-      },
-});
+  bodyLogin: {
+    margin: '50px 0 300px 0px',
+    flexGrow: 1
+  },
+  bodyLoginInput: {
+    margin: '0 10px 0 0px'
+  }
+})
+
+function Login() {
+  return (
+    <div className='body-login'>
+      <div className={css(styles.bodyLogin)}>
+        <p>Login to access the full dashboard</p>
+        <label htmlFor="fname">Email:</label>
+        <input type="email" id="email" className={css(styles.bodyLoginInput)}/>
+        <label htmlFor="lname">Password:</label>
+        <input type="password" id="password" className={css(styles.bodyLoginInput)}/>
+        <button>OK</button>
+      </div>
+    </div>
+  );
+}
+
+export default Login;

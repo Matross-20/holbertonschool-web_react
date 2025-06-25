@@ -1,48 +1,49 @@
-const path = require('path');
+const { CleanWebpackPlugin } = require("clean-webpack-plugin")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
+const path = require("path")
 
+/** @type {import('webpack').Configuration} */
 module.exports = {
-    mode: "development",
     entry: "./src/index.js",
     output: {
+        path: path.resolve(__dirname, "dist"),
         filename: "bundle.js",
-        path: path.resolve(__dirname, "../dist")
     },
-    devtool: 'inline-source-map',
     devServer: {
-        port: 8564,
         hot: true,
-        static: {
-           directory: path.resolve(__dirname, '../dist')
-        },
+        contentBase: path.resolve("./dist"),
+        compress: true,
+        port: 8564,
     },
+    mode: 'development',
     module: {
         rules: [
             {
-                test: /\.css$/i,
-                use: [
-                    'style-loader',
-                    'css-loader'
-                ]
+                use: "babel-loader",
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/
+            },
+            {
+                use: ["style-loader", "css-loader"],
+                test: /\.css$/i
             },
             {
                 test: /\.(gif|png|jpe?g|svg)$/i,
                 use: [
-                    'file-loader',
+                    "file-loader",
                     {
-                        loader: 'image-webpack-loader',
+                        loader: "image-webpack-loader",
                         options: {
-                            bypassOnDebug: true,
+                            bypassOnDebug: true, // webpack@1.x
+                            disable: true, // webpack@2.x and newer
                         },
-                    }
-                ]
-            },
-            {
-                test: /\.(js|jsx)$/i,
-                exclude: /nodes_modules/,
-                use: {
-                    loader: "babel-loader"
-                }
+                    },
+                ],
             }
         ]
     },
+    resolve: {
+        extensions: [".js", ".jsx", ".json"]
+    },
+    devtool: "inline-source-map",
 }

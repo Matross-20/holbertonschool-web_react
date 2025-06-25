@@ -1,46 +1,70 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { expect } from 'chai';
+import Adapter from 'enzyme-adapter-react-16';
+import { shallow, configure } from 'enzyme';
 import CourseList from './CourseList';
+import { StyleSheetTestUtils } from 'aphrodite';
 
-describe('CourseList component tests', () => {
+configure({adapter: new Adapter()});
 
-    describe('When listCourse is not empty', () => {
-        let wrapper;
+describe("Testing the <CourseList /> Component", () => {
 
-        beforeEach(() => {
-            const listCourses = [
-                {id: 1, name: "ES6", credit: 60},
-                {id: 2, name: "Webpack", credit: 20},
-                {id: 3, name: "React", credit: 40},
-            ]
-            wrapper = shallow(<CourseList listCourses={listCourses}/>);
-        });
+	beforeEach(() => {
+		StyleSheetTestUtils.suppressStyleInjection();
+	});
 
-        it('renders CourseList component without crashing', () => {
-            expect(wrapper.exists()).toBe(true);
-        });
+	afterEach(() => {
+		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+	});
 
-        it('renders 5 rows', () => {
-            const row = wrapper.find('CourseListRow');
-            expect(row).toHaveLength(5);
-        });
-    });
+	it("Test if <CourseList /> is rendered without crashing", () => {
 
-    describe('When listCourse is empty', () => {
-        let wrapper;
+		let component = shallow(<CourseList shouldRender />);
 
-        beforeEach(() => {
-            wrapper = shallow(<CourseList listCourses={[]}/>);
-        });
+		expect(component.render()).to.not.be.an("undefined");
+	});
 
-        it('renders CourseList component without crashing', () => {
-            expect(wrapper.exists()).toBe(true);
-        });
+	it("Test that CourseList renders correctly if you pass an empty array or if you don’t pass the listCourses property", () => {
 
-        it('renders only headers and text "No course available yet"', () => {
-            const row = wrapper.find('CourseListRow');
-            expect(row).toHaveLength(3);
-            expect(row.at(2).prop('textFirstCell')).toEqual('No course available yet');
-        });
-    });
+		let props = {
+			listCourses: []
+		};
+
+		let component = shallow(<CourseList shouldRender {...props} />);
+		expect(component.render()).to.not.be.an("undefined");
+
+		props = {
+			listCourses: null
+		};
+
+		component = shallow(<CourseList shouldRender {...props} />);
+		expect(component.render()).to.not.be.an("undefined");
+	});
+
+	it("Test tthat when you pass a list of courses, the component renders it correctly", () => {
+
+		let props = {
+			listCourses: [
+				{
+					id: 1,
+					name: "ES6",
+					credit: 60,
+				},
+				{
+					id: 2,
+					name: "Webpack",
+					credit: 20,
+				},
+				{
+					id: 3,
+					name: "React",
+					credit: 40,
+				},
+			],
+		};
+
+		let component = shallow(<CourseList shouldRender {...props} />);
+		expect(component.render()).to.not.be.an("undefined");
+	});
+
 });

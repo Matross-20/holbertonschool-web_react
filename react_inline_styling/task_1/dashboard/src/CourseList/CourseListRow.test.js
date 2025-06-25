@@ -1,18 +1,29 @@
+/**
+ * @jest-environment jsdom
+ */
+
+import { shallow } from "enzyme";
 import React from "react";
-import { shallow } from 'enzyme';
 import CourseListRow from "./CourseListRow";
 
-describe('Tests the CourseListRow component', () => {
-    it('Tests that the component renders one cell with colspan = 2 when textSecondCell does not exist', () => {
-        const wrapper = shallow(<CourseListRow isHeader={true} textFirstCell={'Test'}/>);
-        expect(wrapper.find('th[colSpan=2]')).toHaveLength(1);
-    });
-    it('Tests that the component renders two cells when textSecondCell is present', () => {
-        const wrapper = shallow(<CourseListRow isHeader={true} textFirstCell={'Test'} textSecondCell={'Test'}/>);
-        expect(wrapper.find('th')).toHaveLength(2);
-    });
-    it('Tests that the component renders correctly two td elements within a tr element', () => {
-        const wrapper = shallow(<CourseListRow isHeader={false} textFirstCell={'Test'} textSecondCell={'Test'}/>);
-        expect(wrapper.find('tr td')).toHaveLength(2);
-    });
+describe('Test CourseListRow.js', () => {
+  it('CourseListRow  render without crashing', () => {
+    expect(shallow(<CourseListRow textFirstCell='test' />).exists());
+  });
+
+  it('render isHeader is True and render with one th', () => {
+    const wrapper = shallow(<CourseListRow isHeader={true} textFirstCell='test' />);
+    expect(wrapper.find('th')).toHaveLength(1);
+    expect(wrapper.find('th').prop('colSpan')).toEqual("2");
+  });
+
+  it('render isHeader is True and render with two th', () => {
+    const wrapper = shallow(<CourseListRow isHeader={true} textFirstCell='test' textSecondCell='test' />);
+    expect(wrapper.find('th')).toHaveLength(2);
+  });
+
+  it('render isHeader is False and with two td', () => {
+    const wrapper = shallow(<CourseListRow isHeader={false} textFirstCell='test' textSecondCell='test' />);
+    expect(wrapper.find('td')).toHaveLength(2);
+  });
 });
