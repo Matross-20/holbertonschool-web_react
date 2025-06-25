@@ -1,24 +1,19 @@
-import React from 'react';
+import React from 'react'
+import { shallow } from 'enzyme'
 import BodySection from './BodySection'
-import { shallow } from 'enzyme';
-import { StyleSheetTestUtils } from 'aphrodite';
 
-let wrapper = null;
-StyleSheetTestUtils.suppressStyleInjection();
+describe('BodySection Component', () => {
+  it('should render correctly with the given title and children', () => {
+    const wrapper = shallow(
+      <BodySection title="test title">
+        <p>test children node</p>
+      </BodySection>
+    )
 
-describe('Testing BodySection component render()', () => {
-  beforeEach(() => {
-    wrapper = null;
-    wrapper = shallow(
-      <BodySection title='title test'><p>Test child</p></BodySection>
-    );
-  })
-  it('should render proper numbers of passed children & static h2 element', () => {
-    expect(wrapper.find('h2').length).toBe(1);
-    expect(wrapper.find('p').length).toBe(1);
-  })
-  it('should render the correct text for h2 element and child elements', () => {
-    expect(wrapper.find('h2').text()).toBe('title test');
-    expect(wrapper.find('p').text()).toBe('Test child');
+    expect(wrapper.find('h2').length).toBe(1)
+    expect(wrapper.find('h2').text()).toBe('test title')
+
+    expect(wrapper.find('p').length).toBe(1)
+    expect(wrapper.find('p').text()).toBe('test children node')
   })
 })

@@ -1,18 +1,18 @@
-/* CSS for CourseList componenet */
-
 #CourseList {
-    width: 85%;
-    border: 0.5px solid;
-    border-collapse: collapse;
-    margin: auto;
-    margin-top: 30px;
-}
-
-th {
-    border-bottom: 0.5px solid;
+    width: 100%;
+    border: 1px solid #ddd;
+    margin: 20px 0;
     text-align: left;
-}
-
-#CourseList thead th[colspan] {
-    text-align: center;
-}
+    border-collapse: collapse;
+  }
+  
+  #CourseList th,
+  #CourseList td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #CourseList th {
+    background-color: #f4f4f4;
+  }
+  

@@ -1,127 +1,100 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { StyleSheet, css } from 'aphrodite';
-import Notifications from '../Notifications/Notifications'
-import Header from '../Header/Header'
-import Footer from '../Footer/Footer'
-import Login from '../Login/Login'
-import CourseList from '../CourseList/CourseList'
-import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom'
+import PropTypes from 'prop-types';
+import Header from '../Header/Header';
+import Login from '../Login/Login';
+import Footer from '../Footer/Footer';
+import Notifications from '../Notifications/Notifications';
+import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
-import { getLatestNotification } from '../utils/utils.js';
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
+import { getLatestNotification } from '../utils/utils';
+import WithLogging from '../HOC/WithLogging'
 
-const listCourses = [
-  {id: 1, name:"ES6", credit: 60},
-  {id: 2, name:"Webpack", credit: 20},
-  {id: 3, name:"React", credit: 40}
-]
-
-const listNotifications = [
-  {id: 1, type: 'default', value: 'New course available'},
-  {id: 2, type: 'urgent',  value: 'New resume available'},
-  {id: 3, type: 'urgent', html: {__html: getLatestNotification()}}
-]
 
 class App extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  
-  logoutHandler(event) {
-    if (event.ctrlKey && event.key == 'h') {
-      alert('Logging you out');
-      this.props.logout;
-    }
-  }
-  
+  static propTypes = {
+    isLoggedIn: PropTypes.bool,
+    logOut: PropTypes.func
+  };
+
+  static defaultProps = {
+    isLoggedIn: false,
+    logOut: () => { }
+  };
+
   componentDidMount() {
-    document.addEventListener('keydown', this.logoutHandler.bind(this));
-  }
+    document.addEventListener('keydown', this.handleKeyDown);
+  };
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.logoutHandler.bind(this));
-  }
-  
+    document.removeEventListener('keydown', this.handleKeyDown);
+  };
+
+  handleKeyDown = event => {
+    if (event.ctrlKey && event.key === 'h') {
+      alert('Logging you out');
+      this.props.logOut();
+    };
+  };
+
   render() {
+    const isIndex = true
+    const listCourses = [
+      { id: 1, name: 'ES6', credit: 60 },
+      { id: 2, name: 'Webpack', credit: 20 },
+      { id: 3, name: 'React', credit: 40 }
+    ]
+    const listNotifications = [
+      { id: 1, type: 'default', value: 'New course available' },
+      { id: 2, type: 'urgent', value: 'New resume available' },
+      { id: 3, type: 'urgent', html: { __html: getLatestNotification() } }
+    ]
+
+    const LoginWithLogging = WithLogging(Login)
+    const LoginWithNotifications = WithLogging(Notifications)
+
     return (
       <>
-        <div className='App'>
-          <root-notifications>
-            <Notifications listNotifications={listNotifications}/>
-          </root-notifications>
-          <div className={'App-body ' + css(styles.body)}>
-          <Header className={css(styles.appHeader)}/>
-          {this.props.isLoggedIn === false ? (
-            <BodySectionWithMarginBottom title="Log in to continue">
-              <Login />
+        <LoginWithNotifications listNotifications={listNotifications} />
+        <div className={css(styles.app)}>
+          <Header />
+          {this.props.isLoggedIn ? (
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList listCourses={listCourses} />
             </BodySectionWithMarginBottom>
           ) : (
-            <BodySectionWithMarginBottom title='Course List'>
-              <CourseList listCourses={listCourses} className={css(styles.bodyHeight)}/>
+            <BodySectionWithMarginBottom title="Log in to continue">
+              <LoginWithLogging />
             </BodySectionWithMarginBottom>
           )}
-            <BodySection title="News from the school">
-              <p className={css(styles.newsText)}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vel pretium lectus quam id leo in vitae turpis massa. Aliquet nec ullamcorper sit amet risus nullam eget felis. Ultricies tristique nulla aliquet enim tortor at auctor urna nunc. Lobortis elementum nibh tellus molestie. Aliquam faucibus purus in massa tempor nec feugiat nisl. Vehicula ipsum a arcu cursus vitae congue. Enim nulla aliquet porttitor lacus luctus accumsan. Habitant morbi tristique senectus et netus. Scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Pellentesque id nibh tortor id. Non enim praesent elementum facilisis leo vel fringilla est ullamcorper. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui. Vitae elementum curabitur vitae nunc sed velit. Aliquam etiam erat velit scelerisque in dictum. Donec et odio pellentesque diam volutpat commodo sed egestas. Tellus elementum sagittis vitae et leo.</p>
-            </BodySection>
-            <Footer className={css(styles.footer)}/>
-            </div>
+          <BodySection title="News from the School">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+          </BodySection>
+          <div className={css(styles.footer)}>
+            <Footer isIndex={isIndex} />
           </div>
-        </>
-        )
-      }
-    }
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {return;},
-};
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-};
+        </div>
+      </>
+    )
+  }
+}
 
 const styles = StyleSheet.create({
-  body: {
-    display: "flex",
-    flexDirection: "column",
+  app: {
   },
-
-  bodyClosed: {
-    '@media (max-width: 980px)': {
-			display: 'none',
-		},
-  },
-  
-  bodyHeight: {
-    height: "70%",
-  },
-
-  newsText: {
-    padding: '30px',
-    margin: 0,
-    width: "90%",
-    paddingBottom: "15%"
-  },
-  
-  appHeader: {
-    display: "flex",
-    alignItems: "center",
-    borderBottom: "3px solid #e0354b",
-    color: "#e0354b",
-    fontSize: "1.5rem",
-    fontWeight: "bold",
-  },
-  
   footer: {
-    marginTop: '100%',
+    borderTop: '4px solid #cf4550',
     width: '100%',
-    backgroundColor: 'white',
     bottom: '0',
-    position: 'fixed',
-    borderTop: "3px solid rgb(207, 8, 8); !important",
-    textAlign: "center",
-  }
+    left: '0',
+    textAlign: 'center',
+    fontSize: '20px',
+    fontStyle: 'italic',
+    fontFamily: 'Arial, sans-serif',
+  },
 });
-
 
 export default App;

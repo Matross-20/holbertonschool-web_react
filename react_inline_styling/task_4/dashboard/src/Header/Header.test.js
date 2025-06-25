@@ -1,25 +1,28 @@
-import { shallow } from 'enzyme';
+import React from 'react'
+import { shallow } from 'enzyme'
+import Header from '../Header/Header'
+import logo from '../assets/holberton-logo.jpg'
 import { StyleSheetTestUtils } from 'aphrodite';
-import App from './Header';
-import React from 'react';
 
-let wrapper = null;
 StyleSheetTestUtils.suppressStyleInjection();
 
-beforeEach(() => {
-  wrapper = shallow(<App />);
-});
+describe('<Header />', () => {
+  it('renders without crashing', () => {
+    shallow(<Header />)
+  })
 
-describe('Header Prop', () => {
-  it("Checks if the Header component is rendered properly without error", () => {
-    expect(wrapper.exists('.App-header')).toBeTruthy()
-  });
+  it('renders an <img> tag with correct src and alt attributes', () => {
+    const wrapper = shallow(<Header />)
+    const img = wrapper.find('img')
+    expect(img).toHaveLength(1)
+    expect(img.prop('src')).toEqual(logo)
+    expect(img.prop('alt')).toEqual('logo')
+  })
 
-  it("Renders img tag properly", () => {
-    expect(wrapper.exists('.App-header img')).toBeTruthy()
-  });
-
-  it("renders h1 tag properly", () => {
-    expect(wrapper.exists('.App-header h1')).toBeTruthy()
-  });
-});
+  it('renders an <h1> tag with correct text', () => {
+    const wrapper = shallow(<Header />)
+    const h1 = wrapper.find('h1')
+    expect(h1).toHaveLength(1)
+    expect(h1.text()).toEqual('School dashboard')
+  })
+})

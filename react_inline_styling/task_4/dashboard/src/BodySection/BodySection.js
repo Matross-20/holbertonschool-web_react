@@ -1,28 +1,34 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react"
+import PropTypes from 'prop-types'
+import { StyleSheet, css } from 'aphrodite';
 
-// Props {title: string, children: htmlTag}
 class BodySection extends React.Component {
-  render () {
+  static propTypes = {
+    title: PropTypes.string.isRequired,
+    children: PropTypes.node
+  };
+
+  static defaultProps = {
+    children: null
+  };
+
+  render() {
+    const { title, children } = this.props;
+
     return (
-      <>
-        <div className='bodySection'>
-          <h2>{this.props.title}</h2>
-          {this.props.children}
-        </div>
-      </>
+      <div className={css(styles.bodySection)}>
+        <h2>{title}</h2>
+        {children}
+      </div>
     );
   }
 }
 
-BodySection.defaultProps = {
-  title: "default",
-  children: <></>,
-};
+const styles = StyleSheet.create({
+  bodySection: {
+    marginLeft: '50px',
+    marginRight: '50px'
+  }
+})
 
-BodySection.propTypes = {
-  title: PropTypes.string,
-  children: PropTypes.any,
-};
-
-export default BodySection;
+export default BodySection

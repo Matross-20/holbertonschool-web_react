@@ -1,22 +1,20 @@
-import { shallow } from 'enzyme';
-import Footer from './Footer';
-import React from 'react';
-import { StyleSheetTestUtils } from 'aphrodite';
+import React from 'react'
+import { shallow } from 'enzyme'
+import Footer from './Footer'
+import { getFullYear, getFooterCopy } from '../utils/utils'
 
-let wrapper = null;
-StyleSheetTestUtils.suppressStyleInjection();
+jest.mock('../utils/utils', () => ({
+  getFullYear: jest.fn(() => 2024),
+  getFooterCopy: jest.fn(() => 'Holberton School')
+}))
 
-beforeEach(() => {
-  wrapper = shallow(<Footer />);
-});
+describe('Footer Component', () => {
+  it('should render without crashing', () => {
+    shallow(<Footer isIndex={true} />)
+  })
 
-
-describe('Footer Prop', () => {
-  it("Checks if the Footer component is rendered properly without error", () => {
-    expect(wrapper.exists('.App-footer')).toBeTruthy()
-  });
-
-  it("Checks if the component at the very least renders the text “Copyright”", () => {
-    expect(wrapper.find('.App-footer p').text().includes('Copyright')).toBeTruthy();
-  });
-});
+  it('should render the text "Copyright"', () => {
+    const wrapper = shallow(<Footer isIndex={true} />)
+    expect(wrapper.text()).toContain('Copyright')
+  })
+})

@@ -1,53 +1,58 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { StyleSheet, css } from 'aphrodite';
+import PropTypes from 'prop-types';
 
-function CourseListRow({isHeader, textFirstCell, textSecondCell}) {
-  return(
-    <>
-      {isHeader === true ? (
+const headerStyle = {
+  backgroundColor: '#deb5b545'
+};
+
+const rowStyle = {
+  backgroundColor: '#f5f5f5ab'
+};
+
+const CourseListRow = ({ isHeader, textFirstCell, textSecondCell }) => {
+  const style = isHeader ? headerStyle : rowStyle;
+
+  return (
+    <tr style={style}>
+      {isHeader ? (
         textSecondCell === null ? (
-          <tr className={css(styles.tableHeaderRow)}>
-            <th colSpan={2}>{textFirstCell}</th>
-          </tr>
+          <th className={css(styles.thFirstChild, styles.th)} colSpan="2">{textFirstCell}</th>
         ) : (
-          <tr className={css(styles.tableHeaderRow)}>
-            <th>{textFirstCell}</th>
-            <th>{textSecondCell}</th>
-          </tr>
+          <>
+            <th className={css(styles.th)}>{textFirstCell}</th>
+            <th className={css(styles.th)}>{textSecondCell}</th>
+          </>
         )
       ) : (
-        <tr className={css(styles.tableRow)}>
+        <>
           <td>{textFirstCell}</td>
           <td>{textSecondCell}</td>
-        </tr>
+        </>
       )}
-    </>
+    </tr>
   );
-}
-
-CourseListRow.propTypes = {
-  isHeader: PropTypes.bool,
-  textFirstCell: PropTypes.string,
-  textSecondCell: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-  ])
-}
+};
 
 CourseListRow.defaultProps = {
   isHeader: false,
   textSecondCell: null
 };
 
+CourseListRow.propTypes = {
+  isHeader: PropTypes.bool,
+  textFirstCell: PropTypes.string.isRequired,
+  textSecondCell: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};
+
 const styles = StyleSheet.create({
-  tableHeaderRow: {
-    borderBottom: "2px solid rgba(0, 0, 0, 0.2)",
-    backgroundColor: "#deb5b545"
+  thFirstChild: {
+    textAlign: 'center',
   },
-  tableRow: {
-      backgroundColor: "#f5f5f5ab"
-  }
+  th: {
+    padding: '.4rem 0',
+    borderBottom: 'solid 2px rgb(227, 220, 220)',
+  },
 });
 
 export default CourseListRow;

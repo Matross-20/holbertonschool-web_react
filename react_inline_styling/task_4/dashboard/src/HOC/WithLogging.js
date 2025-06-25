@@ -1,29 +1,26 @@
-/* Logs messages for the mounting and unmounting of the wrappedComponenet */
-import React from 'react';
-
-function getDisplayName(WrappedComponent) {
-  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
-}
+import React, { Component } from 'react'
 
 function WithLogging(WrappedComponent) {
-  return class extends React.Component {
-    constructor(props) {
-      super(props);
-      this.name = getDisplayName(WrappedComponent);
-      this.displayName = `WithLogging(${this.name})`;
-    }
+  return class extends Component {
+    static displayName = `WithLogging(${WrappedComponent.displayName || WrappedComponent.name || 'Component'
+      })`
+
     componentDidMount() {
-      console.log(`Component ${this.name} is mounted`)
+      const componentName =
+        WrappedComponent.displayName || WrappedComponent.name || 'Component'
+      console.log(`Component ${componentName} is mounted`)
     }
 
     componentWillUnmount() {
-      console.log(`Component ${this.name} is going to unmount`)
+      const componentName =
+        WrappedComponent.displayName || WrappedComponent.name || 'Component'
+      console.log(`Component ${componentName} is going to unmount`)
     }
 
     render() {
-      return <WrappedComponent {...this.props}/>
+      return <WrappedComponent {...this.props} />
     }
-  };
+  }
 }
 
-export default WithLogging;
+export default WithLogging

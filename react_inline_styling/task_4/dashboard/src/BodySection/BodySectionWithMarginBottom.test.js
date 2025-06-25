@@ -1,22 +1,36 @@
 import React from 'react';
-import { StyleSheetTestUtils } from 'aphrodite';
-import BodySectionWithMarginBottom from './BodySectionWithMarginBottom'
-import { shallow, render } from 'enzyme';
+import { shallow } from 'enzyme';
+import BodySectionWithMarginBottom from './BodySectionWithMarginBottom';
+import BodySection from './BodySection';
+import { StyleSheetTestUtils, StyleSheet, css } from 'aphrodite';
 
-let wrapper = null;
 StyleSheetTestUtils.suppressStyleInjection();
 
-describe('Testing BodySectionWithMarginBottom render()', () => {
-  beforeEach(() => {
-    wrapper = null;
-    wrapper = shallow(
-      <BodySectionWithMarginBottom title='title test'><p>Test child</p></BodySectionWithMarginBottom>
+afterAll(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
+
+describe('BodySectionWithMarginBottom Component', () => {
+  it('renders correctly a BodySection component and passes props correctly', () => {
+    const wrapper = shallow(
+      <BodySectionWithMarginBottom title='test title'>
+        <p>test children node</p>
+      </BodySectionWithMarginBottom>
     );
-  })
-  it('should render a BodySection component', () => {
-    let renderBodySection = wrapper.find('.bodySectionWithMargin').render();
-    expect(renderBodySection.find('.bodySection').length).toEqual(1);
-    expect(renderBodySection.find('h2').text()).toBe('title test');
-    expect(renderBodySection.find('p').text()).toBe('Test child');
-  })
-})
+
+    const bodySection = wrapper.find(BodySection);
+    expect(bodySection).toHaveLength(1);
+
+    expect(bodySection.props().title).toEqual('test title');
+
+    expect(bodySection.dive().find('p').text()).toEqual('test children node');
+
+    const div = wrapper.find('div');
+    const expectedClassName = css(StyleSheet.create({
+      bodySectionWithMargin: {
+        marginBottom: '40px',
+      },
+    }).bodySectionWithMargin);
+    expect(div.hasClass(expectedClassName)).toBe(true);
+  });
+});

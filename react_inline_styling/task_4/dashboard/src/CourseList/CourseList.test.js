@@ -1,56 +1,86 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { StyleSheetTestUtils } from 'aphrodite';
-import CourseList from './CourseList'
-import CourseListRow from './CourseListRow'
+import CourseList from './CourseList';
+import CourseListRow from './CourseListRow';
+import { StyleSheetTestUtils, StyleSheet, css } from 'aphrodite';
 
-let wrapper = null;
 StyleSheetTestUtils.suppressStyleInjection();
 
-describe('CourseList Component tests with listCourses={[]}', () => {
-  beforeEach(() => {
-    wrapper = shallow(<CourseList listCourses={[]}/>);
-   });
-  it("Checks if the CourseList component is rendered properly without error", () => {
-    expect(wrapper.exists('#CourseList')).toBeTruthy()
-  });
-  it('Should render 3 <CourseListRow> components', () => {
-    expect(wrapper.find(CourseListRow).length).toBe(3);
-  });
-  it('Should render "No course available yet" <CourseListRow>', () => {
-    expect(wrapper.find(CourseListRow).at(2).render().text()).toBe("No course available yet");
-  });
+afterAll(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
 });
 
-describe('CourseList Component test with nothing passed', () => {
-  beforeEach(() => {
-    wrapper = shallow(<CourseList/>);
-   });
-  it('Should render "No course available yet" <CourseListRow>', () => {
-    expect(wrapper.find(CourseListRow).at(2).render().text()).toBe("No course available yet");
+describe('CourseList Component', () => {
+  it('renders CourseList component without crashing', () => {
+    const wrapper = shallow(<CourseList />);
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  describe('With an empty CourseList or no listCourses prop', () => {
+    let wrapper;
+
+    beforeEach(() => {
+      wrapper = shallow(<CourseList />);
+    });
+
+    it('renders the correct header and "No course available yet" row', () => {
+      const rows = wrapper.find(CourseListRow);
+      expect(rows).toHaveLength(3);
+      expect(rows.at(0).prop('textFirstCell')).toEqual('Available courses');
+      expect(rows.at(1).prop('textFirstCell')).toEqual('Course name');
+      expect(rows.at(1).prop('textSecondCell')).toEqual('Credit');
+      expect(rows.at(2).prop('textFirstCell')).toEqual(
+        'No course available yet'
+      );
+    });
+  });
+
+  describe('With CourseList containing elements', () => {
+    let wrapper;
+    const listCourses = [
+      { id: 1, name: 'ES6', credit: 60 },
+      { id: 2, name: 'Webpack', credit: 20 },
+      { id: 3, name: 'React', credit: 40 }
+    ];
+
+    beforeEach(() => {
+      wrapper = shallow(<CourseList listCourses={listCourses} />);
+    });
+
+    it('renders the correct number of rows and data', () => {
+      const rows = wrapper.find(CourseListRow);
+      expect(rows).toHaveLength(5);
+
+      expect(rows.at(0).prop('textFirstCell')).toEqual('Available courses');
+      expect(rows.at(1).prop('textFirstCell')).toEqual('Course name');
+      expect(rows.at(1).prop('textSecondCell')).toEqual('Credit');
+
+      expect(rows.at(2).prop('textFirstCell')).toEqual('ES6');
+      expect(rows.at(2).prop('textSecondCell')).toEqual(60);
+
+      expect(rows.at(3).prop('textFirstCell')).toEqual('Webpack');
+      expect(rows.at(3).prop('textSecondCell')).toEqual(20);
+
+      expect(rows.at(4).prop('textFirstCell')).toEqual('React');
+      expect(rows.at(4).prop('textSecondCell')).toEqual(40);
+    });
+  });
+
+  describe('Styles', () => {
+    it('should apply the correct styles', () => {
+      const wrapper = shallow(<CourseList />);
+      const div = wrapper.find('table');
+      const expectedClassName = css(StyleSheet.create({
+        courseList: {
+          border: 'solid 1px rgb(227, 220, 220)',
+          width: '90%',
+          textAlign: 'left',
+          marginTop: '30px',
+          marginLeft: '5%',
+          fontFamily: `'Times New Roman', Times, serif`,
+        },
+      }).courseList);
+      expect(div.hasClass(expectedClassName)).toBe(true);
+    });
   });
 });
-
-
-describe('CourseList Component tests with listCourses={[CONTENT]}', () => {
-  const listCourses = [
-    {id: 1, name:"ES6", credit: 60},
-    {id: 2, name:"Webpack", credit: 20},
-    {id: 3, name:"React", credit: 40}
-  ]
-  beforeEach(() => {
-    wrapper = shallow(<CourseList listCourses={listCourses}/>);
-   });
-  it("Checks if the CourseList component is rendered properly without error", () => {
-    expect(wrapper.exists('#CourseList')).toBeTruthy()
-  });
-  it('Should render 5 <CourseListRow> components', () => {
-    expect(wrapper.find(CourseListRow).length).toBe(5)
-  });
-  it('<CourseListRow> components render proper content', () => {
-    expect(wrapper.find(CourseListRow).at(2).render().text()).toBe("ES660")
-    expect(wrapper.find(CourseListRow).at(3).render().text()).toBe("Webpack20")
-    expect(wrapper.find(CourseListRow).at(4).render().text()).toBe("React40")
-  });
-});
-

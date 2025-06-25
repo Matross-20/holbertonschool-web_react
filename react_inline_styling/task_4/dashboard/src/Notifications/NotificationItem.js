@@ -1,55 +1,70 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import { StyleSheet, css} from 'aphrodite'
+import React from 'react'
+import { StyleSheet, css } from 'aphrodite';
+import PropTypes from 'prop-types'
 
-
-//props {type, value, html, markAsRead, id}
 class NotificationItem extends React.PureComponent {
-  render () {
-    if (!this.props.html) {
-      return(<li className={this.props.type === "default" ? css(styles.liDefault) : css(styles.liUrgent)} onClick={() => this.props.markAsRead(this.props.id)} >{this.props.value}</li>);
+  static propTypes = {
+    type: PropTypes.string.isRequired,
+    value: PropTypes.string,
+    html: PropTypes.shape({
+      __html: PropTypes.string
+    }),
+    markAsRead: PropTypes.func,
+    id: PropTypes.number
+  };
+
+  static defaultProps = {
+    type: 'default',
+    value: '',
+    html: null,
+    markAsRead: () => { },
+    id: null
+  };
+
+  handleClick = () => {
+    const { markAsRead, id } = this.props
+    if (markAsRead && id !== null) {
+      markAsRead(id)
+    }
+  };
+
+  render() {
+    const { type, value, html } = this.props
+    const style = type === 'urgent' ? styles.urgent : styles.default;
+
+    if (html) {
+      return (
+        <li
+          className={css(style, styles.media)}
+          data-notification-type={type}
+          onClick={this.handleClick}
+          dangerouslySetInnerHTML={html}
+        ></li>
+      )
     } else {
-      return(<li className={this.props.type === "default" ? css(styles.liDefault) : css(styles.liUrgent)} onClick={() => this.props.markAsRead(this.props.id)}
-        dangerouslySetInnerHTML={{ __html: this.props.html.__html }}></li>
-      );
+      return (
+        <li className={css(style, styles.media)} data-notification-type={type} onClick={this.handleClick}>
+          {value}
+        </li>
+      )
     }
   }
 }
 
-NotificationItem.defaultProps = {
-    type: 'default',
-    markAsRead: () => {return undefined;},
-    id: 0
-}
-
-NotificationItem.propTypes = {
-    type: PropTypes.string.isRequired,
-    value: PropTypes.string,
-    html: PropTypes.shape({
-        __html: PropTypes.string,
-    }),
-    id: PropTypes.number,
-    markAsRead: PropTypes.func
-}
-
 const styles = StyleSheet.create({
-    liDefault: {
-      color: "blue",
-      '@media (max-width: 980px)': {
-        padding: '10px',
-        paddingLeft: '30px',
-        borderBottom: '1px solid black'
-      }
-    },
-    
-    liUrgent: {
-      color: "red",
-      '@media (max-width: 980px)': {
-        padding: '10px',
-        paddingLeft: '30px',
-        borderBottom: '1px solid black'
-      }
-    },
+  media: {
+    '@media (max-width: 900px)': {
+      borderBottom: '1px solid black',
+      fontSize: '20px',
+      padding: '10px 8px'
+    }
+  },
+  default: {
+    color: '#180C5F',
+  },
+  urgent: {
+    color: 'red',
+  }
 });
 
-export default NotificationItem;
+export default NotificationItem

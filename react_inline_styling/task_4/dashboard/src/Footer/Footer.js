@@ -1,11 +1,14 @@
-/* FOOTER COMPONENT PROP */
 import React from 'react';
-import { getFullYear, getFooterCopy } from '../utils/utils.js';
+import { getFullYear, getFooterCopy } from '../utils/utils';
 
-export default function Footer(props) {
+function Footer({ isIndex }) {
   return (
-    <div className={'App-footer ' + props.className}>
-      <p>Copyright {getFullYear()} - {getFooterCopy(true)}</p>
-    </div>
+    <footer>
+      <p>
+        Copyright {getFullYear()} - {getFooterCopy(isIndex)}
+      </p>
+    </footer>
   );
 }
+
+export default Footer;

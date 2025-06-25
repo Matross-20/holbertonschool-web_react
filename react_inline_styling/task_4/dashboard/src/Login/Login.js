@@ -1,46 +1,54 @@
-/* LOGIN COMPONENT PROP */
 import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
 function Login() {
   return (
-    <form className={'login-form ' + css(styles.loginForm)}>
-      <label className={css(styles.labelEmail)} htmlFor='email' id='email-label'>Email:</label>
-      <input type='email' name='email' id='email'></input>
-      <label className={css(styles.loginLabel) + ' ' + css(styles.loginPassword)} htmlFor='password' id='password-label'>Password:</label>
-      <input type='text' name='password' id='password'></input>
-      <button className={css(styles.loginBtn)}>OK</button>
-    </form>
+    <div className={css(styles.body)}>
+      <p>Login to access the full dashboard</p>
+      <form className={css(styles.form)}>
+        <div className={css(styles.block)}>
+          <label className={css(styles.label)} htmlFor="email">Email:</label>
+          <input className={css(styles.input)} type="email" id="email" name="email" />
+        </div>
+        <div className={css(styles.block)}>
+          <label className={css(styles.label)} htmlFor="password">Password:</label>
+          <input className={css(styles.input)} type="password" id="password" name="password" />
+        </div>
+        <button className={css(styles.button)} type="submit">OK</button>
+      </form>
+    </div>
   );
 }
 
 const styles = StyleSheet.create({
-  loginForm: {
-    height: "70%",
-    padding: "1rem",
-    fontSize: "1.2rem",
-    fontWeight: "500",
-    '@media (max-width: 630px)': {
-      display: "flex",
-      flexDirection: "column",
-      width: '300px'
-		},
+  body: {
+    fontSize: '20px',
+    fontFamily: 'Arial, sans-serif'
   },
-  loginPassword: {
-    marginLeft: '10px',
-    marginRight: '10px'
+  button: {
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+    backgroundColor: 'white'
   },
-
-  margin: {
+  block: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '10px',
+    marginRight: '20px'
   },
-  labelEmail: {
-    marginRight: '10px'
+  form: {
+    display: 'inline-block',
+    '@media (min-width: 900px)': {
+      display: 'flex'
+    }
   },
-  loginBtn: {
-    '@media (max-width: 630px)': {
-      width: '30px',
-		},
+  label: {
+    marginRight: '10px',
+    fontWeight: 'bold'
+  },
+  input: {
+    border: '1px solid #ccc',
+    padding: '5px'
   }
-});
-
+})
 export default Login;
